@@ -14,11 +14,17 @@ export const definitionSchema = {
   description:
     'Declares how spaces of one schema are projected into a map view: shared parameters, and the regions the map view is composed of.',
   type: 'object',
-  required: ['schema', 'regions'],
+  required: ['$id', 'schema', 'regions'],
   additionalProperties: false,
   properties: {
     $schema: { type: 'string' },
-    title: { type: 'string', minLength: 1, description: 'Display name. Defaults to the file name.' },
+    $id: {
+      type: 'string',
+      pattern: '^sctx-map-view://[^/]+(/[^/]+)?$',
+      description:
+        'Identifier, namespaced by where the definition is found: "sctx-map-view://core/<name>" (bundled), "sctx-map-view://<plugin>/<name>" (a plugin) or "sctx-map-view://<name>" (the config folder).',
+    },
+    title: { type: 'string', minLength: 1, description: 'Display name. Defaults to the last segment of the `$id`.' },
     description: { type: 'string' },
     schema: {
       type: 'string',

@@ -8,6 +8,7 @@ A map view definition is a JSON5 file. Its format is a set of JSON Schemas publi
 ```json5
 {
   $schema: 'https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json',
+  $id: 'sctx-map-view://core/strategy-tree',
   title: 'Strategy tree',
   schema: 'sctx://core/strategy_general',
   parameters: {
@@ -28,9 +29,10 @@ A map view definition is a JSON5 file. Its format is a set of JSON Schemas publi
 
 | Field | Required | Meaning |
 |---|---|---|
+| `$id` | yes | Identifier, namespaced by where the definition is found (below) |
 | `schema` | yes | `$id` of the structured-context schema whose spaces this map view applies to |
 | `regions` | yes | Parts of the map view (at least one; only the first is rendered) |
-| `title` | | Display name. Defaults to the file name |
+| `title` | | Display name. Defaults to the last segment of the `$id` |
 | `description` | | |
 | `parameters` | | Settings the reader can change (below) |
 
@@ -108,4 +110,14 @@ A definition is rejected when a parameter's default doesn't match its schema, wh
 
 ## Where definitions are found
 
-The navigator reads `map-views/` in this repo, plus any folders listed in `MAP_VIEWS_DIRS` (separated by the platform's path delimiter). A host lists the definitions whose `schema` matches the space's schema `$id` (`mapViewsForSchema`).
+Definitions are found the way structured-context finds plugin schemas, and each `$id` must be in the namespace of where it was found:
+
+| Where | `$id` |
+|---|---|
+| Bundled with this library (`map-views/`), for structured-context's bundled schemas | `sctx-map-view://core/<name>` |
+| A plugin: the folder named by `"sctx": { "mapViews": "…" }` in its `package.json`, else its `map-views/` folder | `sctx-map-view://<plugin>/<name>` (the plugin's name without `sctx-`) |
+| A `map-views/` folder next to a structured-context config file (including files pulled in by `includeSpacesFrom`) | `sctx-map-view://<name>` |
+
+Plugins are those in a config folder's `plugins/`, plus those a space or the config names (in `plugins`, or as the prefix of `schema`). Two definitions with the same `$id` are an error: to change a definition, write another with its own `$id`.
+
+A host lists the definitions whose `schema` matches the space's schema `$id` (`mapViewsForSchema`).

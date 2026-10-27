@@ -19,6 +19,7 @@ const diagonal: Region['layout']['orientation'] = 'diagonal';
 const missing: Region['nodes'] = {};
 
 const authored: AuthoredDefinition = {
+  $id: 'sctx-map-view://t',
   schema: 'sctx://x',
   parameters: { o: { default: 'vertical' } },
   regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'o' } } }],

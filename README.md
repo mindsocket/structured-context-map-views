@@ -2,11 +2,12 @@
 
 Declarative visualisations of [structured-context](https://github.com/mindsocket/structured-context) spaces.
 
-A **map view** is a short JSON5 definition that projects every space of one schema into a visual form: a tree, nested containers, or an XY plot. The same space can be shown several ways, and readers can switch settings such as orientation or grouping through parameters the definition declares.
+A **map view** is a short JSON5 definition that projects every space of one schema into a visual form: a tree, nested containers, or an XY plot. The same space can be shown several ways, and readers can switch settings such as orientation or grouping through parameters the definition declares. Definitions are found the way structured-context finds plugin schemas: bundled here, in plugins, or in a `map-views/` folder next to your config.
 
 ```json5
 {
   $schema: 'https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json',
+  $id: 'sctx-map-view://strategy-tree',
   title: 'Strategy tree',
   schema: 'sctx://core/strategy_general',
   regions: [{ id: 'main', layout: { type: 'tree', orientation: 'vertical' } }],

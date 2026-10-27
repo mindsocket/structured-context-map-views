@@ -12,6 +12,10 @@
       "types": "./dist/map-views/types/layouts/index.d.ts",
       "default": "./dist/map-views/layouts.js"
     },
+    "./map-views/node": {
+      "types": "./dist/map-views/types/node/index.d.ts",
+      "default": "./dist/map-views/node.js"
+    },
     "./map-views/styles.css": "./dist/map-views/styles.css"
   },
   "scripts": {

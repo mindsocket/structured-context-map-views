@@ -1,9 +1,9 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { basename, delimiter, join, resolve } from 'node:path';
+import { basename, join } from 'node:path';
 import { loadConfig, SpaceNotFoundError } from 'structured-context/api';
 import type { Plugin } from 'vite';
-import { loadMapViews } from './load-map-views';
+import { loadMapViewDefinitions } from '../../map-views/node';
 import { loadSpaceData } from './load-space-data';
 
 /**
@@ -12,25 +12,18 @@ import { loadSpaceData } from './load-space-data';
  *
  * The test fixtures are listed too, as `fixture:<name>`, so map views can be checked against
  * known data when a live space doesn't load.
- *
- * PROTOTYPE: `MAP_VIEWS_DIRS` (path-delimiter separated) adds definition folders kept outside this
- * repo, until definition discovery replaces it.
  */
 export function sctxApi(): Plugin {
   return {
     name: 'structured-context-api',
     configureServer(server) {
-      const mapViewsDirs = [
-        join(server.config.root, 'map-views'),
-        ...(process.env.MAP_VIEWS_DIRS?.split(delimiter).filter(Boolean) ?? []).map((dir) => resolve(dir)),
-      ];
       const fixturesDir = join(server.config.root, 'tests/fixtures');
       server.middlewares.use('/api/spaces', (req, res) => {
         handle(req, res, fixturesDir).catch((err) => sendError(res, err));
       });
       server.middlewares.use('/api/map-views', (_req, res) => {
         try {
-          sendJson(res, 200, mapViewsDirs.flatMap(loadMapViews));
+          sendJson(res, 200, loadMapViewDefinitions(loadConfig()));
         } catch (err) {
           sendError(res, err);
         }

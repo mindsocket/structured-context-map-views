@@ -62,8 +62,8 @@ export type NodeStyle = NodesConfig['style'];
  * replaces them with parameter values.
  */
 export type MapViewDefinition = {
-  /** Identifier, taken from the definition's file name. */
-  name: string;
+  /** The definition's `$id`. */
+  id: string;
   title: string;
   description?: string;
   /** `$id` of the schema whose spaces this map view applies to. */
@@ -114,7 +114,8 @@ const validateDefinition = ajv.getSchema(definitionSchema.$id)!;
 const fillDefaults = newAjv({ useDefaults: true }).getSchema(definitionSchema.$id)!;
 
 /**
- * Parse a JSON5 map view definition and check it against the bundled schemas.
+ * Parse a JSON5 map view definition and check it against the bundled schemas. `name` labels
+ * error messages (hosts pass where the definition came from).
  *
  * Beyond schema validation: every parameter needs a control derivable from its schema, and
  * every value that control can produce must satisfy the parameter's schema; every `$param`
@@ -166,8 +167,8 @@ export function parseMapViewDefinition(name: string, text: string): MapViewDefin
   }
 
   return {
-    name,
-    title: source.title ?? name,
+    id: source.$id,
+    title: source.title ?? source.$id.slice(source.$id.lastIndexOf('/') + 1),
     ...(source.description !== undefined && { description: source.description }),
     schema: source.schema,
     parameters,
@@ -196,7 +197,7 @@ export function resolveRegions(definition: MapViewDefinition, values: ParameterV
   if (!fillDefaults(filled)) {
     // parseMapViewDefinition checked every producible value, so this means a bug, not bad input.
     throw new MapViewDefinitionError(
-      definition.name,
+      definition.id,
       `resolved definition is invalid: ${formatErrors(fillDefaults.errors, filled)}`,
     );
   }

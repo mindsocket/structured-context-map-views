@@ -8,7 +8,7 @@ A declarative way to visualise spaces of one schema, and the rendering it produc
 
 ## Definition
 
-The JSON5 file that declares a map view: the schema it applies to, its parameters and its regions. A definition applies to every space whose schema `$id` equals its `schema`. See [Definitions](definitions.md).
+The JSON5 file that declares a map view: the schema it applies to, its parameters and its regions. A definition applies to every space whose schema `$id` equals its `schema`. Its own `$id` (`sctx-map-view://…`) identifies it, namespaced by where it's found: bundled, a plugin, or a config folder. See [Definitions](definitions.md).
 
 ## Region
 

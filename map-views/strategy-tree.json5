@@ -1,6 +1,7 @@
 // Strategy stack as a tree: vision → mission → goals → opportunities → solutions → experiments.
 {
   $schema: 'https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json',
+  $id: 'sctx-map-view://core/strategy-tree',
   title: 'Strategy tree',
   schema: 'sctx://core/strategy_general',
   parameters: {

@@ -16,12 +16,13 @@ export default defineConfig({
       entry: {
         core: 'src/map-views/core/index.ts',
         layouts: 'src/map-views/layouts/index.ts',
+        node: 'src/map-views/node/index.ts',
       },
       formats: ['es'],
     },
     rolldownOptions: {
       // Hosts provide these, so each host keeps a single React instance.
-      external: [/^react(\/|$)/, /^react-dom(\/|$)/, 'json5', /^structured-context(\/|$)/],
+      external: [/^node:/, /^react(\/|$)/, /^react-dom(\/|$)/, 'json5', /^structured-context(\/|$)/],
     },
   },
 });

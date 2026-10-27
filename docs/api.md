@@ -6,6 +6,7 @@ The library is pre-1.0 and unpublished; hosts consume a local build (`bun run bu
 |---|---|
 | `structured-context-navigator/map-views/core` | Definition parsing, parameters, the space index and projections. No React or DOM |
 | `structured-context-navigator/map-views/layouts` | React components |
+| `structured-context-navigator/map-views/node` | Finding definitions on disk. Node only |
 | `structured-context-navigator/map-views/styles.css` | Prebuilt styles, required by the components |
 
 React 19 is a peer dependency.
@@ -43,7 +44,8 @@ Controls generated from the definition's parameters. Renders nothing when there 
 
 ## Definitions
 
-- `parseMapViewDefinition(name, text)`: parses and validates JSON5 text (`name` is the default title), throwing `MapViewDefinitionError` with the problems found.
+- `loadMapViewDefinitions(config, { configDir?, bundledDir? })` (from `/node`): every definition available with a structured-context config, checked for namespaced, unique `$id`s (see [where definitions are found](definitions.md#where-definitions-are-found)). `bundledDir` is for hosts that bundle the module and so can't locate this package's `map-views/` folder. Browser-only hosts get the result from a server.
+- `parseMapViewDefinition(name, text)`: parses and validates JSON5 text (`name` labels error messages), throwing `MapViewDefinitionError` with the problems found. A `MapViewDefinition`'s `id` is its `$id`.
 - `mapViewsForSchema(definitions, schemaId)`: the definitions that apply to a schema.
 - `resolveParameterValues(definition, values)`: the effective value of every parameter.
 - `selectionFilter(definition, values)`: the first region's `select.filter`, for a host to apply when loading the space.

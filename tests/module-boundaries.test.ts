@@ -18,7 +18,8 @@ function importsIn(dir: string): { file: string; specifier: string }[] {
 
 describe('module boundaries', () => {
   test('map-views/core has no React, DOM-host, Node or runtime structured-context dependencies and no upward imports', () => {
-    const forbidden = /^(react|react-dom)(\/|$)|^node:|^structured-context(\/|$)|^(\.\.\/)+(layouts|navigator)(\/|$)/;
+    const forbidden =
+      /^(react|react-dom)(\/|$)|^node:|^structured-context(\/|$)|^(\.\.\/)+(layouts|navigator|node)(\/|$)/;
     const violations = importsIn('map-views/core').filter(
       ({ file, specifier }) =>
         forbidden.test(specifier) && !(specifier.startsWith('structured-context') && isTypeOnly(file, specifier)),
@@ -26,8 +27,10 @@ describe('module boundaries', () => {
     expect(violations).toEqual([]);
   });
 
-  test('map-views/layouts does not import from host shells', () => {
-    expect(importsIn('map-views/layouts').filter(({ specifier }) => /\/navigator/.test(specifier))).toEqual([]);
+  test('map-views/layouts does not import from host shells or Node-only modules', () => {
+    expect(
+      importsIn('map-views/layouts').filter(({ specifier }) => /\/(navigator|node)(\/|$)|^node:/.test(specifier)),
+    ).toEqual([]);
   });
 });
 

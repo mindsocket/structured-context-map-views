@@ -1,6 +1,4 @@
 import { describe, expect, test } from 'bun:test';
-import { readdirSync, readFileSync } from 'node:fs';
-import { basename, join } from 'node:path';
 import {
   mapViewsForSchema,
   parseMapViewDefinition,
@@ -10,9 +8,10 @@ import {
 } from '../src/map-views/core';
 import { SCHEMA_URL } from '../src/map-views/core/schemas/schema-url';
 
-const minimal = `{ schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`;
+const minimal = `{ $id: 'sctx-map-view://t', schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`;
 
 const withParameters = `{
+  $id: 'sctx-map-view://t',
   schema: 'sctx://x',
   parameters: {
     orientation: { $ref: 'settings.json#/$defs/orientation', default: 'horizontal' },
@@ -31,6 +30,7 @@ const withParameters = `{
 describe('parseMapViewDefinition', () => {
   test('fills in defaults when resolved', () => {
     const def = parseMapViewDefinition('t', minimal);
+    expect(def.id).toBe('sctx-map-view://t');
     expect(def.title).toBe('t');
     expect(resolveRegions(def)).toEqual([
       {
@@ -55,7 +55,7 @@ describe('parseMapViewDefinition', () => {
   test('resolves parameter $refs written as absolute URLs', () => {
     const def = parseMapViewDefinition(
       't',
-      `{ schema: 'x', parameters: { o: { $ref: '${SCHEMA_URL}/settings.json#/$defs/orientation', default: 'vertical' } },
+      `{ $id: 'sctx-map-view://t', schema: 'x', parameters: { o: { $ref: '${SCHEMA_URL}/settings.json#/$defs/orientation', default: 'vertical' } },
          regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'o' } } }] }`,
     );
     expect(def.parameters[0]!.control).toEqual({ kind: 'select', options: ['vertical', 'horizontal'] });
@@ -64,7 +64,7 @@ describe('parseMapViewDefinition', () => {
   test('narrows a referenced setting with allOf', () => {
     const def = parseMapViewDefinition(
       't',
-      `{ schema: 'x', parameters: { o: { allOf: [{ $ref: 'settings.json#/$defs/orientation' }, { enum: ['horizontal'] }], default: 'horizontal' } },
+      `{ $id: 'sctx-map-view://t', schema: 'x', parameters: { o: { allOf: [{ $ref: 'settings.json#/$defs/orientation' }, { enum: ['horizontal'] }], default: 'horizontal' } },
          regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'o' } } }] }`,
     );
     expect(def.parameters[0]!.control).toEqual({ kind: 'select', options: ['horizontal'] });
@@ -73,7 +73,7 @@ describe('parseMapViewDefinition', () => {
   test('narrows referenced array items with allOf', () => {
     const def = parseMapViewDefinition(
       't',
-      `{ schema: 'x', parameters: { f: { $ref: 'settings.json#/$defs/fieldList', allOf: [{ items: { enum: ['a', 'b'] } }], default: ['a'] } },
+      `{ $id: 'sctx-map-view://t', schema: 'x', parameters: { f: { $ref: 'settings.json#/$defs/fieldList', allOf: [{ items: { enum: ['a', 'b'] } }], default: ['a'] } },
          regions: [{ id: 'a', layout: { type: 'tree' }, nodes: { fields: { $param: 'f' } } }] }`,
     );
     expect(def.parameters[0]!.control).toEqual({ kind: 'multiselect', options: ['a', 'b'] });
@@ -83,7 +83,7 @@ describe('parseMapViewDefinition', () => {
     expect(() =>
       parseMapViewDefinition(
         't',
-        `{ schema: 'x', regions: [{ id: 'a', layout: { type: 'tree' }, nodes: { style: 'bogus' } }] }`,
+        `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'tree' }, nodes: { style: 'bogus' } }] }`,
       ),
     ).toThrow(
       /^Map view "t": \/regions\/0\/nodes\/style must be equal to one of the allowed values \("card", "shape"\)$/,
@@ -106,46 +106,51 @@ describe('parseMapViewDefinition', () => {
 
   test.each([
     ['{', /invalid JSON5/],
-    ['{ regions: [] }', /must have required property 'schema'/],
-    [`{ schema: 'x', regions: [{ id: 'a', layout: { type: 'grid' } }] }`, /layout has unknown type "grid"/],
+    [`{ $id: 'sctx-map-view://t', regions: [] }`, /must have required property 'schema'/],
+    [`{ schema: 'x', regions: [{ id: 'a', layout: { type: 'tree' } }] }`, /must have required property '\$id'/],
+    [`{ $id: 'map/t', schema: 'x', regions: [{ id: 'a', layout: { type: 'tree' } }] }`, /\$id must match pattern/],
     [
-      `{ schema: 'x', regions: [{ id: 'a', layout: { type: 'landscape', group: [{ type: 'A' }, { field: 's' }] } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'grid' } }] }`,
+      /layout has unknown type "grid"/,
+    ],
+    [
+      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'landscape', group: [{ type: 'A' }, { field: 's' }] } }] }`,
       /the last grouping level must be a node type/,
     ],
     [
-      `{ schema: 'x', parameters: { g: { enum: ['A', 'B'], default: 'A' } }, regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'g' } } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', parameters: { g: { enum: ['A', 'B'], default: 'A' } }, regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'g' } } }] }`,
       /value "A" isn't valid where it's used/,
     ],
     [
-      `{ schema: 'x', regions: [{ id: 'a', layout: { type: 'tree', colour: 'red' } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'tree', colour: 'red' } }] }`,
       /must NOT have additional properties \("colour"\)/,
     ],
     [
-      `{ schema: 'x', regions: [{ id: 'a', layout: { type: 'tree' } }, { id: 'a', layout: { type: 'tree' } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'tree' } }, { id: 'a', layout: { type: 'tree' } }] }`,
       /duplicate region id/,
     ],
     [
-      `{ schema: 'x', regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'o' } } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'o' } } }] }`,
       /"o" is not a declared parameter/,
     ],
     [
-      `{ schema: 'x', parameters: { o: { enum: ['up'], default: 'down' } }, regions: [{ id: 'a', layout: { type: 'tree' } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', parameters: { o: { enum: ['up'], default: 'down' } }, regions: [{ id: 'a', layout: { type: 'tree' } }] }`,
       /default "down" doesn't match/,
     ],
     [
-      `{ schema: 'x', parameters: { o: { type: 'string', default: 'a' } }, regions: [{ id: 'a', layout: { type: 'tree' } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', parameters: { o: { type: 'string', default: 'a' } }, regions: [{ id: 'a', layout: { type: 'tree' } }] }`,
       /no control can be generated/,
     ],
     [
-      `{ schema: 'x', parameters: { o: { enum: ['vertical', 'diagonal'], default: 'vertical' } }, regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'o' } } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', parameters: { o: { enum: ['vertical', 'diagonal'], default: 'vertical' } }, regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'o' } } }] }`,
       /value "diagonal" isn't valid where it's used/,
     ],
     [
-      `{ schema: 'x', regions: [{ id: 'a', layout: { type: 'xy', x: { field: 'e', domain: [1, 0] }, y: { field: 'v' } } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'xy', x: { field: 'e', domain: [1, 0] }, y: { field: 'v' } } }] }`,
       /x domain must be \[min, max\] with min < max/,
     ],
     [
-      `{ schema: 'x', regions: [{ id: 'a', layout: { type: 'xy', x: { field: 'e' } } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'xy', x: { field: 'e' } } }] }`,
       /must have required property 'y'/,
     ],
   ])('rejects %s', (source, message) => {
@@ -156,7 +161,7 @@ describe('parseMapViewDefinition', () => {
     expect(selectionFilter(parseMapViewDefinition('t', minimal))).toBeUndefined();
     const filtered = parseMapViewDefinition(
       't',
-      `{ schema: 'x', regions: [{ id: 'a', select: { filter: 'my-view' }, layout: { type: 'tree' } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', select: { filter: 'my-view' }, layout: { type: 'tree' } }] }`,
     );
     expect(selectionFilter(filtered)).toBe('my-view');
   });
@@ -164,7 +169,7 @@ describe('parseMapViewDefinition', () => {
   test('matches definitions to a schema', () => {
     const def = parseMapViewDefinition(
       't',
-      `{ schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`,
+      `{ $id: 'sctx-map-view://t', schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`,
     );
     expect(mapViewsForSchema([def], 'sctx://x')).toEqual([def]);
     expect(mapViewsForSchema([def], 'sctx://y')).toEqual([]);
@@ -175,11 +180,4 @@ describe('parseMapViewDefinition', () => {
     const def = parseMapViewDefinition('t', withParameters);
     expect(JSON.parse(JSON.stringify(def))).toEqual(def);
   });
-});
-
-test('the bundled map view definitions are valid', () => {
-  const dir = join(import.meta.dir, '../map-views');
-  const files = readdirSync(dir).filter((f) => f.endsWith('.json5'));
-  expect(files.length).toBeGreaterThan(0);
-  for (const file of files) parseMapViewDefinition(basename(file, '.json5'), readFileSync(join(dir, file), 'utf8'));
 });

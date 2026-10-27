@@ -52,8 +52,8 @@ export function App() {
   }, [selected]);
 
   const available = useMemo(() => mapViewsForSchema(definitions, data?.schemaId), [definitions, data?.schemaId]);
-  const definition = available.find((d) => d.name === mapViewName) ?? available[0];
-  const values = definition ? valuesByView[definition.name] : undefined;
+  const definition = available.find((d) => d.id === mapViewName) ?? available[0];
+  const values = definition ? valuesByView[definition.id] : undefined;
   const filter = definition ? selectionFilter(definition, values) : undefined;
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export function App() {
 
   const setValue = (name: string, value: unknown) => {
     if (!definition) return;
-    setValuesByView((all) => ({ ...all, [definition.name]: { ...all[definition.name], [name]: value } }));
+    setValuesByView((all) => ({ ...all, [definition.id]: { ...all[definition.id], [name]: value } }));
   };
 
   return (
@@ -89,9 +89,9 @@ export function App() {
           ))}
         </select>
         {available.length > 0 && (
-          <select value={definition?.name} onChange={(e) => setMapViewName(e.target.value)} aria-label="Map view">
+          <select value={definition?.id} onChange={(e) => setMapViewName(e.target.value)} aria-label="Map view">
             {available.map((d) => (
-              <option key={d.name} value={d.name}>
+              <option key={d.id} value={d.id}>
                 {d.title}
               </option>
             ))}
