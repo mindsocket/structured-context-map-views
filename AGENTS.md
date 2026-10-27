@@ -4,7 +4,7 @@ Declarative map views of structured-context spaces: the definition format, the r
 
 ## Layout
 
-- `src/map-views/core`: framework-agnostic. Definitions, parameters, the space index and the projections. No React, DOM, Node or runtime structured-context imports (type-only is fine); `tests/module-boundaries.test.ts` enforces this.
+- `src/map-views/core`: framework-agnostic. Definitions, parameters, graph helpers and the projections. No React, DOM, Node or runtime structured-context imports (type-only is fine); `tests/module-boundaries.test.ts` enforces this.
 - `src/map-views/layouts`: React components and the SVG edge overlay. Don't import host code from here.
 - `src/map-views/node`: Node-only definition discovery (`loadMapViewDefinitions`), shipped as its own entry point. Core and layouts must not import it.
 - `src/navigator`: the standalone host (Vite app plus dev-server middleware calling the structured-context API).

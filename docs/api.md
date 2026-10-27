@@ -4,7 +4,7 @@ The library is pre-1.0 and unpublished; hosts consume a local build (`bun run bu
 
 | Entry point | Contents |
 |---|---|
-| `structured-context-navigator/map-views/core` | Definition parsing, parameters, the space index and projections. No React or DOM |
+| `structured-context-navigator/map-views/core` | Definition parsing, parameters, graph helpers and projections. No React or DOM |
 | `structured-context-navigator/map-views/layouts` | React components |
 | `structured-context-navigator/map-views/node` | Finding definitions on disk. Node only |
 | `structured-context-navigator/map-views/styles.css` | Prebuilt styles, required by the components |
@@ -18,7 +18,7 @@ import { MapView, ParameterControls } from 'structured-context-navigator/map-vie
 import 'structured-context-navigator/map-views/styles.css';
 
 <ParameterControls definition={definition} values={values} onChange={(name, value) => setValues({ ...values, [name]: value })} />
-<MapView definition={definition} data={data} values={values} onNodeSelect={(node) => open(node)} />
+<MapView definition={definition} graph={graph} values={values} onNodeSelect={(node) => open(node)} />
 ```
 
 ### `MapView`
@@ -26,7 +26,7 @@ import 'structured-context-navigator/map-views/styles.css';
 | Prop | Type | Meaning |
 |---|---|---|
 | `definition` | `MapViewDefinition` | A parsed definition |
-| `data` | `SpaceData` | The space to render |
+| `graph` | `SpaceGraph` | The space to render, as structured-context's `assembleSpaceGraph` or `spaceGraphFrom` returns it |
 | `values` | `ParameterValues` | Current parameter values, owned by the host. Missing values use defaults |
 | `onNodeSelect` | `(node: SpaceNode) => void` | Called when the reader selects a node |
 
@@ -53,7 +53,7 @@ Controls generated from the definition's parameters. Renders nothing when there 
 
 ## Data
 
-`SpaceData` is `{ space, schemaId, hierarchy, nodes }`, built on the Node side from structured-context's API (see `src/navigator/server/load-space-data.ts`). `buildSpaceIndex(data)` returns the `SpaceIndex` the projections use.
+Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsidian plugin) passes the graph `assembleSpaceGraph` returns. A host whose server and browser are separate sends the wire format: `exportSpaceGraph` on the server, `spaceGraphFrom` (from `structured-context/browser`) in the browser; see `src/navigator/server/load-space.ts`. To pick definitions, hosts also need the space's schema id (`context.schema.$id`).
 
 ## Theming
 

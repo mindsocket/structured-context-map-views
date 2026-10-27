@@ -1,13 +1,12 @@
 # Architecture
 
-Space data and a definition go in; a DOM layout with an SVG overlay comes out. The browser's layout engine (Flexbox, Grid, absolute positioning) does the spatial work; there is no custom layout engine and no intermediate scene graph.
+A space graph and a definition go in; a DOM layout with an SVG overlay comes out. The browser's layout engine (Flexbox, Grid, absolute positioning) does the spatial work; there is no custom layout engine and no intermediate scene graph.
 
 ```mermaid
 flowchart LR
-  space[structured-context space] -->|host loads| data[SpaceData]
+  space[structured-context space] -->|host assembles| graph[SpaceGraph]
   def[definition .json5] -->|parseMapViewDefinition| mvd[MapViewDefinition]
-  data --> index[SpaceIndex]
-  index --> proj[projection<br>tree · landscape · xy]
+  graph --> proj[projection<br>tree · landscape · xy]
   mvd --> proj
   proj --> dom[layout component<br>DOM + SVG overlay]
 ```
@@ -16,7 +15,7 @@ flowchart LR
 
 | Module | Holds | May import |
 |---|---|---|
-| `src/map-views/core` | Definition parsing and validation, parameter resolution, the space index, and the projections (`buildTree`, `buildLandscape`, `buildXYPlot`) | Types from structured-context only. No React, DOM or Node |
+| `src/map-views/core` | Definition parsing and validation, parameter resolution, graph helpers, and the projections (`buildTree`, `buildLandscape`, `buildXYPlot`) | Types from structured-context only. No React, DOM or Node |
 | `src/map-views/layouts` | `MapView`, the layout components, `NodeCard`, `EdgeOverlay`, `ParameterControls`, styles | core, React |
 | `src/map-views/node` | `loadMapViewDefinitions`: finding definitions in the library, plugins and config folders | core, Node, structured-context |
 | `src/navigator` | The standalone host: a Vite app plus dev-server middleware calling the structured-context API | Anything |
@@ -25,11 +24,11 @@ flowchart LR
 
 ## Data in
 
-Hosts load spaces on the Node side and pass the library `SpaceData`: the schema id, the hierarchy and the nodes with their resolved parents. `buildSpaceIndex` turns that into a `SpaceIndex`: nodes keyed by id, and every hierarchy and relationship edge with its metadata (field, which side declares it, hierarchy or relationship), readable in both directions. Edges to nodes outside the data are dropped, so a filtered space stays consistent.
+Hosts pass the library structured-context's `SpaceGraph`: nodes keyed by id, the main hierarchy, and every hierarchy and relationship edge with its metadata, readable in both directions (`parentEdges`, `childEdges`). The Obsidian plugin assembles it in-process; the navigator's server sends the wire format (`exportSpaceGraph`) and its browser rebuilds the graph (`spaceGraphFrom`). The graph keeps edges to nodes outside it; the helpers in `core/graph.ts` drop them, so a filtered space stays consistent.
 
 ## Projections
 
-Each layout has a pure projection in core that turns the index and the region's resolved settings into occurrences and links:
+Each layout has a pure projection in core that turns the graph and the region's resolved settings into occurrences and links:
 
 - **Tree**: walks the hierarchy from the root type. A node with several parents is repeated (subtree once) or placed once with cross-links. Cycles end in a repeat.
 - **Landscape**: walks the grouping levels, joining node levels by edges in either direction, through `via` chains or by field values.
