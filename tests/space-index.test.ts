@@ -3,6 +3,9 @@ import type { SpaceNode } from 'structured-context/api';
 import { buildSpaceIndex, isHierarchyEdge, type SpaceData } from '../src/map-views/core';
 import sample from './fixtures/launch-playbook.json';
 
+// PROTOTYPE: structured-context is renaming an edge's `source` to `kind`; read either until #1.
+const kindOf = (edge: object) => (edge as { kind?: string }).kind ?? (edge as { source?: string }).source;
+
 const index = buildSpaceIndex(sample as unknown as SpaceData);
 
 test('indexes every node by title', () => {
@@ -15,7 +18,7 @@ test('keeps edge metadata and follows edges in both directions', () => {
     .childEdges('Publish First Release.md')
     .filter((edge) => index.nodes.get(edge.child)?.resolvedType === 'Outcomes');
   expect(outcomeEdges.map((edge) => edge.child).sort()).toEqual(['Reliable Releases.md', 'Wide Adoption.md']);
-  expect(outcomeEdges.every((edge) => edge.source === 'relationship' && edge.fieldOn === 'parent')).toBe(true);
+  expect(outcomeEdges.every((edge) => kindOf(edge) === 'relationship' && edge.fieldOn === 'parent')).toBe(true);
 
   // Read in reverse: the Activities an Outcome belongs to.
   const activities = index.parentEdges('Wide Adoption.md').map((edge) => edge.parent);
