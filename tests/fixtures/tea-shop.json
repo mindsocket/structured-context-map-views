@@ -29,7 +29,7 @@
   },
   "nodes": [
     {
-      "id": "Tea Shop",
+      "id": "tea-shop.owm#Tea Shop",
       "title": "Tea Shop",
       "type": "wardley_map",
       "schemaData": {
@@ -45,7 +45,7 @@
       },
       "linkTargets": ["Tea Shop"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 1
       },
       "resolvedType": "wardley_map",
@@ -53,7 +53,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Business",
+      "id": "tea-shop.owm#Business",
       "title": "Business",
       "type": "anchor",
       "schemaData": {
@@ -65,16 +65,16 @@
       },
       "linkTargets": ["Business"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 5
       },
       "resolvedType": "anchor",
       "resolvedParents": [
         {
-          "id": "Tea Shop",
+          "id": "tea-shop.owm#Tea Shop",
           "field": "anchors",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": false
         }
@@ -82,7 +82,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Public",
+      "id": "tea-shop.owm#Public",
       "title": "Public",
       "type": "anchor",
       "schemaData": {
@@ -94,16 +94,16 @@
       },
       "linkTargets": ["Public"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 6
       },
       "resolvedType": "anchor",
       "resolvedParents": [
         {
-          "id": "Tea Shop",
+          "id": "tea-shop.owm#Tea Shop",
           "field": "anchors",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": false
         }
@@ -111,7 +111,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Cup of Tea",
+      "id": "tea-shop.owm#Cup of Tea",
       "title": "Cup of Tea",
       "type": "component",
       "schemaData": {
@@ -127,32 +127,32 @@
       },
       "linkTargets": ["Cup of Tea"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 7
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Business",
+          "id": "tea-shop.owm#Business",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": false
         },
         {
-          "id": "Public",
+          "id": "tea-shop.owm#Public",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": false
         },
         {
-          "id": "Online Ordering",
+          "id": "tea-shop.owm#Online Ordering",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": true
         }
@@ -160,7 +160,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Cup",
+      "id": "tea-shop.owm#Cup",
       "title": "Cup",
       "type": "component",
       "schemaData": {
@@ -171,16 +171,16 @@
       },
       "linkTargets": ["Cup"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 7
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Cup of Tea",
+          "id": "tea-shop.owm#Cup of Tea",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": true
         }
@@ -188,7 +188,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Tea",
+      "id": "tea-shop.owm#Tea",
       "title": "Tea",
       "type": "component",
       "schemaData": {
@@ -200,16 +200,16 @@
       },
       "linkTargets": ["Tea"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 7
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Cup of Tea",
+          "id": "tea-shop.owm#Cup of Tea",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": true
         }
@@ -217,7 +217,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Tea Merchants",
+      "id": "tea-shop.owm#Tea Merchants",
       "title": "Tea Merchants",
       "type": "component",
       "schemaData": {
@@ -229,15 +229,15 @@
       },
       "linkTargets": ["Tea Merchants"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm"
+        "file": "tea-shop.owm"
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Tea",
+          "id": "tea-shop.owm#Tea",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": true
         }
@@ -245,7 +245,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Hot Water",
+      "id": "tea-shop.owm#Hot Water",
       "title": "Hot Water",
       "type": "component",
       "schemaData": {
@@ -260,16 +260,16 @@
       },
       "linkTargets": ["Hot Water"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 11
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Cup of Tea",
+          "id": "tea-shop.owm#Cup of Tea",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": true
         }
@@ -277,7 +277,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Water",
+      "id": "tea-shop.owm#Water",
       "title": "Water",
       "type": "component",
       "schemaData": {
@@ -288,16 +288,16 @@
       },
       "linkTargets": ["Water"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 11
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Hot Water",
+          "id": "tea-shop.owm#Hot Water",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": true
         }
@@ -305,7 +305,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Kettle",
+      "id": "tea-shop.owm#Kettle",
       "title": "Kettle",
       "type": "component",
       "schemaData": {
@@ -329,16 +329,16 @@
       },
       "linkTargets": ["Kettle"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 13
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Hot Water",
+          "id": "tea-shop.owm#Hot Water",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": true
         }
@@ -346,7 +346,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Power",
+      "id": "tea-shop.owm#Power",
       "title": "Power",
       "type": "component",
       "schemaData": {
@@ -366,16 +366,16 @@
       },
       "linkTargets": ["Power"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 14
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Kettle",
+          "id": "tea-shop.owm#Kettle",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": true
         }
@@ -383,7 +383,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Payments",
+      "id": "tea-shop.owm#Payments",
       "title": "Payments",
       "type": "component",
       "schemaData": {
@@ -394,31 +394,31 @@
       },
       "linkTargets": ["Payments"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 15
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Online Ordering",
+          "id": "tea-shop.owm#Online Ordering",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": true
         },
         {
-          "id": "Online Ordering",
+          "id": "tea-shop.owm#Online Ordering",
           "field": "flowsTo",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": true
         }
       ],
       "resolvedLinks": []
     },
     {
-      "id": "Online Ordering",
+      "id": "tea-shop.owm#Online Ordering",
       "title": "Online Ordering",
       "type": "component",
       "schemaData": {
@@ -438,16 +438,16 @@
       },
       "linkTargets": ["Online Ordering"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 16
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Public",
+          "id": "tea-shop.owm#Public",
           "field": "dependsOn",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "value_chain",
           "selfRef": false
         }
@@ -455,7 +455,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Campfire Kettle",
+      "id": "tea-shop.owm#Campfire Kettle",
       "title": "Campfire Kettle",
       "type": "component",
       "schemaData": {
@@ -467,23 +467,23 @@
       },
       "linkTargets": ["Campfire Kettle"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 35
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Kettle",
+          "id": "tea-shop.owm#Kettle",
           "field": "pipelineOf",
           "fieldOn": "child",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": true
         }
       ],
       "resolvedLinks": []
     },
     {
-      "id": "Electric Kettle",
+      "id": "tea-shop.owm#Electric Kettle",
       "title": "Electric Kettle",
       "type": "component",
       "schemaData": {
@@ -495,23 +495,23 @@
       },
       "linkTargets": ["Electric Kettle"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 36
       },
       "resolvedType": "component",
       "resolvedParents": [
         {
-          "id": "Kettle",
+          "id": "tea-shop.owm#Kettle",
           "field": "pipelineOf",
           "fieldOn": "child",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": true
         }
       ],
       "resolvedLinks": []
     },
     {
-      "id": "Note 1",
+      "id": "tea-shop.owm#Note 1",
       "title": "Note 1",
       "type": "note",
       "content": "Buy commodities and build what differentiates",
@@ -524,7 +524,7 @@
       },
       "linkTargets": ["Note 1"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 38
       },
       "resolvedType": "note",
@@ -532,7 +532,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Annotation 1",
+      "id": "tea-shop.owm#Annotation 1",
       "title": "Annotation 1",
       "type": "annotation",
       "content": "Standardising power allows kettles to evolve faster",
@@ -554,7 +554,7 @@
       },
       "linkTargets": ["Annotation 1"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 39
       },
       "resolvedType": "annotation",
@@ -562,7 +562,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Pioneers 1",
+      "id": "tea-shop.owm#Pioneers 1",
       "title": "Pioneers 1",
       "type": "attitude",
       "schemaData": {
@@ -578,7 +578,7 @@
       },
       "linkTargets": ["Pioneers 1"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 41
       },
       "resolvedType": "attitude",
@@ -586,7 +586,7 @@
       "resolvedLinks": []
     },
     {
-      "id": "Cheaper Electric Kettles",
+      "id": "tea-shop.owm#Cheaper Electric Kettles",
       "title": "Cheaper Electric Kettles",
       "type": "accelerator",
       "schemaData": {
@@ -598,7 +598,7 @@
       },
       "linkTargets": ["Cheaper Electric Kettles"],
       "source": {
-        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "file": "tea-shop.owm",
         "line": 42
       },
       "resolvedType": "accelerator",

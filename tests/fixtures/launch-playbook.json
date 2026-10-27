@@ -58,28 +58,28 @@
           "id": "Measure Adoption.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         },
         {
           "id": "Announce the Launch.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         },
         {
           "id": "Write Initial Documentation.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         },
         {
           "id": "Publish First Release.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         }
       ],
@@ -128,7 +128,7 @@
           "id": "Triage Issues.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         },
@@ -136,7 +136,7 @@
           "id": "Set Up Repository.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -188,7 +188,7 @@
           "id": "04 Sustain.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -220,7 +220,7 @@
           "id": "03 Grow.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -251,7 +251,7 @@
           "id": "Continuous Integration.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         },
@@ -259,7 +259,7 @@
           "id": "Release Automation.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -291,7 +291,7 @@
           "id": "04 Sustain.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -320,7 +320,7 @@
           "id": "Measure Adoption.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         },
@@ -328,7 +328,7 @@
           "id": "Announce the Launch.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         },
@@ -336,7 +336,7 @@
           "id": "Write Initial Documentation.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -367,7 +367,7 @@
           "id": "Security Response.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -396,7 +396,7 @@
           "id": "Announce the Launch.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -425,7 +425,7 @@
           "id": "Review Governance.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         },
@@ -433,7 +433,7 @@
           "id": "Define Project Scope.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -465,7 +465,7 @@
           "id": "04 Sustain.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -495,7 +495,7 @@
           "id": "Documentation.md",
           "field": "parent_capability",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": true
         }
@@ -524,7 +524,7 @@
           "id": "Measure Adoption.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -556,7 +556,7 @@
           "id": "02 Launch.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -586,7 +586,7 @@
           "id": "Analytics.md",
           "field": "parent_capability",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": true
         }
@@ -637,7 +637,7 @@
           "id": "Documentation.md",
           "field": "parent_capability",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": true
         }
@@ -666,7 +666,7 @@
           "id": "Publish First Release.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         },
@@ -674,7 +674,7 @@
           "id": "Set Up Repository.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -706,7 +706,7 @@
           "id": "03 Grow.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -735,7 +735,7 @@
           "id": "Publish First Release.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -766,7 +766,7 @@
           "id": "Project Website.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         },
@@ -774,7 +774,7 @@
           "id": "Documentation.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -803,28 +803,28 @@
           "id": "Review Governance.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         },
         {
           "id": "Open Community Channels.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         },
         {
           "id": "Onboard New Contributors.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         },
         {
           "id": "Triage Issues.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         }
       ],
@@ -852,7 +852,7 @@
           "id": "Secure Funding.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -884,7 +884,7 @@
           "id": "02 Launch.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -913,28 +913,28 @@
           "id": "Handle Security Reports.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         },
         {
           "id": "Triage Issues.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         },
         {
           "id": "Publish First Release.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         },
         {
           "id": "Set Up Repository.md",
           "field": "outcomes",
           "fieldOn": "parent",
-          "source": "relationship",
+          "kind": "relationship",
           "selfRef": false
         }
       ],
@@ -962,7 +962,7 @@
           "id": "Onboard New Contributors.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         },
@@ -970,7 +970,7 @@
           "id": "Write Initial Documentation.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1002,7 +1002,7 @@
           "id": "01 Prepare.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1033,7 +1033,7 @@
           "id": "Issue Tracking.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1083,7 +1083,7 @@
           "id": "Handle Security Reports.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1115,7 +1115,7 @@
           "id": "03 Grow.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1146,7 +1146,7 @@
           "id": "Community Chat.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1177,7 +1177,7 @@
           "id": "Social Media.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1206,7 +1206,7 @@
           "id": "Onboard New Contributors.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1237,7 +1237,7 @@
           "id": "Analytics.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1268,7 +1268,7 @@
           "id": "01 Prepare.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1300,7 +1300,7 @@
           "id": "02 Launch.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1331,7 +1331,7 @@
           "id": "Funding.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         },
@@ -1339,7 +1339,7 @@
           "id": "Project Website.md",
           "field": "capabilities",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1371,7 +1371,7 @@
           "id": "01 Prepare.md",
           "field": "phase",
           "fieldOn": "child",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }
@@ -1400,7 +1400,7 @@
           "id": "Open Community Channels.md",
           "field": "capabilities",
           "fieldOn": "parent",
-          "source": "hierarchy",
+          "kind": "hierarchy",
           "hierarchy": "launch_playbook",
           "selfRef": false
         }

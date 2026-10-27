@@ -66,8 +66,9 @@ describe('tea-shop XY plot', () => {
 
   test('draws edges between plotted nodes, optionally only from some fields', () => {
     const all = buildXYPlot(index, 'main', layout());
-    const named = (plot: typeof all) =>
-      plot.links.map(({ from, to }) => `${JSON.parse(from).at(-1)}→${JSON.parse(to).at(-1)}`).sort();
+    // Occurrence keys end in a node id, `<file>#<name>` for nodes parsed from a map file.
+    const name = (key: string) => (JSON.parse(key).at(-1) as string).split('#').at(-1);
+    const named = (plot: typeof all) => plot.links.map(({ from, to }) => `${name(from)}→${name(to)}`).sort();
     // Anchors' edges to the map node are left out: the map node isn't plotted.
     expect(named(all)).toContain('Kettle→Campfire Kettle');
     const flows = buildXYPlot(index, 'main', layout({ edgeFields: ['flowsTo'] }));

@@ -3,9 +3,6 @@ import { makeHierarchy, makeLevel, makeParentRef, makeSpaceNode } from 'structur
 import { buildSpaceIndex, buildTree, type SpaceData, type TreeOccurrence, treeLinks } from '../src/map-views/core';
 import sample from './fixtures/launch-playbook.json';
 
-// PROTOTYPE: structured-context is renaming an edge's `source` to `kind`; set both until #1.
-const HIERARCHY_EDGE = { source: 'hierarchy', kind: 'hierarchy' } as Partial<Parameters<typeof makeParentRef>[1]>;
-
 function occurrences(roots: TreeOccurrence[]): TreeOccurrence[] {
   return roots.flatMap((o) => [o, ...occurrences(o.children)]);
 }
@@ -67,7 +64,7 @@ describe('edge cases', () => {
 
   test('a cycle terminates as a repeat', () => {
     const edge = (title: string) =>
-      makeParentRef(title, { ...HIERARCHY_EDGE, hierarchy: hierarchy.name, selfRef: true });
+      makeParentRef(title, { kind: 'hierarchy', hierarchy: hierarchy.name, selfRef: true });
     const nodes = [
       makeSpaceNode('G', 'goal'),
       makeSpaceNode('A', 'opportunity', {}, undefined, [edge('G'), edge('B')]),
@@ -80,7 +77,7 @@ describe('edge cases', () => {
 
   test('a cycle unreachable from any root is still rendered', () => {
     const edge = (title: string) =>
-      makeParentRef(title, { ...HIERARCHY_EDGE, hierarchy: hierarchy.name, selfRef: true });
+      makeParentRef(title, { kind: 'hierarchy', hierarchy: hierarchy.name, selfRef: true });
     const nodes = [
       makeSpaceNode('A', 'opportunity', {}, undefined, [edge('B')]),
       makeSpaceNode('B', 'opportunity', {}, undefined, [edge('A')]),
@@ -90,7 +87,7 @@ describe('edge cases', () => {
   });
 
   test('a child referencing the same parent twice occurs once', () => {
-    const ref = (field: string) => makeParentRef('G', { ...HIERARCHY_EDGE, hierarchy: hierarchy.name, field });
+    const ref = (field: string) => makeParentRef('G', { kind: 'hierarchy', hierarchy: hierarchy.name, field });
     const nodes = [
       makeSpaceNode('G', 'goal'),
       makeSpaceNode('O', 'opportunity', {}, undefined, [ref('parent'), ref('also')]),

@@ -11,7 +11,7 @@ export type Edge = Omit<ResolvedParentRef, 'id'> & {
 /**
  * Lookup structure over a space's nodes and edges, built in the browser from {@link SpaceData}.
  *
- * Unlike structured-context's `SpaceGraph`, every edge keeps its metadata (field, source,
+ * Unlike structured-context's `SpaceGraph`, every edge keeps its metadata (field, kind,
  * hierarchy, direction of the field), and edges can be followed in both directions.
  * Layouts need that to group by a specific relationship, or to read an edge in reverse.
  */
@@ -57,10 +57,7 @@ export function buildSpaceIndex(data: SpaceData): SpaceIndex {
 
 /** Whether an edge belongs to the given hierarchy (as opposed to a relationship or another hierarchy). */
 export function isHierarchyEdge(edge: Edge, hierarchy: Hierarchy | undefined): boolean {
-  // PROTOTYPE: structured-context is renaming the edge's `source` to `kind` (its #138). Read either until
-  // the library takes the new graph format (#1).
-  const { kind = (edge as { source?: string }).source } = edge as { kind?: string };
-  return hierarchy !== undefined && kind === 'hierarchy' && edge.hierarchy === hierarchy.name;
+  return hierarchy !== undefined && edge.kind === 'hierarchy' && edge.hierarchy === hierarchy.name;
 }
 
 function append<K, V>(map: Map<K, V[]>, key: K, value: V) {
