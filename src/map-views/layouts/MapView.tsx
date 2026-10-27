@@ -25,7 +25,7 @@ export function MapView({ definition, data, values, onNodeSelect }: Props) {
   const instanceId = useId();
   const index = useMemo(() => buildSpaceIndex(data), [data]);
   const regions = useMemo(() => resolveRegions(definition, values), [definition, values]);
-  // PROTOTYPE: only the first region is rendered. Arranging several regions is undesigned (Briefing 4.2).
+  // PROTOTYPE: only the first region is rendered. Arranging several regions is undesigned (#8).
   const region = regions[0]!;
   const props = { index, instanceId, onNodeSelect };
 
