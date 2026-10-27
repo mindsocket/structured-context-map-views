@@ -1,9 +1,10 @@
 import { PARAM_REF, parameterisable } from './param-ref';
+import { SCHEMA_URL } from './schema-url';
 
 /** Settings of the XY layout: nodes positioned by two numeric fields. */
 export const xyLayoutSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
-  $id: 'sctx-map-view://layouts/xy.json',
+  $id: `${SCHEMA_URL}/layouts/xy.json`,
   title: 'XY layout',
   description:
     'Nodes positioned on two axes by numeric fields. Nodes of the plotted types without a usable value on both axes are listed beside the plot, not dropped.',
@@ -12,15 +13,15 @@ export const xyLayoutSchema = {
   additionalProperties: false,
   properties: {
     type: { const: 'xy' },
-    x: { $ref: 'sctx-map-view://layouts/xy.json#/$defs/axis' },
-    y: { $ref: 'sctx-map-view://layouts/xy.json#/$defs/axis' },
+    x: { $ref: `${SCHEMA_URL}/layouts/xy.json#/$defs/axis` },
+    y: { $ref: `${SCHEMA_URL}/layouts/xy.json#/$defs/axis` },
     types: parameterisable(
       { type: 'array', items: { type: 'string', minLength: 1 }, uniqueItems: true },
       [],
       'Node types to plot. Empty: every type with a value on either axis.',
     ),
     edgeFields: parameterisable(
-      { $ref: 'sctx-map-view://settings.json#/$defs/fieldList' },
+      { $ref: `${SCHEMA_URL}/settings.json#/$defs/fieldList` },
       [],
       'Fields whose edges are drawn between plotted nodes. Empty: all edges.',
     ),
@@ -43,7 +44,7 @@ export const xyLayoutSchema = {
           anyOf: [{ const: 'data' }, { type: 'array', items: { type: 'number' }, minItems: 2, maxItems: 2 }],
         },
         direction: parameterisable(
-          { $ref: 'sctx-map-view://layouts/xy.json#/$defs/direction' },
+          { $ref: `${SCHEMA_URL}/layouts/xy.json#/$defs/direction` },
           'ascending',
           'ascending: values grow rightwards (x) or upwards (y). descending: the reverse.',
         ),

@@ -1,9 +1,10 @@
 import { parameterisable } from './param-ref';
+import { SCHEMA_URL } from './schema-url';
 
 /** Settings of the tree layout: a tree over the schema's hierarchy. */
 export const treeLayoutSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
-  $id: 'sctx-map-view://layouts/tree.json',
+  $id: `${SCHEMA_URL}/layouts/tree.json`,
   title: 'Tree layout',
   description: "A tree over the schema's hierarchy: root-type nodes at the top, children via hierarchy edges.",
   type: 'object',
@@ -12,12 +13,12 @@ export const treeLayoutSchema = {
   properties: {
     type: { const: 'tree' },
     orientation: parameterisable(
-      { $ref: 'sctx-map-view://settings.json#/$defs/orientation' },
+      { $ref: `${SCHEMA_URL}/settings.json#/$defs/orientation` },
       'vertical',
       'Direction the tree grows.',
     ),
     dag: parameterisable(
-      { $ref: 'sctx-map-view://layouts/tree.json#/$defs/dag' },
+      { $ref: `${SCHEMA_URL}/layouts/tree.json#/$defs/dag` },
       'repeat',
       'How a node with several parents is shown.',
     ),

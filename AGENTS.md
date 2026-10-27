@@ -8,7 +8,7 @@ Declarative map views of structured-context spaces: the definition format, the r
 - `src/map-views/layouts`: React components and the SVG edge overlay. Don't import host code from here.
 - `src/navigator`: the standalone host (Vite app plus dev-server middleware calling the structured-context API).
 - `map-views/*.json5`: definitions shipped here, for open schemas only. Private definitions live elsewhere and are loaded with `MAP_VIEWS_DIRS`.
-- `src/map-views/core/schemas/*.ts`: the definition format's JSON Schemas (`as const`), the source of truth. Types derive from them (`FromSchema`); `bun run generate:schemas` writes `schemas/generated/*.json`, and a test fails if those are stale. Use absolute `sctx-map-view://…` refs: `FromSchema` doesn't resolve relative refs inside referenced schemas.
+- `src/map-views/core/schemas/*.ts`: the definition format's JSON Schemas (`as const`), the source of truth. Types derive from them (`FromSchema`); `bun run generate:schemas` writes `schemas/generated/latest/`, and a test fails if those are stale; `--release` (run when cutting a release) also freezes `schemas/generated/<version>/` if the format changed. `$id`s are the published https URLs (`schema-url.ts`). Use absolute `${SCHEMA_URL}/…` refs: `FromSchema` doesn't resolve relative refs inside referenced schemas.
 - `samples/launch-playbook/`: a public sample space. `tests/fixtures/launch-playbook.json` is captured from it with `bun scripts/capture-fixtures.ts launch-playbook=samples/launch-playbook/.sctx.json`.
 - The Obsidian plugin is the second host. It consumes the library build (`bun run build:map-views`) through a `file:` dependency.
 

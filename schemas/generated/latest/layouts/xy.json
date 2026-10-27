@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "sctx-map-view://layouts/xy.json",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/xy.json",
   "title": "XY layout",
   "description": "Nodes positioned on two axes by numeric fields. Nodes of the plotted types without a usable value on both axes are listed beside the plot, not dropped.",
   "type": "object",
@@ -15,10 +15,10 @@
       "const": "xy"
     },
     "x": {
-      "$ref": "sctx-map-view://layouts/xy.json#/$defs/axis"
+      "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/xy.json#/$defs/axis"
     },
     "y": {
-      "$ref": "sctx-map-view://layouts/xy.json#/$defs/axis"
+      "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/xy.json#/$defs/axis"
     },
     "types": {
       "description": "Node types to plot. Empty: every type with a value on either axis.",
@@ -33,7 +33,7 @@
           "uniqueItems": true
         },
         {
-          "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
         }
       ]
     },
@@ -42,10 +42,10 @@
       "default": [],
       "anyOf": [
         {
-          "$ref": "sctx-map-view://settings.json#/$defs/fieldList"
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/fieldList"
         },
         {
-          "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
         }
       ]
     }
@@ -67,7 +67,7 @@
               "minLength": 1
             },
             {
-              "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
             }
           ]
         },
@@ -93,10 +93,10 @@
           "default": "ascending",
           "anyOf": [
             {
-              "$ref": "sctx-map-view://layouts/xy.json#/$defs/direction"
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/xy.json#/$defs/direction"
             },
             {
-              "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
             }
           ]
         },

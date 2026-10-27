@@ -1,7 +1,7 @@
 // Wardley map data as a generic XY plot: evolution across, visibility up, dependencies as lines.
 // Deliberately not a Wardley renderer: no stage bands, pipelines, evolve arrows or annotations.
 {
-  $schema: 'sctx-map-view://definition.json',
+  $schema: 'https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json',
   title: 'Wardley XY',
   schema: 'sctx://wardley-mapping/wardley_map',
   parameters: {
@@ -19,7 +19,7 @@
       uniqueItems: true,
       default: ['dependsOn'],
     },
-    nodeStyle: { $ref: 'sctx-map-view://settings.json#/$defs/nodeStyle', default: 'shape' },
+    nodeStyle: { $ref: 'settings.json#/$defs/nodeStyle', default: 'shape' },
   },
   regions: [
     {

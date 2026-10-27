@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "sctx-map-view://layouts/tree.json",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/tree.json",
   "title": "Tree layout",
   "description": "A tree over the schema's hierarchy: root-type nodes at the top, children via hierarchy edges.",
   "type": "object",
@@ -17,10 +17,10 @@
       "default": "vertical",
       "anyOf": [
         {
-          "$ref": "sctx-map-view://settings.json#/$defs/orientation"
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/orientation"
         },
         {
-          "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
         }
       ]
     },
@@ -29,10 +29,10 @@
       "default": "repeat",
       "anyOf": [
         {
-          "$ref": "sctx-map-view://layouts/tree.json#/$defs/dag"
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/tree.json#/$defs/dag"
         },
         {
-          "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "sctx-map-view://layouts/landscape.json",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/landscape.json",
   "title": "Landscape layout",
   "description": "Nested containers: each grouping level becomes containers inside the level above, and the last level is drawn as nodes.",
   "type": "object",
@@ -18,10 +18,10 @@
       "default": "horizontal",
       "anyOf": [
         {
-          "$ref": "sctx-map-view://settings.json#/$defs/orientation"
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/orientation"
         },
         {
-          "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
         }
       ]
     },
@@ -67,7 +67,7 @@
                   "minLength": 1
                 },
                 {
-                  "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
                 }
               ]
             },
@@ -99,10 +99,10 @@
               "default": "hidden",
               "anyOf": [
                 {
-                  "$ref": "sctx-map-view://layouts/landscape.json#/$defs/intermediate"
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/landscape.json#/$defs/intermediate"
                 },
                 {
-                  "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
                 }
               ]
             }

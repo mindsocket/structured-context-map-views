@@ -6,7 +6,7 @@ A **map view** is a short JSON5 definition that projects every space of one sche
 
 ```json5
 {
-  $schema: 'sctx-map-view://definition.json',
+  $schema: 'https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json',
   title: 'Strategy tree',
   schema: 'sctx://core/strategy_general',
   regions: [{ id: 'main', layout: { type: 'tree', orientation: 'vertical' } }],

@@ -1,7 +1,8 @@
+import { SCHEMA_URL } from './schema-url';
 /** Reusable setting definitions. Parameters can `$ref` these and narrow them, e.g. with `allOf` and `enum`. */
 export const settingsSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
-  $id: 'sctx-map-view://settings.json',
+  $id: `${SCHEMA_URL}/settings.json`,
   title: 'Shared map view settings',
   description: 'Reusable setting definitions. Parameters can $ref these and narrow them, e.g. with allOf and enum.',
   $defs: {

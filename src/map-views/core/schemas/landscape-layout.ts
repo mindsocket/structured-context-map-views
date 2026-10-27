@@ -1,9 +1,10 @@
 import { PARAM_REF, parameterisable } from './param-ref';
+import { SCHEMA_URL } from './schema-url';
 
 /** Settings of the landscape layout: nested containers following an authored grouping. */
 export const landscapeLayoutSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
-  $id: 'sctx-map-view://layouts/landscape.json',
+  $id: `${SCHEMA_URL}/layouts/landscape.json`,
   title: 'Landscape layout',
   description:
     'Nested containers: each grouping level becomes containers inside the level above, and the last level is drawn as nodes.',
@@ -13,7 +14,7 @@ export const landscapeLayoutSchema = {
   properties: {
     type: { const: 'landscape' },
     orientation: parameterisable(
-      { $ref: 'sctx-map-view://settings.json#/$defs/orientation' },
+      { $ref: `${SCHEMA_URL}/settings.json#/$defs/orientation` },
       'horizontal',
       'horizontal: top-level containers side by side, as columns. vertical: stacked, as rows.',
     ),
@@ -61,7 +62,7 @@ export const landscapeLayoutSchema = {
               items: { type: 'string', minLength: 1 },
             },
             intermediate: parameterisable(
-              { $ref: 'sctx-map-view://layouts/landscape.json#/$defs/intermediate' },
+              { $ref: `${SCHEMA_URL}/layouts/landscape.json#/$defs/intermediate` },
               'hidden',
               'How the skipped nodes of a `via` chain are shown.',
             ),

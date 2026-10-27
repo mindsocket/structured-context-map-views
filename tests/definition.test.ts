@@ -8,14 +8,15 @@ import {
   resolveRegions,
   selectionFilter,
 } from '../src/map-views/core';
+import { SCHEMA_URL } from '../src/map-views/core/schemas/schema-url';
 
 const minimal = `{ schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`;
 
 const withParameters = `{
   schema: 'sctx://x',
   parameters: {
-    orientation: { $ref: 'sctx-map-view://settings.json#/$defs/orientation', default: 'horizontal' },
-    dag: { $ref: 'sctx-map-view://layouts/tree.json#/$defs/dag', default: 'repeat', title: 'Repeats' },
+    orientation: { $ref: 'settings.json#/$defs/orientation', default: 'horizontal' },
+    dag: { $ref: 'layouts/tree.json#/$defs/dag', default: 'repeat', title: 'Repeats' },
     fields: { type: 'array', items: { enum: ['status', 'priority'] }, default: ['status'] },
     edges: { type: 'boolean', default: true },
   },
@@ -51,10 +52,19 @@ describe('parseMapViewDefinition', () => {
     ]);
   });
 
+  test('resolves parameter $refs written as absolute URLs', () => {
+    const def = parseMapViewDefinition(
+      't',
+      `{ schema: 'x', parameters: { o: { $ref: '${SCHEMA_URL}/settings.json#/$defs/orientation', default: 'vertical' } },
+         regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'o' } } }] }`,
+    );
+    expect(def.parameters[0]!.control).toEqual({ kind: 'select', options: ['vertical', 'horizontal'] });
+  });
+
   test('narrows a referenced setting with allOf', () => {
     const def = parseMapViewDefinition(
       't',
-      `{ schema: 'x', parameters: { o: { allOf: [{ $ref: 'sctx-map-view://settings.json#/$defs/orientation' }, { enum: ['horizontal'] }], default: 'horizontal' } },
+      `{ schema: 'x', parameters: { o: { allOf: [{ $ref: 'settings.json#/$defs/orientation' }, { enum: ['horizontal'] }], default: 'horizontal' } },
          regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'o' } } }] }`,
     );
     expect(def.parameters[0]!.control).toEqual({ kind: 'select', options: ['horizontal'] });
@@ -63,7 +73,7 @@ describe('parseMapViewDefinition', () => {
   test('narrows referenced array items with allOf', () => {
     const def = parseMapViewDefinition(
       't',
-      `{ schema: 'x', parameters: { f: { $ref: 'sctx-map-view://settings.json#/$defs/fieldList', allOf: [{ items: { enum: ['a', 'b'] } }], default: ['a'] } },
+      `{ schema: 'x', parameters: { f: { $ref: 'settings.json#/$defs/fieldList', allOf: [{ items: { enum: ['a', 'b'] } }], default: ['a'] } },
          regions: [{ id: 'a', layout: { type: 'tree' }, nodes: { fields: { $param: 'f' } } }] }`,
     );
     expect(def.parameters[0]!.control).toEqual({ kind: 'multiselect', options: ['a', 'b'] });

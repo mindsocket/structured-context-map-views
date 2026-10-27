@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "sctx-map-view://definition.json",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json",
   "title": "Map view definition",
   "description": "Declares how spaces of one schema are projected into a map view: shared parameters, and the regions the map view is composed of.",
   "type": "object",
@@ -109,13 +109,13 @@
           },
           "oneOf": [
             {
-              "$ref": "sctx-map-view://layouts/tree.json"
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/tree.json"
             },
             {
-              "$ref": "sctx-map-view://layouts/landscape.json"
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/landscape.json"
             },
             {
-              "$ref": "sctx-map-view://layouts/xy.json"
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/xy.json"
             }
           ]
         },
@@ -129,10 +129,10 @@
               "default": "card",
               "anyOf": [
                 {
-                  "$ref": "sctx-map-view://settings.json#/$defs/nodeStyle"
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/nodeStyle"
                 },
                 {
-                  "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
                 }
               ]
             },
@@ -141,10 +141,10 @@
               "default": [],
               "anyOf": [
                 {
-                  "$ref": "sctx-map-view://settings.json#/$defs/fieldList"
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/fieldList"
                 },
                 {
-                  "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
                 }
               ]
             }
@@ -163,7 +163,7 @@
                   "type": "boolean"
                 },
                 {
-                  "$ref": "sctx-map-view://definition.json#/$defs/paramRef"
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
                 }
               ]
             }

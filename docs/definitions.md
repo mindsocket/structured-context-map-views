@@ -1,14 +1,17 @@
 # Definitions
 
-A map view definition is a JSON5 file. Its format is a set of JSON Schemas in `schemas/generated/`, generated from `src/map-views/core/schemas/` (`bun run generate:schemas`).
+A map view definition is a JSON5 file. Its format is a set of JSON Schemas published under `https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/`:
+
+- `latest/` follows the newest format. Point `$schema` here to get editor validation.
+- `<version>/` folders freeze the format as first shipped in that release, and never change.
 
 ```json5
 {
-  $schema: 'sctx-map-view://definition.json',
+  $schema: 'https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json',
   title: 'Strategy tree',
   schema: 'sctx://core/strategy_general',
   parameters: {
-    orientation: { $ref: 'sctx-map-view://settings.json#/$defs/orientation', default: 'vertical' },
+    orientation: { $ref: 'settings.json#/$defs/orientation', default: 'vertical' },
   },
   regions: [
     {
@@ -88,7 +91,7 @@ An axis has a `field` (required), a `domain` (`[min, max]`, or `'data'` for the 
 
 Any setting marked parameterisable in the schemas (`orientation`, `dag`, `intermediate`, `nodes.style`, `nodes.fields`, `edges.show`, a landscape level's `type`, an axis's `field` and `direction`, `types`, `edgeFields`) takes either a fixed value or `{ $param: '<name>' }`.
 
-Each parameter is a JSON Schema with a `default` and an optional `title`. It can `$ref` a shared setting from `sctx-map-view://settings.json` (`orientation`, `nodeStyle`, `fieldList`) or a layout's own definitions, and narrow it:
+Each parameter is a JSON Schema with a `default` and an optional `title`. It can `$ref` a shared setting from `settings.json` (`orientation`, `nodeStyle`, `fieldList`) or a layout's own definitions (e.g. `layouts/tree.json#/$defs/dag`), and narrow it. Relative refs resolve against the format's `latest` folder; full URLs work too.
 
 ```json5
 parameters: {

@@ -1,4 +1,5 @@
 import { PARAM_REF, parameterisable } from './param-ref';
+import { SCHEMA_URL } from './schema-url';
 
 /**
  * The map view definition format: shared parameters, and the regions a map view is composed of.
@@ -8,7 +9,7 @@ import { PARAM_REF, parameterisable } from './param-ref';
  */
 export const definitionSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
-  $id: 'sctx-map-view://definition.json',
+  $id: `${SCHEMA_URL}/definition.json`,
   title: 'Map view definition',
   description:
     'Declares how spaces of one schema are projected into a map view: shared parameters, and the regions the map view is composed of.',
@@ -87,9 +88,9 @@ export const definitionSchema = {
           // Ajv validates only the branch `type` selects, so errors name that layout's settings.
           discriminator: { propertyName: 'type' },
           oneOf: [
-            { $ref: 'sctx-map-view://layouts/tree.json' },
-            { $ref: 'sctx-map-view://layouts/landscape.json' },
-            { $ref: 'sctx-map-view://layouts/xy.json' },
+            { $ref: `${SCHEMA_URL}/layouts/tree.json` },
+            { $ref: `${SCHEMA_URL}/layouts/landscape.json` },
+            { $ref: `${SCHEMA_URL}/layouts/xy.json` },
           ],
         },
         nodes: {
@@ -98,12 +99,12 @@ export const definitionSchema = {
           default: {},
           properties: {
             style: parameterisable(
-              { $ref: 'sctx-map-view://settings.json#/$defs/nodeStyle' },
+              { $ref: `${SCHEMA_URL}/settings.json#/$defs/nodeStyle` },
               'card',
               'How nodes are drawn.',
             ),
             fields: parameterisable(
-              { $ref: 'sctx-map-view://settings.json#/$defs/fieldList' },
+              { $ref: `${SCHEMA_URL}/settings.json#/$defs/fieldList` },
               [],
               'Schema fields shown on cards.',
             ),

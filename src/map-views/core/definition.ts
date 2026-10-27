@@ -9,6 +9,7 @@ import {
   type treeLayoutSchema,
   type xyLayoutSchema,
 } from './schemas';
+import { SCHEMA_URL } from './schemas/schema-url';
 
 export { MAP_VIEW_SCHEMAS };
 
@@ -220,13 +221,26 @@ export function mapViewsForSchema(
   return schemaId === undefined ? [] : definitions.filter((d) => d.schema === schemaId);
 }
 
+/** Resolve `$ref`s relative to the format schemas, so parameters can write `settings.json#/$defs/orientation`. */
+function absoluteRefs(node: unknown): unknown {
+  if (Array.isArray(node)) return node.map(absoluteRefs);
+  if (typeof node !== 'object' || node === null) return node;
+  return Object.fromEntries(
+    Object.entries(node).map(([key, value]) => [
+      key,
+      key === '$ref' && typeof value === 'string' ? new URL(value, `${SCHEMA_URL}/`).href : absoluteRefs(value),
+    ]),
+  );
+}
+
 function parseParameter(
   name: string,
   schema: AnySchemaObject,
   parameterAjv: Ajv2020,
   fail: (message: string) => never,
 ): Parameter {
-  const { title, description, default: defaultValue, ...valueSchema } = schema;
+  const { title, description, default: defaultValue, ...authored } = schema;
+  const valueSchema = absoluteRefs(authored) as AnySchemaObject;
   let validate: (value: unknown) => boolean;
   try {
     validate = parameterAjv.compile(valueSchema);

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "sctx-map-view://settings.json",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json",
   "title": "Shared map view settings",
   "description": "Reusable setting definitions. Parameters can $ref these and narrow them, e.g. with allOf and enum.",
   "$defs": {
