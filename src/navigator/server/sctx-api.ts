@@ -4,7 +4,7 @@ import { basename, join } from 'node:path';
 import { loadConfig, SpaceNotFoundError } from 'structured-context/api';
 import type { Plugin } from 'vite';
 import { loadMapViewDefinitions } from '../../map-views/node';
-import { loadSpaceData } from './load-space-data';
+import { loadSpace } from './load-space';
 
 /**
  * Dev-server middleware serving structured-context spaces and map view definitions to the
@@ -62,7 +62,7 @@ async function handle(req: IncomingMessage, res: ServerResponse, fixturesDir: st
   }
 
   try {
-    const data = await loadSpaceData(spaceName, config, filter);
+    const data = await loadSpace(spaceName, config, filter);
     sendJson(res, 200, data);
   } catch (err) {
     if (err instanceof SpaceNotFoundError) {

@@ -1,7 +1,7 @@
-import type { SpaceNode } from 'structured-context/api';
+import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { AxisConfig, XYLayoutConfig } from './definition';
+import { edgesWithin, isHierarchyEdge } from './graph';
 import { occurrenceKey } from './occurrence';
-import { isHierarchyEdge, type SpaceIndex } from './space-index';
 
 /** A plotted node. `x` and `y` run from 0 to 1 across the plot, left to right and bottom to top. */
 export type XYPoint = { key: string; node: SpaceNode; x: number; y: number };
@@ -29,9 +29,9 @@ export type XYPlot = {
  * when both its values are numbers inside the axes' domains, otherwise in `unplaced` with the
  * reason. Positions are normalised; layouts decide the plot's size.
  */
-export function buildXYPlot(index: SpaceIndex, regionId: string, layout: XYLayoutConfig): XYPlot {
+export function buildXYPlot(graph: SpaceGraph, regionId: string, layout: XYLayoutConfig): XYPlot {
   const { x, y } = layout;
-  const nodes = [...index.nodes.values()];
+  const nodes = [...graph.nodes.values()];
   const types = new Set(
     layout.types.length > 0
       ? layout.types
@@ -58,13 +58,13 @@ export function buildXYPlot(index: SpaceIndex, regionId: string, layout: XYLayou
 
   const keys = new Map<string, string>(points.map((p) => [p.node.id, p.key]));
   const fields = new Set(layout.edgeFields);
-  const links = index.edges
+  const links = edgesWithin(graph)
     .filter((e) => keys.has(e.parent) && keys.has(e.child) && (fields.size === 0 || fields.has(e.field)))
     .map((e) => ({
       from: keys.get(e.parent)!,
       to: keys.get(e.child)!,
       field: e.field,
-      hierarchy: isHierarchyEdge(e, index.hierarchy),
+      hierarchy: isHierarchyEdge(e, graph.hierarchy),
       lane: 0,
     }));
   assignLanes(links);

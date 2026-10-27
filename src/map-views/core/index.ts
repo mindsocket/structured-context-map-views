@@ -25,9 +25,8 @@ export {
   type TreeLayoutConfig,
   type XYLayoutConfig,
 } from './definition';
+export { type Edge, isHierarchyEdge } from './graph';
 export { buildLandscape, type Landscape, type LandscapeOccurrence, type ViaStep } from './landscape';
 export { occurrenceKey, type PathSegment } from './occurrence';
-export type { SpaceData } from './space-data';
-export { buildSpaceIndex, type Edge, isHierarchyEdge, type SpaceIndex } from './space-index';
 export { buildTree, type Tree, type TreeLink, type TreeOccurrence, treeLinks } from './tree';
 export { buildXYPlot, type Unplaced, type XYLink, type XYPlot, type XYPoint } from './xy';

@@ -1,7 +1,7 @@
-import type { SpaceNode } from 'structured-context/api';
+import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { DagMode } from './definition';
+import { childEdges, isHierarchyEdge, parentEdges } from './graph';
 import { occurrenceKey } from './occurrence';
-import { isHierarchyEdge, type SpaceIndex } from './space-index';
 
 /** One rendered appearance of a node in a tree. */
 export type TreeOccurrence = {
@@ -42,16 +42,16 @@ export type TreeLink = { from: string; to: string; kind: 'tree' | 'cross' };
  * node is either repeated without its subtree (`repeat`), or left out and linked by a cross-edge
  * (`cross-edge`). Either way traversal stops there, which also keeps cycles from recursing.
  */
-export function buildTree(index: SpaceIndex, regionId: string, dag: DagMode = 'repeat'): Tree {
-  const { hierarchy } = index;
+export function buildTree(graph: SpaceGraph, regionId: string, dag: DagMode = 'repeat'): Tree {
+  const { hierarchy } = graph;
   const levelTypes = new Set(hierarchy?.levels.map((level) => level.type));
   const rootType = hierarchy?.levels[0]?.type;
   const primary = new Map<string, string>();
   // Parent occurrence → child title, resolved to the child's primary occurrence afterwards.
   const pendingCross: { from: string; child: string }[] = [];
 
-  const hierarchyParents = (title: string) =>
-    index.parentEdges(title).filter((edge) => isHierarchyEdge(edge, hierarchy));
+  const hierarchyParents = (title: SpaceNode['id']) =>
+    parentEdges(graph, title).filter((edge) => isHierarchyEdge(edge, hierarchy));
 
   const visit = (node: SpaceNode, path: readonly string[]): TreeOccurrence => {
     const nodePath = [...path, node.id];
@@ -59,14 +59,13 @@ export function buildTree(index: SpaceIndex, regionId: string, dag: DagMode = 'r
     primary.set(node.id, key);
     // A child can reference the same parent through more than one field; it occurs once.
     const childTitles = new Set(
-      index
-        .childEdges(node.id)
+      childEdges(graph, node.id)
         .filter((edge) => isHierarchyEdge(edge, hierarchy))
         .map((edge) => edge.child),
     );
     const children: TreeOccurrence[] = [];
     for (const title of childTitles) {
-      const child = index.nodes.get(title)!;
+      const child = graph.nodes.get(title)!;
       const repeatOf = primary.get(title);
       if (repeatOf === undefined) children.push(visit(child, nodePath));
       else if (dag === 'repeat')
@@ -76,7 +75,7 @@ export function buildTree(index: SpaceIndex, regionId: string, dag: DagMode = 'r
     return { key, node, children };
   };
 
-  const levelNodes = [...index.nodes.values()].filter((node) => levelTypes.has(node.resolvedType));
+  const levelNodes = [...graph.nodes.values()].filter((node) => levelTypes.has(node.resolvedType));
   const unparented = levelNodes.filter((node) => hierarchyParents(node.id).length === 0);
   const roots = unparented.filter((node) => node.resolvedType === rootType).map((node) => visit(node, []));
   const orphans = unparented.filter((node) => node.resolvedType !== rootType).map((node) => visit(node, []));

@@ -10,9 +10,9 @@ import type { LayoutProps } from './TreeLayout';
  * placed are listed under the plot with the reason.
  * PROTOTYPE: labels may overlap where nodes sit close together; no collision handling.
  */
-export function XYLayout({ index, region, instanceId, onNodeSelect }: LayoutProps<XYLayoutConfig>) {
+export function XYLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<XYLayoutConfig>) {
   const { layout } = region;
-  const plot = useMemo(() => buildXYPlot(index, region.id, layout), [index, region.id, layout]);
+  const plot = useMemo(() => buildXYPlot(graph, region.id, layout), [graph, region.id, layout]);
   // Relationship edges (flows, pipelines) are dashed, to tell them from the value chain.
   const links = useMemo(
     () =>

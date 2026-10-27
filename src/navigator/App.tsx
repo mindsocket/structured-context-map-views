@@ -1,13 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { SpaceNode } from 'structured-context/api';
-import {
-  type MapViewDefinition,
-  mapViewsForSchema,
-  type ParameterValues,
-  type SpaceData,
-  selectionFilter,
-} from '../map-views/core';
+import type { SpaceGraph, SpaceNode } from 'structured-context/api';
+import { spaceGraphFrom } from 'structured-context/browser';
+import { type MapViewDefinition, mapViewsForSchema, type ParameterValues, selectionFilter } from '../map-views/core';
 import { MapView, ParameterControls } from '../map-views/layouts';
+import type { SpaceResponse } from './space-response';
 
 type SpaceListItem = { name: string };
 
@@ -18,14 +14,21 @@ async function fetchJson<T>(url: string): Promise<T> {
   return body as T;
 }
 
+type Space = { schemaId: string | undefined; graph: SpaceGraph };
+
+async function fetchSpace(url: string): Promise<Space> {
+  const { schemaId, graph } = await fetchJson<SpaceResponse>(url);
+  return { schemaId, graph: spaceGraphFrom(graph) };
+}
+
 export function App() {
   const [spaces, setSpaces] = useState<SpaceListItem[]>([]);
   const [definitions, setDefinitions] = useState<MapViewDefinition[]>([]);
   const [selected, setSelected] = useState<string>('');
   const [mapViewName, setMapViewName] = useState<string>('');
   // The whole space, for its schema; then the space as the map view's filter selects it.
-  const [data, setData] = useState<SpaceData>();
-  const [selection, setSelection] = useState<{ filter: string; data: SpaceData }>();
+  const [data, setData] = useState<Space>();
+  const [selection, setSelection] = useState<{ filter: string; data: Space }>();
   const [node, setNode] = useState<SpaceNode>();
   const [error, setError] = useState<string>();
   // Session-only parameter values, per map view.
@@ -42,7 +45,7 @@ export function App() {
     setNode(undefined);
     setError(undefined);
     let current = true;
-    fetchJson<SpaceData>(`/api/spaces/${encodeURIComponent(selected)}`).then(
+    fetchSpace(`/api/spaces/${encodeURIComponent(selected)}`).then(
       (d) => current && setData(d),
       (e) => current && setError(String(e)),
     );
@@ -60,7 +63,7 @@ export function App() {
     setSelection(undefined);
     if (!selected || !filter) return;
     let current = true;
-    fetchJson<SpaceData>(`/api/spaces/${encodeURIComponent(selected)}?filter=${encodeURIComponent(filter)}`).then(
+    fetchSpace(`/api/spaces/${encodeURIComponent(selected)}?filter=${encodeURIComponent(filter)}`).then(
       (d) => current && setSelection({ filter, data: d }),
       (e) => current && setError(String(e)),
     );
@@ -111,7 +114,7 @@ export function App() {
       <main className="mv:flex mv:min-h-0 mv:flex-1">
         <div className="mv:min-w-0 mv:flex-1">
           {shown && definition && (
-            <MapView definition={definition} data={shown} values={values} onNodeSelect={setNode} />
+            <MapView definition={definition} graph={shown.graph} values={values} onNodeSelect={setNode} />
           )}
         </div>
         {node && (

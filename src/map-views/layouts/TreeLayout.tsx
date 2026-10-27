@@ -1,11 +1,10 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import type { SpaceNode } from 'structured-context/api';
+import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import {
   buildTree,
   type LayoutConfig,
   type Orientation,
   type Region,
-  type SpaceIndex,
   type TreeLayoutConfig,
   type TreeOccurrence,
   treeLinks,
@@ -14,7 +13,7 @@ import { EdgeOverlay } from './EdgeOverlay';
 import { NodeCard } from './NodeCard';
 
 export type LayoutProps<L extends LayoutConfig = LayoutConfig> = {
-  index: SpaceIndex;
+  graph: SpaceGraph;
   /** The region with parameter values applied, narrowed to the layout's own settings. */
   region: Region & { layout: L };
   /** Scopes occurrence ids when several map views render in one document. */
@@ -25,9 +24,9 @@ export type LayoutProps<L extends LayoutConfig = LayoutConfig> = {
 /**
  * Tree over the schema's hierarchy. Flexbox does the branching; the SVG overlay draws connectors.
  */
-export function TreeLayout({ index, region, instanceId, onNodeSelect }: LayoutProps<TreeLayoutConfig>) {
+export function TreeLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<TreeLayoutConfig>) {
   const { orientation, dag } = region.layout;
-  const tree = useMemo(() => buildTree(index, region.id, dag), [index, region.id, dag]);
+  const tree = useMemo(() => buildTree(graph, region.id, dag), [graph, region.id, dag]);
   const links = useMemo(() => (region.edges.show ? treeLinks(tree) : []), [tree, region.edges.show]);
 
   const [container, setContainer] = useState<HTMLDivElement | null>(null);

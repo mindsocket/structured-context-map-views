@@ -1,7 +1,7 @@
-import type { SpaceNode } from 'structured-context/api';
+import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { GroupLevel, LandscapeLayoutConfig } from './definition';
+import { childEdges, parentEdges } from './graph';
 import { occurrenceKey, type PathSegment } from './occurrence';
-import type { SpaceIndex } from './space-index';
 
 /** One rendered container or node in a landscape. */
 export type LandscapeOccurrence = {
@@ -40,9 +40,9 @@ type FieldFilter = { field: string; value: string | null };
  * splits the next node level by that field's values. A node reached from several containers
  * appears in each, in full: the levels are finite, so repeating contents can't recurse.
  */
-export function buildLandscape(index: SpaceIndex, regionId: string, layout: LandscapeLayoutConfig): Landscape {
+export function buildLandscape(graph: SpaceGraph, regionId: string, layout: LandscapeLayoutConfig): Landscape {
   const levels = layout.group;
-  const order = new Map([...index.nodes.keys()].map((title, i) => [title, i]));
+  const order = new Map([...graph.nodes.keys()].map((title, i) => [title, i]));
   const first = new Map<string, string>();
 
   const occurrenceFor = (candidate: Candidate, levelIdx: number, path: readonly PathSegment[]): LandscapeOccurrence => {
@@ -104,22 +104,20 @@ export function buildLandscape(index: SpaceIndex, regionId: string, layout: Land
     return reached.filter(({ node }) => filters.every((f) => hasValue(node, f)));
   };
 
-  const ofType = (type: string) => [...index.nodes.values()].filter((node) => node.resolvedType === type);
+  const ofType = (type: string) => [...graph.nodes.values()].filter((node) => node.resolvedType === type);
 
   /** Neighbours of a node with the given type, across edges in either direction, in space order. */
-  const neighbours = (title: string, type: string, field: string | undefined): SpaceNode[] => {
+  const neighbours = (title: SpaceNode['id'], type: string, field: string | undefined): SpaceNode[] => {
     const titles = new Set([
-      ...index
-        .childEdges(title)
+      ...childEdges(graph, title)
         .filter((e) => field === undefined || e.field === field)
         .map((e) => e.child),
-      ...index
-        .parentEdges(title)
+      ...parentEdges(graph, title)
         .filter((e) => field === undefined || e.field === field)
         .map((e) => e.parent),
     ]);
     return [...titles]
-      .map((t) => index.nodes.get(t)!)
+      .map((t) => graph.nodes.get(t)!)
       .filter((node) => node.resolvedType === type)
       .sort((a, b) => order.get(a.id)! - order.get(b.id)!);
   };

@@ -9,9 +9,9 @@ import type { LayoutProps } from './TreeLayout';
  * Flexbox does the nesting and wrapping. Containment shows the grouping edges, so no connectors
  * are drawn. PROTOTYPE: `edges.show` has no effect here; other edges aren't drawn yet.
  */
-export function LandscapeLayout({ index, region, instanceId, onNodeSelect }: LayoutProps<LandscapeLayoutConfig>) {
+export function LandscapeLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<LandscapeLayoutConfig>) {
   const { layout } = region;
-  const landscape = useMemo(() => buildLandscape(index, region.id, layout), [index, region.id, layout]);
+  const landscape = useMemo(() => buildLandscape(graph, region.id, layout), [graph, region.id, layout]);
   const last = layout.group.length - 1;
 
   const breadcrumb = (occurrence: LandscapeOccurrence) => {

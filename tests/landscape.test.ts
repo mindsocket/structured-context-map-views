@@ -1,14 +1,9 @@
 import { describe, expect, test } from 'bun:test';
-import {
-  buildLandscape,
-  buildSpaceIndex,
-  type LandscapeLayoutConfig,
-  type LandscapeOccurrence,
-  type SpaceData,
-} from '../src/map-views/core';
+import { buildLandscape, type LandscapeLayoutConfig, type LandscapeOccurrence } from '../src/map-views/core';
+import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
 
-const index = buildSpaceIndex(sample as unknown as SpaceData);
+const graph = fixtureGraph(sample);
 const layout = (group: LandscapeLayoutConfig['group']): LandscapeLayoutConfig => ({
   type: 'landscape',
   orientation: 'horizontal',
@@ -22,7 +17,7 @@ function all(occurrences: LandscapeOccurrence[]): LandscapeOccurrence[] {
 const title = (o: LandscapeOccurrence) => (o.item.kind === 'node' ? o.item.node.title : o.item.value);
 
 describe('sample landscape', () => {
-  const byPhase = buildLandscape(index, 'main', layout([level('Phases'), level('Activities'), level('Capabilities')]));
+  const byPhase = buildLandscape(graph, 'main', layout([level('Phases'), level('Activities'), level('Capabilities')]));
 
   test('top-level containers are the Phases, holding their Activities', () => {
     expect(byPhase.groups.map(title)).toHaveLength(4);
@@ -37,7 +32,7 @@ describe('sample landscape', () => {
     expect(ungrouped.length).toBeGreaterThan(0);
     expect(ungrouped.every((n) => n && n.resolvedType === 'Capabilities')).toBe(true);
     const placed = new Set(all([...byPhase.groups, ...byPhase.ungrouped]).map(title));
-    const capabilities = (sample as unknown as SpaceData).nodes.filter((n) => n.resolvedType === 'Capabilities');
+    const capabilities = [...graph.nodes.values()].filter((n) => n.resolvedType === 'Capabilities');
     expect(capabilities.every((n) => placed.has(n.title))).toBe(true);
   });
 
@@ -51,7 +46,7 @@ describe('sample landscape', () => {
   });
 
   test('grouping follows edges against their direction (Outcomes over Activities)', () => {
-    const byOutcome = buildLandscape(index, 'main', layout([level('Outcomes'), level('Activities')]));
+    const byOutcome = buildLandscape(graph, 'main', layout([level('Outcomes'), level('Activities')]));
     expect(byOutcome.groups).toHaveLength(3);
     const placements = byOutcome.groups.flatMap((g) => g.children);
     // 12 Activity → Outcome links in the fixture, one placement each.
@@ -61,14 +56,14 @@ describe('sample landscape', () => {
   });
 
   test('field levels split the next node level by value', () => {
-    const byStatus = buildLandscape(index, 'main', layout([{ field: 'status' }, level('Applications')]));
+    const byStatus = buildLandscape(graph, 'main', layout([{ field: 'status' }, level('Applications')]));
     expect(byStatus.groups.map(title).sort()).toEqual(['identified', 'stub']);
     expect(byStatus.groups.flatMap((g) => g.children)).toHaveLength(8);
   });
 
   test('via chains join through the skipped type and record the skipped nodes', () => {
     const chained = buildLandscape(
-      index,
+      graph,
       'main',
       layout([level('Activities'), { type: 'Applications', via: ['Capabilities'], intermediate: 'breadcrumb' }]),
     );
@@ -80,20 +75,20 @@ describe('sample landscape', () => {
       expect(app.via[0]!.nodes.length).toBeGreaterThan(0);
     }
     // Without the chain, Activities and Applications share no edge.
-    const direct = buildLandscape(index, 'main', layout([level('Activities'), level('Applications')]));
+    const direct = buildLandscape(graph, 'main', layout([level('Activities'), level('Applications')]));
     expect(direct.groups.flatMap((g) => g.children)).toEqual([]);
     expect(direct.ungrouped).toHaveLength(8);
   });
 
   test('edge.field restricts which edges join two levels', () => {
     const none = buildLandscape(
-      index,
+      graph,
       'main',
       layout([level('Phases'), { ...level('Activities'), edge: { field: 'outcomes' } }]),
     );
     expect(none.groups.flatMap((g) => g.children)).toEqual([]);
     const phase = buildLandscape(
-      index,
+      graph,
       'main',
       layout([level('Phases'), { ...level('Activities'), edge: { field: 'phase' } }]),
     );
@@ -102,7 +97,7 @@ describe('sample landscape', () => {
 
   test('field-group keys cannot collide with node titles', () => {
     const occurrences = all(
-      buildLandscape(index, 'main', layout([level('Activities'), { field: 'status' }, level('Capabilities')])).groups,
+      buildLandscape(graph, 'main', layout([level('Activities'), { field: 'status' }, level('Capabilities')])).groups,
     );
     expect(new Set(occurrences.map((o) => o.key)).size).toBe(occurrences.length);
   });

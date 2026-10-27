@@ -1,6 +1,8 @@
 import { describe, expect, test } from 'bun:test';
+import { buildSpaceGraph } from 'structured-context/api';
 import { makeHierarchy, makeLevel, makeParentRef, makeSpaceNode } from 'structured-context/testing';
-import { buildSpaceIndex, buildTree, type SpaceData, type TreeOccurrence, treeLinks } from '../src/map-views/core';
+import { buildTree, type TreeOccurrence, treeLinks } from '../src/map-views/core';
+import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
 
 function occurrences(roots: TreeOccurrence[]): TreeOccurrence[] {
@@ -8,7 +10,7 @@ function occurrences(roots: TreeOccurrence[]): TreeOccurrence[] {
 }
 
 describe('sample tree', () => {
-  const tree = buildTree(buildSpaceIndex(sample as unknown as SpaceData), 'main');
+  const tree = buildTree(fixtureGraph(sample), 'main');
   const all = occurrences([...tree.roots, ...tree.orphans]);
 
   test('roots are the Phases', () => {
@@ -40,7 +42,7 @@ describe('sample tree', () => {
   });
 
   test('cross-edge mode replaces repeats with cross-links to the primary occurrence', () => {
-    const cross = buildTree(buildSpaceIndex(sample as unknown as SpaceData), 'main', 'cross-edge');
+    const cross = buildTree(fixtureGraph(sample), 'main', 'cross-edge');
     const crossAll = occurrences([...cross.roots, ...cross.orphans]);
     const repeats = all.filter((o) => o.repeatOf !== undefined);
     expect(crossAll.some((o) => o.repeatOf !== undefined)).toBe(false);
@@ -54,10 +56,10 @@ describe('sample tree', () => {
 
 describe('edge cases', () => {
   const hierarchy = makeHierarchy([makeLevel('goal'), makeLevel('opportunity')]);
-  const data = (nodes: SpaceData['nodes']): SpaceData => ({ space: 't', schemaId: 'x', hierarchy, nodes });
+  const graph = (nodes: Parameters<typeof buildSpaceGraph>[0]) => buildSpaceGraph(nodes, hierarchy);
 
   test('hierarchy-typed nodes without a parent become orphans', () => {
-    const tree = buildTree(buildSpaceIndex(data([makeSpaceNode('G', 'goal'), makeSpaceNode('O', 'opportunity')])), 'r');
+    const tree = buildTree(graph([makeSpaceNode('G', 'goal'), makeSpaceNode('O', 'opportunity')]), 'r');
     expect(tree.roots.map((o) => o.node.title)).toEqual(['G']);
     expect(tree.orphans.map((o) => o.node.title)).toEqual(['O']);
   });
@@ -70,7 +72,7 @@ describe('edge cases', () => {
       makeSpaceNode('A', 'opportunity', {}, undefined, [edge('G'), edge('B')]),
       makeSpaceNode('B', 'opportunity', {}, undefined, [edge('A')]),
     ];
-    const tree = buildTree(buildSpaceIndex(data(nodes)), 'r');
+    const tree = buildTree(graph(nodes), 'r');
     const titles = occurrences(tree.roots).map((o) => `${o.node.title}${o.repeatOf ? '*' : ''}`);
     expect(titles).toEqual(['G', 'A', 'B', 'A*']);
   });
@@ -82,7 +84,7 @@ describe('edge cases', () => {
       makeSpaceNode('A', 'opportunity', {}, undefined, [edge('B')]),
       makeSpaceNode('B', 'opportunity', {}, undefined, [edge('A')]),
     ];
-    const tree = buildTree(buildSpaceIndex(data(nodes)), 'r');
+    const tree = buildTree(graph(nodes), 'r');
     expect(occurrences(tree.orphans).map((o) => `${o.node.title}${o.repeatOf ? '*' : ''}`)).toEqual(['A', 'B', 'A*']);
   });
 
@@ -92,7 +94,7 @@ describe('edge cases', () => {
       makeSpaceNode('G', 'goal'),
       makeSpaceNode('O', 'opportunity', {}, undefined, [ref('parent'), ref('also')]),
     ];
-    const tree = buildTree(buildSpaceIndex(data(nodes)), 'r');
+    const tree = buildTree(graph(nodes), 'r');
     expect(tree.roots[0]!.children.map((o) => o.node.title)).toEqual(['O']);
   });
 });
