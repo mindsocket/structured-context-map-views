@@ -57,7 +57,10 @@ export function buildSpaceIndex(data: SpaceData): SpaceIndex {
 
 /** Whether an edge belongs to the given hierarchy (as opposed to a relationship or another hierarchy). */
 export function isHierarchyEdge(edge: Edge, hierarchy: Hierarchy | undefined): boolean {
-  return hierarchy !== undefined && edge.source === 'hierarchy' && edge.hierarchy === hierarchy.name;
+  // PROTOTYPE: structured-context is renaming the edge's `source` to `kind` (its #138). Read either until
+  // the library takes the new graph format (#1).
+  const { kind = (edge as { source?: string }).source } = edge as { kind?: string };
+  return hierarchy !== undefined && kind === 'hierarchy' && edge.hierarchy === hierarchy.name;
 }
 
 function append<K, V>(map: Map<K, V[]>, key: K, value: V) {
