@@ -1,0 +1,609 @@
+{
+  "space": "tea-shop",
+  "schemaId": "sctx://wardley-mapping/wardley_map",
+  "hierarchy": {
+    "name": "value_chain",
+    "levels": [
+      {
+        "type": "wardley_map",
+        "field": "parent",
+        "fieldOn": "child",
+        "multiple": false,
+        "selfRef": false
+      },
+      {
+        "type": "anchor",
+        "field": "anchors",
+        "fieldOn": "parent",
+        "multiple": true,
+        "selfRef": false
+      },
+      {
+        "type": "component",
+        "field": "dependsOn",
+        "fieldOn": "parent",
+        "multiple": true,
+        "selfRef": true
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "Tea Shop",
+      "title": "Tea Shop",
+      "type": "wardley_map",
+      "schemaData": {
+        "type": "wardley_map",
+        "title": "Tea Shop",
+        "anchors": ["[[Business]]", "[[Public]]"],
+        "style": "wardley",
+        "evolution": ["Uncharted", "Emerging", "Good", "Best"],
+        "annotationsBoxPosition": {
+          "visibility": 0.72,
+          "evolution": 0.03
+        }
+      },
+      "linkTargets": ["Tea Shop"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 1
+      },
+      "resolvedType": "wardley_map",
+      "resolvedParents": [],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Business",
+      "title": "Business",
+      "type": "anchor",
+      "schemaData": {
+        "type": "anchor",
+        "title": "Business",
+        "visibility": 0.95,
+        "evolution": 0.63,
+        "dependsOn": ["[[Cup of Tea]]"]
+      },
+      "linkTargets": ["Business"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 5
+      },
+      "resolvedType": "anchor",
+      "resolvedParents": [
+        {
+          "id": "Tea Shop",
+          "field": "anchors",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Public",
+      "title": "Public",
+      "type": "anchor",
+      "schemaData": {
+        "type": "anchor",
+        "title": "Public",
+        "visibility": 0.95,
+        "evolution": 0.78,
+        "dependsOn": ["[[Cup of Tea]]", "[[Online Ordering]]"]
+      },
+      "linkTargets": ["Public"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 6
+      },
+      "resolvedType": "anchor",
+      "resolvedParents": [
+        {
+          "id": "Tea Shop",
+          "field": "anchors",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Cup of Tea",
+      "title": "Cup of Tea",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Cup of Tea",
+        "visibility": 0.79,
+        "evolution": 0.61,
+        "labelOffset": {
+          "dx": 19,
+          "dy": -4
+        },
+        "dependsOn": ["[[Cup]]", "[[Tea]]", "[[Hot Water]]"]
+      },
+      "linkTargets": ["Cup of Tea"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 7
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Business",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": false
+        },
+        {
+          "id": "Public",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": false
+        },
+        {
+          "id": "Online Ordering",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Cup",
+      "title": "Cup",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Cup",
+        "visibility": 0.73,
+        "evolution": 0.78
+      },
+      "linkTargets": ["Cup"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 7
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Cup of Tea",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Tea",
+      "title": "Tea",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Tea",
+        "visibility": 0.63,
+        "evolution": 0.81,
+        "dependsOn": ["[[Tea Merchants]]"]
+      },
+      "linkTargets": ["Tea"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 7
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Cup of Tea",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Tea Merchants",
+      "title": "Tea Merchants",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Tea Merchants",
+        "visibility": 0.48,
+        "evolution": 0.74,
+        "market": true
+      },
+      "linkTargets": ["Tea Merchants"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm"
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Tea",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Hot Water",
+      "title": "Hot Water",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Hot Water",
+        "visibility": 0.52,
+        "evolution": 0.8,
+        "dependsOn": ["[[Water]]", "[[Kettle]]"],
+        "linkLabels": {
+          "Kettle": "boils water"
+        }
+      },
+      "linkTargets": ["Hot Water"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 11
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Cup of Tea",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Water",
+      "title": "Water",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Water",
+        "visibility": 0.38,
+        "evolution": 0.85
+      },
+      "linkTargets": ["Water"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 11
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Hot Water",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Kettle",
+      "title": "Kettle",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Kettle",
+        "visibility": 0.43,
+        "evolution": 0.35,
+        "method": "buy",
+        "inertia": true,
+        "evolveTo": 0.62,
+        "evolvedName": "Electric Kettle",
+        "evolveLabelOffset": {
+          "dx": 16,
+          "dy": 5
+        },
+        "pipeline": {
+          "evolutionStart": 0.5,
+          "evolutionEnd": 0.63
+        },
+        "dependsOn": ["[[Power]]"]
+      },
+      "linkTargets": ["Kettle"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 13
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Hot Water",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Power",
+      "title": "Power",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Power",
+        "visibility": 0.1,
+        "evolution": 0.7,
+        "labelOffset": {
+          "dx": -27,
+          "dy": 20
+        },
+        "evolveTo": 0.89,
+        "evolveLabelOffset": {
+          "dx": -12,
+          "dy": 21
+        }
+      },
+      "linkTargets": ["Power"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 14
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Kettle",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Payments",
+      "title": "Payments",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Payments",
+        "visibility": 0.62,
+        "evolution": 0.92
+      },
+      "linkTargets": ["Payments"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 15
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Online Ordering",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": true
+        },
+        {
+          "id": "Online Ordering",
+          "field": "flowsTo",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Online Ordering",
+      "title": "Online Ordering",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Online Ordering",
+        "visibility": 0.83,
+        "evolution": 0.5,
+        "submap": true,
+        "url": "https://onlinewardleymaps.com/#clone:qu4VDDQryoZEnuw0ZZ",
+        "dependsOn": ["[[Cup of Tea]]", "[[Payments]]"],
+        "flowsTo": ["[[Payments]]"],
+        "flowDetails": {
+          "Payments": {
+            "value": "$3.50"
+          }
+        }
+      },
+      "linkTargets": ["Online Ordering"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 16
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Public",
+          "field": "dependsOn",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "value_chain",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Campfire Kettle",
+      "title": "Campfire Kettle",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Campfire Kettle",
+        "visibility": 0.43,
+        "evolution": 0.5,
+        "pipelineOf": "[[Kettle]]"
+      },
+      "linkTargets": ["Campfire Kettle"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 35
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Kettle",
+          "field": "pipelineOf",
+          "fieldOn": "child",
+          "source": "relationship",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Electric Kettle",
+      "title": "Electric Kettle",
+      "type": "component",
+      "schemaData": {
+        "type": "component",
+        "title": "Electric Kettle",
+        "visibility": 0.43,
+        "evolution": 0.63,
+        "pipelineOf": "[[Kettle]]"
+      },
+      "linkTargets": ["Electric Kettle"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 36
+      },
+      "resolvedType": "component",
+      "resolvedParents": [
+        {
+          "id": "Kettle",
+          "field": "pipelineOf",
+          "fieldOn": "child",
+          "source": "relationship",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Note 1",
+      "title": "Note 1",
+      "type": "note",
+      "content": "Buy commodities and build what differentiates",
+      "schemaData": {
+        "type": "note",
+        "title": "Note 1",
+        "content": "Buy commodities and build what differentiates",
+        "visibility": 0.23,
+        "evolution": 0.33
+      },
+      "linkTargets": ["Note 1"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 38
+      },
+      "resolvedType": "note",
+      "resolvedParents": [],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Annotation 1",
+      "title": "Annotation 1",
+      "type": "annotation",
+      "content": "Standardising power allows kettles to evolve faster",
+      "schemaData": {
+        "type": "annotation",
+        "title": "Annotation 1",
+        "number": 1,
+        "content": "Standardising power allows kettles to evolve faster",
+        "positions": [
+          {
+            "visibility": 0.43,
+            "evolution": 0.49
+          },
+          {
+            "visibility": 0.08,
+            "evolution": 0.79
+          }
+        ]
+      },
+      "linkTargets": ["Annotation 1"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 39
+      },
+      "resolvedType": "annotation",
+      "resolvedParents": [],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Pioneers 1",
+      "title": "Pioneers 1",
+      "type": "attitude",
+      "schemaData": {
+        "type": "attitude",
+        "title": "Pioneers 1",
+        "kind": "pioneers",
+        "visibility": 0.9,
+        "evolution": 0.1,
+        "corner2": {
+          "visibility": 0.7,
+          "evolution": 0.3
+        }
+      },
+      "linkTargets": ["Pioneers 1"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 41
+      },
+      "resolvedType": "attitude",
+      "resolvedParents": [],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Cheaper Electric Kettles",
+      "title": "Cheaper Electric Kettles",
+      "type": "accelerator",
+      "schemaData": {
+        "type": "accelerator",
+        "title": "Cheaper Electric Kettles",
+        "direction": "accelerate",
+        "visibility": 0.3,
+        "evolution": 0.55
+      },
+      "linkTargets": ["Cheaper Electric Kettles"],
+      "source": {
+        "file": "plugins/sctx-wardley-mapping/tests/fixtures/tea-shop.owm",
+        "line": 42
+      },
+      "resolvedType": "accelerator",
+      "resolvedParents": [],
+      "resolvedLinks": []
+    }
+  ]
+}

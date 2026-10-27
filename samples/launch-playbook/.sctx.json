@@ -1,0 +1,9 @@
+{
+  "spaces": [
+    {
+      "name": "launch-playbook",
+      "path": "content",
+      "schema": "./launch_playbook.json"
+    }
+  ]
+}

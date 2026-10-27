@@ -1,0 +1,21 @@
+/*
+ * map-views styles. No preflight (hosts own their resets); utilities and theme variables are
+ * prefixed `mv` so they can't collide with host styles. Hosts theme map views by overriding the
+ * --mv-color-* variables, e.g. mapping them onto Obsidian's theme variables.
+ *
+ * Utilities are deliberately not in a cascade layer: unlayered host CSS beats every layer
+ * whatever its specificity, so element rules like Obsidian's `button { ... }` would override
+ * them. Unlayered, a class utility outranks host element selectors.
+ */
+@import "tailwindcss/theme.css" layer(theme) prefix(mv);
+@import "tailwindcss/utilities.css" prefix(mv) source(none);
+@source "../";
+
+@theme {
+  --color-surface: #f8f8f7;
+  --color-card: #ffffff;
+  --color-ink: #1f2328;
+  --color-muted: #59636e;
+  --color-edge: #d1d9e0;
+  --color-accent: #0969da;
+}

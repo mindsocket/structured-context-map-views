@@ -1,0 +1,24 @@
+// Strategy stack as a tree: vision → mission → goals → opportunities → solutions → experiments.
+{
+  $schema: 'sctx-map-view://definition.json',
+  title: 'Strategy tree',
+  schema: 'sctx://core/strategy_general',
+  parameters: {
+    orientation: { $ref: 'sctx-map-view://settings.json#/$defs/orientation', default: 'vertical' },
+    nodeStyle: { $ref: 'sctx-map-view://settings.json#/$defs/nodeStyle', default: 'card' },
+    cardFields: {
+      title: 'Card fields',
+      type: 'array',
+      items: { enum: ['status', 'priority', 'summary'] },
+      default: ['status'],
+    },
+  },
+  regions: [
+    {
+      id: 'main',
+      layout: { type: 'tree', orientation: { $param: 'orientation' } },
+      nodes: { style: { $param: 'nodeStyle' }, fields: { $param: 'cardFields' } },
+      edges: { show: true },
+    },
+  ],
+}

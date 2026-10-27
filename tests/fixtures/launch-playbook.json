@@ -1,0 +1,1411 @@
+{
+  "space": "launch-playbook",
+  "schemaId": "sctx://launch_playbook",
+  "hierarchy": {
+    "name": "launch_playbook",
+    "levels": [
+      {
+        "type": "Phases",
+        "field": "parent",
+        "fieldOn": "child",
+        "multiple": false,
+        "selfRef": false
+      },
+      {
+        "type": "Activities",
+        "field": "phase",
+        "fieldOn": "child",
+        "multiple": false,
+        "selfRef": false
+      },
+      {
+        "type": "Capabilities",
+        "field": "capabilities",
+        "fieldOn": "parent",
+        "multiple": true,
+        "selfRef": true,
+        "selfRefField": "parent_capability"
+      },
+      {
+        "type": "Applications",
+        "field": "capabilities",
+        "fieldOn": "child",
+        "multiple": true,
+        "selfRef": false
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "Wide Adoption.md",
+      "title": "Wide Adoption",
+      "schemaData": {
+        "title": "Wide Adoption",
+        "type": "Outcomes",
+        "content": "The project is used by people the maintainers have never met."
+      },
+      "linkTargets": ["Wide Adoption"],
+      "type": "Outcomes",
+      "source": {
+        "file": "Wide Adoption.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The project is used by people the maintainers have never met.",
+      "resolvedType": "Outcomes",
+      "resolvedParents": [
+        {
+          "id": "Measure Adoption.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        },
+        {
+          "id": "Announce the Launch.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        },
+        {
+          "id": "Write Initial Documentation.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        },
+        {
+          "id": "Publish First Release.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "04 Sustain.md",
+      "title": "04 Sustain",
+      "schemaData": {
+        "title": "04 Sustain",
+        "type": "Phases",
+        "order": 4,
+        "content": "Keep the project healthy over the long term."
+      },
+      "linkTargets": ["04 Sustain"],
+      "type": "Phases",
+      "source": {
+        "file": "04 Sustain.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Keep the project healthy over the long term.",
+      "resolvedType": "Phases",
+      "resolvedParents": [],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Issue Tracking.md",
+      "title": "Issue Tracking",
+      "schemaData": {
+        "title": "Issue Tracking",
+        "type": "Capabilities",
+        "content": "The ability to provide issue tracking for the project."
+      },
+      "linkTargets": ["Issue Tracking"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Issue Tracking.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide issue tracking for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Triage Issues.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        },
+        {
+          "id": "Set Up Repository.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "03 Grow.md",
+      "title": "03 Grow",
+      "schemaData": {
+        "title": "03 Grow",
+        "type": "Phases",
+        "order": 3,
+        "content": "Bring in users and contributors."
+      },
+      "linkTargets": ["03 Grow"],
+      "type": "Phases",
+      "source": {
+        "file": "03 Grow.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Bring in users and contributors.",
+      "resolvedType": "Phases",
+      "resolvedParents": [],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Secure Funding.md",
+      "title": "Secure Funding",
+      "schemaData": {
+        "title": "Secure Funding",
+        "type": "Activities",
+        "phase": "[[04 Sustain]]",
+        "capabilities": ["[[Funding]]"],
+        "content": "Secure Funding."
+      },
+      "linkTargets": ["Secure Funding"],
+      "type": "Activities",
+      "source": {
+        "file": "Secure Funding.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Secure Funding.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "04 Sustain.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Measure Adoption.md",
+      "title": "Measure Adoption",
+      "schemaData": {
+        "title": "Measure Adoption",
+        "type": "Activities",
+        "phase": "[[03 Grow]]",
+        "capabilities": ["[[Analytics]]", "[[Project Website]]"],
+        "outcomes": ["[[Wide Adoption]]"],
+        "content": "Measure Adoption."
+      },
+      "linkTargets": ["Measure Adoption"],
+      "type": "Activities",
+      "source": {
+        "file": "Measure Adoption.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Measure Adoption.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "03 Grow.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "CI Pipeline.md",
+      "title": "CI Pipeline",
+      "schemaData": {
+        "title": "CI Pipeline",
+        "type": "Applications",
+        "capabilities": ["[[Continuous Integration]]", "[[Release Automation]]"],
+        "status": "identified",
+        "content": "CI Pipeline."
+      },
+      "linkTargets": ["CI Pipeline"],
+      "type": "Applications",
+      "source": {
+        "file": "CI Pipeline.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "CI Pipeline.",
+      "resolvedType": "Applications",
+      "resolvedParents": [
+        {
+          "id": "Continuous Integration.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        },
+        {
+          "id": "Release Automation.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Review Governance.md",
+      "title": "Review Governance",
+      "schemaData": {
+        "title": "Review Governance",
+        "type": "Activities",
+        "phase": "[[04 Sustain]]",
+        "capabilities": ["[[Governance]]"],
+        "outcomes": ["[[Active Contributor Community]]"],
+        "content": "Review Governance."
+      },
+      "linkTargets": ["Review Governance"],
+      "type": "Activities",
+      "source": {
+        "file": "Review Governance.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Review Governance.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "04 Sustain.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Project Website.md",
+      "title": "Project Website",
+      "schemaData": {
+        "title": "Project Website",
+        "type": "Capabilities",
+        "content": "The ability to provide project website for the project."
+      },
+      "linkTargets": ["Project Website"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Project Website.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide project website for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Measure Adoption.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        },
+        {
+          "id": "Announce the Launch.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        },
+        {
+          "id": "Write Initial Documentation.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Advisory Database.md",
+      "title": "Advisory Database",
+      "schemaData": {
+        "title": "Advisory Database",
+        "type": "Applications",
+        "capabilities": ["[[Security Response]]"],
+        "status": "stub",
+        "content": "Advisory Database."
+      },
+      "linkTargets": ["Advisory Database"],
+      "type": "Applications",
+      "source": {
+        "file": "Advisory Database.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Advisory Database.",
+      "resolvedType": "Applications",
+      "resolvedParents": [
+        {
+          "id": "Security Response.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Social Media.md",
+      "title": "Social Media",
+      "schemaData": {
+        "title": "Social Media",
+        "type": "Capabilities",
+        "content": "The ability to provide social media for the project."
+      },
+      "linkTargets": ["Social Media"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Social Media.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide social media for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Announce the Launch.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Governance.md",
+      "title": "Governance",
+      "schemaData": {
+        "title": "Governance",
+        "type": "Capabilities",
+        "content": "The ability to provide governance for the project."
+      },
+      "linkTargets": ["Governance"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Governance.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide governance for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Review Governance.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        },
+        {
+          "id": "Define Project Scope.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Handle Security Reports.md",
+      "title": "Handle Security Reports",
+      "schemaData": {
+        "title": "Handle Security Reports",
+        "type": "Activities",
+        "phase": "[[04 Sustain]]",
+        "capabilities": ["[[Security Response]]"],
+        "outcomes": ["[[Reliable Releases]]"],
+        "content": "Handle Security Reports."
+      },
+      "linkTargets": ["Handle Security Reports"],
+      "type": "Activities",
+      "source": {
+        "file": "Handle Security Reports.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Handle Security Reports.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "04 Sustain.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "API Reference.md",
+      "title": "API Reference",
+      "schemaData": {
+        "title": "API Reference",
+        "type": "Capabilities",
+        "parent_capability": "[[Documentation]]",
+        "content": "Part of documentation."
+      },
+      "linkTargets": ["API Reference"],
+      "type": "Capabilities",
+      "source": {
+        "file": "API Reference.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Part of documentation.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Documentation.md",
+          "field": "parent_capability",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Analytics.md",
+      "title": "Analytics",
+      "schemaData": {
+        "title": "Analytics",
+        "type": "Capabilities",
+        "content": "The ability to provide analytics for the project."
+      },
+      "linkTargets": ["Analytics"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Analytics.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide analytics for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Measure Adoption.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Open Community Channels.md",
+      "title": "Open Community Channels",
+      "schemaData": {
+        "title": "Open Community Channels",
+        "type": "Activities",
+        "phase": "[[02 Launch]]",
+        "capabilities": ["[[Community Chat]]"],
+        "outcomes": ["[[Active Contributor Community]]"],
+        "content": "Open Community Channels."
+      },
+      "linkTargets": ["Open Community Channels"],
+      "type": "Activities",
+      "source": {
+        "file": "Open Community Channels.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Open Community Channels.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "02 Launch.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Download Statistics.md",
+      "title": "Download Statistics",
+      "schemaData": {
+        "title": "Download Statistics",
+        "type": "Capabilities",
+        "parent_capability": "[[Analytics]]",
+        "content": "Part of analytics."
+      },
+      "linkTargets": ["Download Statistics"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Download Statistics.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Part of analytics.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Analytics.md",
+          "field": "parent_capability",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "01 Prepare.md",
+      "title": "01 Prepare",
+      "schemaData": {
+        "title": "01 Prepare",
+        "type": "Phases",
+        "order": 1,
+        "content": "Get the project ready to share."
+      },
+      "linkTargets": ["01 Prepare"],
+      "type": "Phases",
+      "source": {
+        "file": "01 Prepare.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Get the project ready to share.",
+      "resolvedType": "Phases",
+      "resolvedParents": [],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Tutorials.md",
+      "title": "Tutorials",
+      "schemaData": {
+        "title": "Tutorials",
+        "type": "Capabilities",
+        "parent_capability": "[[Documentation]]",
+        "content": "Part of documentation."
+      },
+      "linkTargets": ["Tutorials"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Tutorials.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Part of documentation.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Documentation.md",
+          "field": "parent_capability",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": true
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Continuous Integration.md",
+      "title": "Continuous Integration",
+      "schemaData": {
+        "title": "Continuous Integration",
+        "type": "Capabilities",
+        "content": "The ability to provide continuous integration for the project."
+      },
+      "linkTargets": ["Continuous Integration"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Continuous Integration.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide continuous integration for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Publish First Release.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        },
+        {
+          "id": "Set Up Repository.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Onboard New Contributors.md",
+      "title": "Onboard New Contributors",
+      "schemaData": {
+        "title": "Onboard New Contributors",
+        "type": "Activities",
+        "phase": "[[03 Grow]]",
+        "capabilities": ["[[Contributor Onboarding]]", "[[Documentation]]"],
+        "outcomes": ["[[Active Contributor Community]]"],
+        "content": "Onboard New Contributors."
+      },
+      "linkTargets": ["Onboard New Contributors"],
+      "type": "Activities",
+      "source": {
+        "file": "Onboard New Contributors.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Onboard New Contributors.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "03 Grow.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Release Automation.md",
+      "title": "Release Automation",
+      "schemaData": {
+        "title": "Release Automation",
+        "type": "Capabilities",
+        "content": "The ability to provide release automation for the project."
+      },
+      "linkTargets": ["Release Automation"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Release Automation.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide release automation for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Publish First Release.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Static Site.md",
+      "title": "Static Site",
+      "schemaData": {
+        "title": "Static Site",
+        "type": "Applications",
+        "capabilities": ["[[Project Website]]", "[[Documentation]]"],
+        "status": "identified",
+        "content": "Static Site."
+      },
+      "linkTargets": ["Static Site"],
+      "type": "Applications",
+      "source": {
+        "file": "Static Site.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Static Site.",
+      "resolvedType": "Applications",
+      "resolvedParents": [
+        {
+          "id": "Project Website.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        },
+        {
+          "id": "Documentation.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Active Contributor Community.md",
+      "title": "Active Contributor Community",
+      "schemaData": {
+        "title": "Active Contributor Community",
+        "type": "Outcomes",
+        "content": "People beyond the founders contribute regularly."
+      },
+      "linkTargets": ["Active Contributor Community"],
+      "type": "Outcomes",
+      "source": {
+        "file": "Active Contributor Community.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "People beyond the founders contribute regularly.",
+      "resolvedType": "Outcomes",
+      "resolvedParents": [
+        {
+          "id": "Review Governance.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        },
+        {
+          "id": "Open Community Channels.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        },
+        {
+          "id": "Onboard New Contributors.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        },
+        {
+          "id": "Triage Issues.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Funding.md",
+      "title": "Funding",
+      "schemaData": {
+        "title": "Funding",
+        "type": "Capabilities",
+        "content": "The ability to provide funding for the project."
+      },
+      "linkTargets": ["Funding"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Funding.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide funding for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Secure Funding.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Announce the Launch.md",
+      "title": "Announce the Launch",
+      "schemaData": {
+        "title": "Announce the Launch",
+        "type": "Activities",
+        "phase": "[[02 Launch]]",
+        "capabilities": ["[[Social Media]]", "[[Project Website]]"],
+        "outcomes": ["[[Wide Adoption]]"],
+        "content": "Announce the Launch."
+      },
+      "linkTargets": ["Announce the Launch"],
+      "type": "Activities",
+      "source": {
+        "file": "Announce the Launch.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Announce the Launch.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "02 Launch.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Reliable Releases.md",
+      "title": "Reliable Releases",
+      "schemaData": {
+        "title": "Reliable Releases",
+        "type": "Outcomes",
+        "content": "Releases ship on a predictable cadence without regressions."
+      },
+      "linkTargets": ["Reliable Releases"],
+      "type": "Outcomes",
+      "source": {
+        "file": "Reliable Releases.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Releases ship on a predictable cadence without regressions.",
+      "resolvedType": "Outcomes",
+      "resolvedParents": [
+        {
+          "id": "Handle Security Reports.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        },
+        {
+          "id": "Triage Issues.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        },
+        {
+          "id": "Publish First Release.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        },
+        {
+          "id": "Set Up Repository.md",
+          "field": "outcomes",
+          "fieldOn": "parent",
+          "source": "relationship",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Documentation.md",
+      "title": "Documentation",
+      "schemaData": {
+        "title": "Documentation",
+        "type": "Capabilities",
+        "content": "The ability to provide documentation for the project."
+      },
+      "linkTargets": ["Documentation"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Documentation.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide documentation for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Onboard New Contributors.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        },
+        {
+          "id": "Write Initial Documentation.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Write Initial Documentation.md",
+      "title": "Write Initial Documentation",
+      "schemaData": {
+        "title": "Write Initial Documentation",
+        "type": "Activities",
+        "phase": "[[01 Prepare]]",
+        "capabilities": ["[[Documentation]]", "[[Project Website]]"],
+        "outcomes": ["[[Wide Adoption]]"],
+        "content": "Write Initial Documentation."
+      },
+      "linkTargets": ["Write Initial Documentation"],
+      "type": "Activities",
+      "source": {
+        "file": "Write Initial Documentation.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Write Initial Documentation.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "01 Prepare.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Issue Tracker.md",
+      "title": "Issue Tracker",
+      "schemaData": {
+        "title": "Issue Tracker",
+        "type": "Applications",
+        "capabilities": ["[[Issue Tracking]]"],
+        "status": "identified",
+        "content": "Issue Tracker."
+      },
+      "linkTargets": ["Issue Tracker"],
+      "type": "Applications",
+      "source": {
+        "file": "Issue Tracker.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Issue Tracker.",
+      "resolvedType": "Applications",
+      "resolvedParents": [
+        {
+          "id": "Issue Tracking.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "02 Launch.md",
+      "title": "02 Launch",
+      "schemaData": {
+        "title": "02 Launch",
+        "type": "Phases",
+        "order": 2,
+        "content": "Make the first public release and tell people about it."
+      },
+      "linkTargets": ["02 Launch"],
+      "type": "Phases",
+      "source": {
+        "file": "02 Launch.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Make the first public release and tell people about it.",
+      "resolvedType": "Phases",
+      "resolvedParents": [],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Security Response.md",
+      "title": "Security Response",
+      "schemaData": {
+        "title": "Security Response",
+        "type": "Capabilities",
+        "content": "The ability to provide security response for the project."
+      },
+      "linkTargets": ["Security Response"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Security Response.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide security response for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Handle Security Reports.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Triage Issues.md",
+      "title": "Triage Issues",
+      "schemaData": {
+        "title": "Triage Issues",
+        "type": "Activities",
+        "phase": "[[03 Grow]]",
+        "capabilities": ["[[Issue Tracking]]"],
+        "outcomes": ["[[Reliable Releases]]", "[[Active Contributor Community]]"],
+        "content": "Triage Issues."
+      },
+      "linkTargets": ["Triage Issues"],
+      "type": "Activities",
+      "source": {
+        "file": "Triage Issues.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Triage Issues.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "03 Grow.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Chat Server.md",
+      "title": "Chat Server",
+      "schemaData": {
+        "title": "Chat Server",
+        "type": "Applications",
+        "capabilities": ["[[Community Chat]]"],
+        "status": "stub",
+        "content": "Chat Server."
+      },
+      "linkTargets": ["Chat Server"],
+      "type": "Applications",
+      "source": {
+        "file": "Chat Server.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Chat Server.",
+      "resolvedType": "Applications",
+      "resolvedParents": [
+        {
+          "id": "Community Chat.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Social Account.md",
+      "title": "Social Account",
+      "schemaData": {
+        "title": "Social Account",
+        "type": "Applications",
+        "capabilities": ["[[Social Media]]"],
+        "status": "stub",
+        "content": "Social Account."
+      },
+      "linkTargets": ["Social Account"],
+      "type": "Applications",
+      "source": {
+        "file": "Social Account.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Social Account.",
+      "resolvedType": "Applications",
+      "resolvedParents": [
+        {
+          "id": "Social Media.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Contributor Onboarding.md",
+      "title": "Contributor Onboarding",
+      "schemaData": {
+        "title": "Contributor Onboarding",
+        "type": "Capabilities",
+        "content": "The ability to provide contributor onboarding for the project."
+      },
+      "linkTargets": ["Contributor Onboarding"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Contributor Onboarding.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide contributor onboarding for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Onboard New Contributors.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Web Analytics.md",
+      "title": "Web Analytics",
+      "schemaData": {
+        "title": "Web Analytics",
+        "type": "Applications",
+        "capabilities": ["[[Analytics]]"],
+        "status": "stub",
+        "content": "Web Analytics."
+      },
+      "linkTargets": ["Web Analytics"],
+      "type": "Applications",
+      "source": {
+        "file": "Web Analytics.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Web Analytics.",
+      "resolvedType": "Applications",
+      "resolvedParents": [
+        {
+          "id": "Analytics.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Define Project Scope.md",
+      "title": "Define Project Scope",
+      "schemaData": {
+        "title": "Define Project Scope",
+        "type": "Activities",
+        "phase": "[[01 Prepare]]",
+        "capabilities": ["[[Governance]]"],
+        "content": "Define Project Scope."
+      },
+      "linkTargets": ["Define Project Scope"],
+      "type": "Activities",
+      "source": {
+        "file": "Define Project Scope.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Define Project Scope.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "01 Prepare.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Publish First Release.md",
+      "title": "Publish First Release",
+      "schemaData": {
+        "title": "Publish First Release",
+        "type": "Activities",
+        "phase": "[[02 Launch]]",
+        "capabilities": ["[[Release Automation]]", "[[Continuous Integration]]"],
+        "outcomes": ["[[Reliable Releases]]", "[[Wide Adoption]]"],
+        "content": "Publish First Release."
+      },
+      "linkTargets": ["Publish First Release"],
+      "type": "Activities",
+      "source": {
+        "file": "Publish First Release.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Publish First Release.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "02 Launch.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Sponsorship Page.md",
+      "title": "Sponsorship Page",
+      "schemaData": {
+        "title": "Sponsorship Page",
+        "type": "Applications",
+        "capabilities": ["[[Funding]]", "[[Project Website]]"],
+        "status": "identified",
+        "content": "Sponsorship Page."
+      },
+      "linkTargets": ["Sponsorship Page"],
+      "type": "Applications",
+      "source": {
+        "file": "Sponsorship Page.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Sponsorship Page.",
+      "resolvedType": "Applications",
+      "resolvedParents": [
+        {
+          "id": "Funding.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        },
+        {
+          "id": "Project Website.md",
+          "field": "capabilities",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Set Up Repository.md",
+      "title": "Set Up Repository",
+      "schemaData": {
+        "title": "Set Up Repository",
+        "type": "Activities",
+        "phase": "[[01 Prepare]]",
+        "capabilities": ["[[Issue Tracking]]", "[[Continuous Integration]]"],
+        "outcomes": ["[[Reliable Releases]]"],
+        "content": "Set Up Repository."
+      },
+      "linkTargets": ["Set Up Repository"],
+      "type": "Activities",
+      "source": {
+        "file": "Set Up Repository.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "Set Up Repository.",
+      "resolvedType": "Activities",
+      "resolvedParents": [
+        {
+          "id": "01 Prepare.md",
+          "field": "phase",
+          "fieldOn": "child",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    },
+    {
+      "id": "Community Chat.md",
+      "title": "Community Chat",
+      "schemaData": {
+        "title": "Community Chat",
+        "type": "Capabilities",
+        "content": "The ability to provide community chat for the project."
+      },
+      "linkTargets": ["Community Chat"],
+      "type": "Capabilities",
+      "source": {
+        "file": "Community Chat.md",
+        "line": 1
+      },
+      "contentLinks": [],
+      "content": "The ability to provide community chat for the project.",
+      "resolvedType": "Capabilities",
+      "resolvedParents": [
+        {
+          "id": "Open Community Channels.md",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "source": "hierarchy",
+          "hierarchy": "launch_playbook",
+          "selfRef": false
+        }
+      ],
+      "resolvedLinks": []
+    }
+  ]
+}

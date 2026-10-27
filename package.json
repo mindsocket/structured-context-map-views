@@ -1,0 +1,49 @@
+{
+  "name": "structured-context-navigator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./map-views/core": {
+      "types": "./dist/map-views/types/core/index.d.ts",
+      "default": "./dist/map-views/core.js"
+    },
+    "./map-views/layouts": {
+      "types": "./dist/map-views/types/layouts/index.d.ts",
+      "default": "./dist/map-views/layouts.js"
+    },
+    "./map-views/styles.css": "./dist/map-views/styles.css"
+  },
+  "scripts": {
+    "dev": "bun --bun vite",
+    "build": "bun run build:map-views && bun run build:app",
+    "build:map-views": "bun run generate:schemas && bun --bun vite build -c map-views.vite.config.ts && tsc -p tsconfig.lib.json && tailwindcss -i src/map-views/layouts/styles.css -o dist/map-views/styles.css",
+    "build:app": "bun --bun vite build",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "generate:schemas": "bun scripts/generate-schemas.ts"
+  },
+  "peerDependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "json-schema-to-ts": "^3.1.1",
+    "json5": "^2.2.3",
+    "structured-context": "file:../structured-context"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@tailwindcss/cli": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/bun": "^1.4.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2"
+  }
+}

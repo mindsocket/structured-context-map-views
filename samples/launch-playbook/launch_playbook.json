@@ -1,0 +1,149 @@
+{
+  "$schema": "https://raw.githubusercontent.com/mindsocket/structured-context/main/schemas/generated/latest/_structured_context_schema_meta.json",
+  "$id": "sctx://launch_playbook",
+  "title": "Launch playbook",
+  "description": "Sample schema: the phases, activities, capabilities and applications of launching an open-source project.",
+  "$metadata": {
+    "hierarchy": {
+      "levels": [
+        "Phases",
+        {
+          "type": "Activities",
+          "field": "phase"
+        },
+        {
+          "type": "Capabilities",
+          "field": "capabilities",
+          "fieldOn": "parent",
+          "selfRef": true,
+          "selfRefField": "parent_capability",
+          "multiple": true
+        },
+        {
+          "type": "Applications",
+          "field": "capabilities",
+          "multiple": true
+        }
+      ]
+    },
+    "relationships": [
+      {
+        "parent": "Activities",
+        "type": "Outcomes",
+        "field": "outcomes",
+        "fieldOn": "parent",
+        "multiple": true
+      }
+    ]
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "Phases"
+        },
+        "title": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "title"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "Activities"
+        },
+        "title": {
+          "type": "string"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "title"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "Capabilities"
+        },
+        "title": {
+          "type": "string"
+        },
+        "parent_capability": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "title"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "Applications"
+        },
+        "title": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "enum": [
+            "identified",
+            "stub"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "title"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "Outcomes"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "title"
+      ]
+    }
+  ]
+}
