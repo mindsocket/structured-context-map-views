@@ -1,4 +1,4 @@
-import { definitionSchema } from './definition';
+import { definitionSchema } from './definition-schema';
 import { landscapeLayoutSchema } from './landscape-layout';
 import { settingsSchema } from './settings';
 import { treeLayoutSchema } from './tree-layout';

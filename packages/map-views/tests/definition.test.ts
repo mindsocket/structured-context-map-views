@@ -6,7 +6,7 @@ import {
   resolveRegions,
   selectionFilter,
 } from '../src/core';
-import { SCHEMA_URL } from '../src/core/schemas/schema-url';
+import { SCHEMA_URL } from '../src/core/format/schema-url';
 
 const minimal = `{ $id: 'sctx-map-view://t', schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`;
 

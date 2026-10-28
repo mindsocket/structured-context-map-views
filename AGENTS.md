@@ -10,7 +10,7 @@ Declarative map views of structured-context spaces: the definition format, the r
 - `packages/map-views/src/node`: Node-only definition discovery (`loadMapViewDefinitions`), shipped as its own entry point (`structured-context-map-views/node`). Core and layouts must not import it.
 - `apps/navigator`: the standalone host (private package: a Vite app plus dev-server middleware calling the structured-context API). It consumes the library like any other host.
 - `packages/map-views/map-views/*.json5`: definitions bundled with the library, only for structured-context's bundled schemas (`$id` `sctx-map-view://core/<name>`). `bun run generate:definitions` embeds them as `src/node/bundled-definitions.ts`; a test fails if that is stale. Plugins ship their own; personal ones go in a `map-views/` folder next to the structured-context config.
-- `packages/map-views/src/core/schemas/*.ts`: the definition format's JSON Schemas (`as const`), the source of truth. Types derive from them (`FromSchema`); `bun run generate:schemas` writes `schemas/generated/latest/` at the repo root (so the published URLs stay stable), and a test fails if those are stale; `--release` (run when cutting a release) also freezes `schemas/generated/<version>/` if the format changed. `$id`s are the published https URLs (`schema-url.ts`). Use absolute `${SCHEMA_URL}/…` refs: `FromSchema` doesn't resolve relative refs inside referenced schemas.
+- `packages/map-views/src/core/format/*.ts`: the definition format's JSON Schemas (`as const`), the source of truth. Types derive from them (`FromSchema`); `bun run generate:schemas` writes `schemas/generated/latest/` at the repo root (so the published URLs stay stable), and a test fails if those are stale; `--release` (run when cutting a release) also freezes `schemas/generated/<version>/` if the format changed. `$id`s are the published https URLs (`schema-url.ts`). Use absolute `${SCHEMA_URL}/…` refs: `FromSchema` doesn't resolve relative refs inside referenced schemas.
 - `samples/launch-playbook/`: a public sample space. `packages/map-views/tests/fixtures/launch-playbook.json` is captured from it with `bun run capture-fixtures launch-playbook=../../samples/launch-playbook/.sctx.json` in `packages/map-views`.
 - The Obsidian plugin is the second host. Until the library is published it consumes `packages/map-views` through a `file:` dependency and builds it first.
 
@@ -40,7 +40,7 @@ Review and update with any change:
 
 | Change | Check |
 |---|---|
-| Definition format (`core/schemas`) | `docs/definitions.md`; regenerated `schemas/generated/`; definitions in `map-views/` |
+| Definition format (`core/format`) | `docs/definitions.md`; regenerated `schemas/generated/`; definitions in `map-views/` |
 | New or renamed term | `docs/concepts.md` |
 | Exports or component props | `docs/api.md` |
 | Module structure, rendering, styling | `docs/architecture.md`, this file |

@@ -8,8 +8,8 @@ import {
   type settingsSchema,
   type treeLayoutSchema,
   type xyLayoutSchema,
-} from './schemas';
-import { SCHEMA_URL } from './schemas/schema-url';
+} from './format';
+import { SCHEMA_URL } from './format/schema-url';
 
 export { MAP_VIEW_SCHEMAS };
 
