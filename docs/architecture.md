@@ -20,7 +20,7 @@ flowchart LR
 | `packages/map-views/src/node` | `loadMapViewDefinitions`: finding definitions in the library (embedded at build time from `packages/map-views/map-views/`), plugins and config folders | core, Node, structured-context |
 | `apps/navigator` | The standalone host: a Vite app plus dev-server middleware calling the structured-context API | Anything |
 
-`packages/map-views/src/index.ts` is the published entry point and re-exports the few things hosts need; `src/node` is the second entry point. `packages/map-views/tests/module-boundaries.test.ts` enforces the core and layouts rules, including that neither imports the Node module. Core runs anywhere (browser, Node, worker) and is tested without a DOM, against fixtures captured from spaces (`packages/map-views/tests/fixtures/`, written by `apps/navigator/scripts/capture-fixtures.ts`). The public sample space in `samples/launch-playbook/` is the source of `launch-playbook.json`.
+`packages/map-views/src/index.ts` is the published entry point and re-exports the few things hosts need; `src/node` is the second entry point. `packages/map-views/tests/module-boundaries.test.ts` enforces the core and layouts rules, including that neither imports the Node module. Core runs anywhere (browser, Node, worker) and is tested without a DOM, against fixtures captured from spaces (`packages/map-views/tests/fixtures/`, written by `packages/map-views/scripts/capture-fixtures.ts`). The public sample space in `samples/launch-playbook/` is the source of `launch-playbook.json`.
 
 ## Data in
 
@@ -50,5 +50,5 @@ Hosts theme map views through six variables: `--mv-color-surface`, `--mv-color-c
 
 ## Hosts
 
-- **Navigator** (`apps/navigator`): dev-server middleware serves spaces (from the structured-context config, plus the fixtures as `fixture:<name>`) and the definitions `loadMapViewDefinitions` finds, as JSON. Selecting a node opens a side panel with its fields. Parameter values live in memory.
+- **Navigator** (`apps/navigator`): dev-server middleware serves spaces (from the structured-context config) and the definitions `loadMapViewDefinitions` finds, as JSON. Selecting a node opens a side panel with its fields. Parameter values live in memory.
 - **Obsidian plugin** ([obsidian-structured-context](https://github.com/mindsocket/obsidian-structured-context)): renders map views in a pane, builds the data in-process, opens the source note on selection and keeps parameter values in the view state.

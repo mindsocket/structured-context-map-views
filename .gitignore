@@ -1,4 +1,5 @@
 node_modules/
 dist/
-packages/map-views/tests/fixtures/agentic-ai-strategy.json
 lefthook-local.yml
+.claude/worktrees
+.claude/settings.local.json

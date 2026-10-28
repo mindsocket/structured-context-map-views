@@ -7,8 +7,7 @@
     "dev": "bun run build:library && bun --bun vite",
     "build": "bun run build:library && bun --bun vite build",
     "build:library": "bun run --cwd ../../packages/map-views build",
-    "typecheck": "tsc --noEmit",
-    "capture-fixtures": "bun scripts/capture-fixtures.ts"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^19.3.0",

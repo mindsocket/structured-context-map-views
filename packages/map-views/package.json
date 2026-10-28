@@ -1,6 +1,6 @@
 {
   "name": "structured-context-map-views",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Declarative map views of structured-context spaces: render a space as a tree, nested containers or an XY plot from a short definition.",
   "license": "MIT",
   "type": "module",
@@ -39,9 +39,13 @@
     "generate:definitions": "bun scripts/generate-definitions.ts",
     "build": "bun run clean && bun run generate && bun --bun vite build && tsc -p tsconfig.build.json && tailwindcss -i src/layouts/styles.css -o dist/styles.css",
     "typecheck": "tsc --noEmit",
+    "capture-fixtures": "bun scripts/capture-fixtures.ts",
     "test": "bun test",
     "test:package": "bash scripts/test-package.sh",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun run build",
+    "preversion": "bun run generate && bun run --cwd ../.. lint:fix && bun run --cwd ../.. test && bun run test:package",
+    "version": "bun run generate:schemas --release && git add -A",
+    "postversion": "git push --follow-tags"
   },
   "peerDependencies": {
     "react": "^19.3.0",

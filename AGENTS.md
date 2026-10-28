@@ -11,7 +11,7 @@ Declarative map views of structured-context spaces: the definition format, the r
 - `apps/navigator`: the standalone host (private package: a Vite app plus dev-server middleware calling the structured-context API). It consumes the library like any other host.
 - `packages/map-views/map-views/*.json5`: definitions bundled with the library, only for structured-context's bundled schemas (`$id` `sctx-map-view://core/<name>`). `bun run generate:definitions` embeds them as `src/node/bundled-definitions.ts`; a test fails if that is stale. Plugins ship their own; personal ones go in a `map-views/` folder next to the structured-context config.
 - `packages/map-views/src/core/schemas/*.ts`: the definition format's JSON Schemas (`as const`), the source of truth. Types derive from them (`FromSchema`); `bun run generate:schemas` writes `schemas/generated/latest/` at the repo root (so the published URLs stay stable), and a test fails if those are stale; `--release` (run when cutting a release) also freezes `schemas/generated/<version>/` if the format changed. `$id`s are the published https URLs (`schema-url.ts`). Use absolute `${SCHEMA_URL}/…` refs: `FromSchema` doesn't resolve relative refs inside referenced schemas.
-- `samples/launch-playbook/`: a public sample space. `packages/map-views/tests/fixtures/launch-playbook.json` is captured from it with `bun run capture-fixtures launch-playbook=../../samples/launch-playbook/.sctx.json` in `apps/navigator`.
+- `samples/launch-playbook/`: a public sample space. `packages/map-views/tests/fixtures/launch-playbook.json` is captured from it with `bun run capture-fixtures launch-playbook=../../samples/launch-playbook/.sctx.json` in `packages/map-views`.
 - The Obsidian plugin is the second host. Until the library is published it consumes `packages/map-views` through a `file:` dependency and builds it first.
 
 ## Checks
@@ -21,6 +21,10 @@ bun test && bun run typecheck && bun run lint
 bun run test:package      # packs the library, installs it in an empty project, typechecks a consumer
 bun run build             # the library, then the navigator
 ```
+
+## Releases
+
+Releases go through the `/release <major|minor|patch>` skill, which runs `bun pm version` in `packages/map-views`: its `preversion`, `version` and `postversion` scripts run the checks, freeze the definition format's schemas in `schemas/generated/<version>/` when the format changed, and push the commit and tag. Don't run `generate:schemas --release` by hand.
 
 ## Ways of working
 
@@ -47,7 +51,7 @@ Docs describe what the code does now. Decision history and plans don't go in doc
 ## Running and verifying in a browser
 
 - `bun run dev --port <port>` runs Vite under Bun. That's intentional: structured-context targets Bun or a bundler.
-- Spaces come from the structured-context config. A relative `SCTX_CONFIG` inherited from another repo fails here; run with `env -u SCTX_CONFIG` to use the global config, or pass an absolute path. The fixtures are always listed as `fixture:<name>`.
+- Spaces come from the structured-context config. A relative `SCTX_CONFIG` inherited from another repo fails here; run with `env -u SCTX_CONFIG` to use the global config, or pass an absolute path.
 - In a Chrome tab driven by an agent, the tab is usually hidden (`document.visibilityState === "hidden"`). Hidden tabs run no `ResizeObserver` or `requestAnimationFrame` callbacks, so edge redraws on resize can't be checked there. Taking a screenshot forces a frame, and DOM measurements remain reliable.
 - React-controlled `<select>`s need the native value setter plus a bubbling `change` event when driven from script.
 - Check edge alignment by comparing each `svg path`'s endpoint with the centre of its target card.
