@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/layouts/xy.json",
+  "title": "XY layout",
+  "description": "Nodes positioned on two axes by numeric fields. Nodes of the plotted types without a usable value on both axes are listed beside the plot, not dropped.",
+  "type": "object",
+  "required": [
+    "type",
+    "x",
+    "y"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "xy"
+    },
+    "x": {
+      "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/layouts/xy.json#/$defs/axis"
+    },
+    "y": {
+      "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/layouts/xy.json#/$defs/axis"
+    },
+    "types": {
+      "description": "Node types to plot. Empty: every type with a value on either axis.",
+      "default": [],
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/definition.json#/$defs/paramRef"
+        }
+      ]
+    },
+    "edgeFields": {
+      "description": "Fields whose edges are drawn between plotted nodes. Empty: all edges.",
+      "default": [],
+      "anyOf": [
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/settings.json#/$defs/fieldList"
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/definition.json#/$defs/paramRef"
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "axis": {
+      "title": "Axis",
+      "type": "object",
+      "required": [
+        "field"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "description": "Numeric field giving the position.",
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/definition.json#/$defs/paramRef"
+            }
+          ]
+        },
+        "domain": {
+          "description": "Values at the two ends of the axis: [min, max], or \"data\" for the smallest and largest plotted values. Nodes outside a fixed domain are listed as unplaced.",
+          "default": "data",
+          "anyOf": [
+            {
+              "const": "data"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ]
+        },
+        "direction": {
+          "description": "ascending: values grow rightwards (x) or upwards (y). descending: the reverse.",
+          "default": "ascending",
+          "anyOf": [
+            {
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/layouts/xy.json#/$defs/direction"
+            },
+            {
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/definition.json#/$defs/paramRef"
+            }
+          ]
+        },
+        "label": {
+          "type": "string",
+          "description": "Axis title. Defaults to the field name."
+        }
+      }
+    },
+    "direction": {
+      "title": "Axis direction",
+      "enum": [
+        "ascending",
+        "descending"
+      ]
+    }
+  }
+}

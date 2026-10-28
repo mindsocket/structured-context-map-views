@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/layouts/landscape.json",
+  "title": "Landscape layout",
+  "description": "Nested containers: each grouping level becomes containers inside the level above, and the last level is drawn as nodes.",
+  "type": "object",
+  "required": [
+    "type",
+    "group"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "landscape"
+    },
+    "orientation": {
+      "description": "horizontal: top-level containers side by side, as columns. vertical: stacked, as rows.",
+      "default": "horizontal",
+      "anyOf": [
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/settings.json#/$defs/orientation"
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/definition.json#/$defs/paramRef"
+        }
+      ]
+    },
+    "group": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Grouping levels, outermost first. The last level is drawn as nodes; the others as containers. Adjacent node levels are joined by any edge between their types, in either direction.",
+      "items": {
+        "type": "object",
+        "if": {
+          "type": "object",
+          "required": [
+            "field"
+          ]
+        },
+        "then": {
+          "type": "object",
+          "description": "Containers labelled by the values of a field of the next node level's nodes. A node with several values appears under each.",
+          "required": [
+            "field"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "field": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "else": {
+          "type": "object",
+          "description": "A level of nodes of one type.",
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "description": "Node type at this level.",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/definition.json#/$defs/paramRef"
+                }
+              ]
+            },
+            "edge": {
+              "type": "object",
+              "description": "Which edges join this level to the node level above (or to the last `via` type). By default, any edge between the two types.",
+              "required": [
+                "field"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "via": {
+              "type": "array",
+              "minItems": 1,
+              "description": "Types skipped between the node level above and this one, in order. Nodes are joined through a chain of edges across them. Ignored on the first level, which has no level above.",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "intermediate": {
+              "description": "How the skipped nodes of a `via` chain are shown.",
+              "default": "hidden",
+              "anyOf": [
+                {
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/layouts/landscape.json#/$defs/intermediate"
+                },
+                {
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.1.0/definition.json#/$defs/paramRef"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "intermediate": {
+      "title": "Skipped levels",
+      "description": "hidden: not shown. breadcrumb: listed on each node reached through them.",
+      "enum": [
+        "hidden",
+        "breadcrumb"
+      ]
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "structured-context-map-views",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Declarative map views of structured-context spaces: render a space as a tree, nested containers or an XY plot from a short definition.",
   "license": "MIT",
   "type": "module",
