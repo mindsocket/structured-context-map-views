@@ -9,9 +9,11 @@ Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `package
 
 1. Verify the branch is `main` and the working tree is clean. If not, stop and tell the user. `bun pm version` also refuses untracked files: if there are any, run `git stash push --include-untracked` before step 2 and `git stash pop` after it, whether step 2 passes or fails.
 
-2. Bump the version from `packages/map-views`. This runs the checks (generators, lint, tests and the packed-package test `test:package`), freezes `schemas/generated/<version>/` if the definition format changed, commits, tags and pushes:
+2. Bump the version from `packages/map-views`. This runs the checks (generators, lint, tests and the packed-package test `test:package`) and freezes `schemas/generated/<version>/` if the definition format changed. `bun pm version` skips git when run from a subfolder, so commit, tag and push yourself:
    ```
-   cd packages/map-views && bun pm version $ARGUMENTS
+   (cd packages/map-views && bun pm version --no-git-tag-version $ARGUMENTS)
+   v=$(jq -r .version packages/map-views/package.json)
+   git add -A && git commit -m "v$v" && git tag -a "v$v" -m "v$v" && git push --follow-tags
    ```
    If any check fails, stop and report the errors.
 

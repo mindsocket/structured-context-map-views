@@ -44,8 +44,7 @@
     "test:package": "bash scripts/test-package.sh",
     "prepublishOnly": "bun run build",
     "preversion": "bun run generate && bun run --cwd ../.. lint:fix && bun run --cwd ../.. test && bun run test:package",
-    "version": "bun run generate:schemas --release && git add -A",
-    "postversion": "git push --follow-tags"
+    "version": "bun run generate:schemas --release && git add -A"
   },
   "peerDependencies": {
     "react": "^19.3.0",
