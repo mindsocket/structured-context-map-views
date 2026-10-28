@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "structured-context-map-views": ["../../packages/map-views/src/index.ts"],
+      "structured-context-map-views/node": ["../../packages/map-views/src/node/index.ts"]
+    }
+  },
+  "include": ["src", "scripts", "vite.config.ts"]
+}

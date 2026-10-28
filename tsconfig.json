@@ -7,9 +7,10 @@
     "jsx": "react-jsx",
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
     "skipLibCheck": true,
     "noEmit": true,
     "types": ["bun"]
-  },
-  "include": ["src", "tests", "vite.config.ts", "map-views.vite.config.ts"]
+  }
 }

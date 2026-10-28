@@ -1,0 +1,28 @@
+{
+  "name": "structured-context-navigator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run build:library && bun --bun vite",
+    "build": "bun run build:library && bun --bun vite build",
+    "build:library": "bun run --cwd ../../packages/map-views build",
+    "typecheck": "tsc --noEmit",
+    "capture-fixtures": "bun scripts/capture-fixtures.ts"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "structured-context": "^0.17.1",
+    "structured-context-map-views": "workspace:*"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.2"
+  }
+}

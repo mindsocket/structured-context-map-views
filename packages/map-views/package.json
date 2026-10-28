@@ -1,0 +1,68 @@
+{
+  "name": "structured-context-map-views",
+  "version": "0.1.0",
+  "description": "Declarative map views of structured-context spaces: render a space as a tree, nested containers or an XY plot from a short definition.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mindsocket/structured-context-map-views.git",
+    "directory": "packages/map-views"
+  },
+  "homepage": "https://github.com/mindsocket/structured-context-map-views#readme",
+  "bugs": "https://github.com/mindsocket/structured-context-map-views/issues",
+  "keywords": [
+    "structured-context",
+    "visualisation",
+    "map-view",
+    "react"
+  ],
+  "files": [
+    "dist/"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/types/node/index.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "generate": "bun run generate:schemas && bun run generate:definitions",
+    "generate:schemas": "bun scripts/generate-schemas.ts",
+    "generate:definitions": "bun scripts/generate-definitions.ts",
+    "build": "bun run clean && bun run generate && bun --bun vite build && tsc -p tsconfig.build.json && tailwindcss -i src/layouts/styles.css -o dist/styles.css",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:package": "bash scripts/test-package.sh",
+    "prepublishOnly": "bun run build"
+  },
+  "peerDependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "structured-context": "^0.17.1"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "json-schema-to-ts": "^3.1.1",
+    "json5": "^2.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "structured-context": "^0.17.1",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.2"
+  }
+}

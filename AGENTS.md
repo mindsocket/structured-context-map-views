@@ -4,20 +4,22 @@ Declarative map views of structured-context spaces: the definition format, the r
 
 ## Layout
 
-- `src/map-views/core`: framework-agnostic. Definitions, parameters, graph helpers and the projections. No React, DOM, Node or runtime structured-context imports (type-only is fine); `tests/module-boundaries.test.ts` enforces this.
-- `src/map-views/layouts`: React components and the SVG edge overlay. Don't import host code from here.
-- `src/map-views/node`: Node-only definition discovery (`loadMapViewDefinitions`), shipped as its own entry point. Core and layouts must not import it.
-- `src/navigator`: the standalone host (Vite app plus dev-server middleware calling the structured-context API).
-- `map-views/*.json5`: definitions bundled here, only for structured-context's bundled schemas (`$id` `sctx-map-view://core/<name>`). Plugins ship their own; personal ones go in a `map-views/` folder next to the structured-context config.
-- `src/map-views/core/schemas/*.ts`: the definition format's JSON Schemas (`as const`), the source of truth. Types derive from them (`FromSchema`); `bun run generate:schemas` writes `schemas/generated/latest/`, and a test fails if those are stale; `--release` (run when cutting a release) also freezes `schemas/generated/<version>/` if the format changed. `$id`s are the published https URLs (`schema-url.ts`). Use absolute `${SCHEMA_URL}/…` refs: `FromSchema` doesn't resolve relative refs inside referenced schemas.
-- `samples/launch-playbook/`: a public sample space. `tests/fixtures/launch-playbook.json` is captured from it with `bun scripts/capture-fixtures.ts launch-playbook=samples/launch-playbook/.sctx.json`.
-- The Obsidian plugin is the second host. It consumes the library build (`bun run build:map-views`) through a `file:` dependency.
+- `packages/map-views`: the published library, `structured-context-map-views`. Its `src/index.ts` is the public surface; add an export only when a host needs it.
+- `packages/map-views/src/core`: framework-agnostic. Definitions, parameters, graph helpers and the projections. No React, DOM, Node or runtime structured-context imports (type-only is fine); `tests/module-boundaries.test.ts` enforces this.
+- `packages/map-views/src/layouts`: React components and the SVG edge overlay. Don't import host code from here.
+- `packages/map-views/src/node`: Node-only definition discovery (`loadMapViewDefinitions`), shipped as its own entry point (`structured-context-map-views/node`). Core and layouts must not import it.
+- `apps/navigator`: the standalone host (private package: a Vite app plus dev-server middleware calling the structured-context API). It consumes the library like any other host.
+- `packages/map-views/map-views/*.json5`: definitions bundled with the library, only for structured-context's bundled schemas (`$id` `sctx-map-view://core/<name>`). `bun run generate:definitions` embeds them as `src/node/bundled-definitions.ts`; a test fails if that is stale. Plugins ship their own; personal ones go in a `map-views/` folder next to the structured-context config.
+- `packages/map-views/src/core/schemas/*.ts`: the definition format's JSON Schemas (`as const`), the source of truth. Types derive from them (`FromSchema`); `bun run generate:schemas` writes `schemas/generated/latest/` at the repo root (so the published URLs stay stable), and a test fails if those are stale; `--release` (run when cutting a release) also freezes `schemas/generated/<version>/` if the format changed. `$id`s are the published https URLs (`schema-url.ts`). Use absolute `${SCHEMA_URL}/…` refs: `FromSchema` doesn't resolve relative refs inside referenced schemas.
+- `samples/launch-playbook/`: a public sample space. `packages/map-views/tests/fixtures/launch-playbook.json` is captured from it with `bun run capture-fixtures launch-playbook=../../samples/launch-playbook/.sctx.json` in `apps/navigator`.
+- The Obsidian plugin is the second host. Until the library is published it consumes `packages/map-views` through a `file:` dependency and builds it first.
 
 ## Checks
 
 ```bash
 bun test && bun run typecheck && bun run lint
-bun run build:map-views   # needed before building the Obsidian plugin
+bun run test:package      # packs the library, installs it in an empty project, typechecks a consumer
+bun run build             # the library, then the navigator
 ```
 
 ## Ways of working

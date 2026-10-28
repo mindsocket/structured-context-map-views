@@ -16,10 +16,10 @@ A **map view** is a short JSON5 definition that projects every space of one sche
 
 This repo holds:
 
-- **The library**: React components that render a map view inside any host app, using the browser's own layout engine plus an SVG overlay for connectors.
-- **The navigator**: a standalone app for browsing your spaces through their map views.
+- **The library** (`packages/map-views`, package `structured-context-map-views`): React components that render a map view inside any host app, using the browser's own layout engine plus an SVG overlay for connectors.
+- **The navigator** (`apps/navigator`, not published): a standalone app for browsing your spaces through their map views.
 
-Pre-1.0 and not yet published. Docs:
+Pre-1.0. Docs:
 
 - [Concepts](docs/concepts.md): map views, regions, layouts, occurrences, parameters
 - [Definitions](docs/definitions.md): writing a map view definition
@@ -32,6 +32,7 @@ Pre-1.0 and not yet published. Docs:
 bun install
 bun run dev        # the navigator, reading spaces from your structured-context config
 bun test && bun run typecheck && bun run lint
+bun run test:package   # packs the library and checks it installs and typechecks in an empty project
 ```
 
 Licence: MIT.
