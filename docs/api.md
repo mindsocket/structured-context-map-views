@@ -54,7 +54,7 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 
 ## The `export` command
 
-`structured-context-map-views export <space> [--config <file>]` prints one JSON document for hosts that can't run structured-context themselves (a Claude artifact, say):
+`structured-context-map-views [--config <file>] export <space> [--depth <n>] [--include-gated]` prints one JSON document for hosts that can't run structured-context themselves (a Claude artifact, say):
 
 ```json
 {
@@ -66,7 +66,7 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 }
 ```
 
-`graph` is `exportSpaceGraph`'s wire format (rebuild it with `spaceGraphFrom`), `validation` is `validateSpace`'s result with no AI judge (so no spend; rules that need one don't run), and `definitions` are the `MapViewDefinition`s that apply to the space's schema, as plain data. Config is found the way structured-context finds it; `--config` overrides. Exit code 1 for an unknown space or invalid config. The command runs under Bun, like structured-context.
+`graph` is `exportSpaceGraph`'s wire format (rebuild it with `spaceGraphFrom`), `validation` is `validateSpace`'s result, with `--depth` and `--include-gated` passed straight through. No AI judge is supplied, so rules that need one don't run, and `definitions` are the `MapViewDefinition`s that apply to the space's schema, as plain data. Config is found the way structured-context finds it; the global `--config` overrides, as for `sctx`. Exit code 1 for an unknown space. Like `sctx`, the command is built with commander and runs under Bun.
 
 ## Validation results
 

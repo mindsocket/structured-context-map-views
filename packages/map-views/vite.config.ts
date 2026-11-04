@@ -23,7 +23,15 @@ export default defineConfig({
     rolldownOptions: {
       // Hosts provide React and structured-context, so each host keeps a single copy of both.
       // The other dependencies are installed with the package.
-      external: [/^node:/, /^react(\/|$)/, /^react-dom(\/|$)/, /^ajv(\/|$)/, 'json5', /^structured-context(\/|$)/],
+      external: [
+        /^node:/,
+        /^react(\/|$)/,
+        /^react-dom(\/|$)/,
+        /^ajv(\/|$)/,
+        'json5',
+        'commander',
+        /^structured-context(\/|$)/,
+      ],
     },
   },
 });
