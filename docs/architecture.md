@@ -17,10 +17,10 @@ flowchart LR
 |---|---|---|
 | `packages/map-views/src/core` | Definition parsing and validation, parameter resolution, graph helpers, and the projections (`buildTree`, `buildLandscape`, `buildXYPlot`) | Types from structured-context only. No React, DOM or Node |
 | `packages/map-views/src/layouts` | `MapView`, the layout components, `NodeCard`, `EdgeOverlay`, the parameter controls (`useParameterControls`, the typed inputs and the default `ParameterControls` layout), styles | core, React |
-| `packages/map-views/src/node` | `loadMapViewDefinitions`: finding definitions in the library (embedded at build time from `packages/map-views/map-views/`), plugins and config folders | core, Node, structured-context |
+| `packages/map-views/src/node` | `loadMapViewDefinitions`: finding definitions in the library (embedded at build time from `packages/map-views/map-views/`), plugins and config folders; `exportSpace` and the `export` bin that assemble a space for browser-only hosts | core, Node, structured-context |
 | `apps/navigator` | The standalone host: a Vite app plus dev-server middleware calling the structured-context API | Anything |
 
-`packages/map-views/src/index.ts` is the published entry point and re-exports the few things hosts need (modules import each other directly, with no barrel files); `src/node` is the second entry point. `packages/map-views/tests/module-boundaries.test.ts` enforces the core and layouts rules, including that neither imports the Node module. Core runs anywhere (browser, Node, worker) and is tested without a DOM, against fixtures captured from spaces (`packages/map-views/tests/fixtures/`, written by `packages/map-views/scripts/capture-fixtures.ts`). The public sample space in `samples/launch-playbook/` is the source of `launch-playbook.json`.
+`packages/map-views/src/index.ts` is the published entry point and re-exports the few things hosts need (modules import each other directly, with no barrel files); `src/node` is the second entry point, and `src/node/cli.ts` is the bin. `packages/map-views/tests/module-boundaries.test.ts` enforces the core and layouts rules, including that neither imports the Node module. Core runs anywhere (browser, Node, worker) and is tested without a DOM, against fixtures captured from spaces (`packages/map-views/tests/fixtures/`, written by `packages/map-views/scripts/capture-fixtures.ts`). The public sample space in `samples/launch-playbook/` is the source of `launch-playbook.json`.
 
 ## Data in
 

@@ -21,6 +21,9 @@
     "dist/"
   ],
   "sideEffects": false,
+  "bin": {
+    "structured-context-map-views": "dist/cli.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
