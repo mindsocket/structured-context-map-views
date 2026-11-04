@@ -1,9 +1,167 @@
-@import "../../../packages/map-views/src/layouts/styles.css";
-@source "./";
-
+/*
+ * The navigator's own styles. The library is consumed through its published surface: its built
+ * stylesheet (imported in main.tsx) and the --mv-color-* variables, which this file reuses.
+ */
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
+  background: var(--mv-color-surface);
+  color: var(--mv-color-ink);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--mv-color-edge);
+}
+
+.bar h1 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.params {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--mv-color-edge);
+}
+
+.muted {
+  color: var(--mv-color-muted);
+  font-size: 0.875rem;
+}
+
+.notice,
+.error {
+  margin: 0;
+  padding: 0.75rem;
+}
+
+.error {
+  color: #cf222e;
+}
+
+main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.map {
+  flex: 1;
+  min-width: 0;
+}
+
+.details {
+  width: 20rem;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border-left: 1px solid var(--mv-color-edge);
+  font-size: 0.875rem;
+}
+
+.details-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.details h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.details h3 {
+  margin: 1rem 0 0.25rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mv-color-muted);
+}
+
+.details-type {
+  margin: 0 0 0.125rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mv-color-accent);
+}
+
+.details-close {
+  border: 0;
+  background: none;
+  color: var(--mv-color-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.details dl {
+  margin: 0.75rem 0 0;
+}
+
+.details dl > div {
+  margin-bottom: 0.5rem;
+}
+
+.details dt {
+  font-size: 0.75rem;
+  color: var(--mv-color-muted);
+}
+
+.details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.details .results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.details .results li {
+  margin-bottom: 0.5rem;
+}
+
+.severity {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.severity.error {
+  color: var(--mv-color-error);
+}
+
+.severity.warning {
+  color: var(--mv-color-warning);
+}
+
+.severity.info {
+  color: var(--mv-color-info);
+}
+
+.details .content {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.details .source {
+  margin: 1rem 0 0;
+  overflow-wrap: anywhere;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,4 +173,14 @@ body {
     --mv-color-edge: #3d444d;
     --mv-color-accent: #4493f8;
   }
+}
+
+.link {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--mv-color-accent);
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
 }

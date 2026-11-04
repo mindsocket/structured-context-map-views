@@ -18,4 +18,7 @@
   --color-muted: #59636e;
   --color-edge: #d1d9e0;
   --color-accent: #0969da;
+  --color-error: #cf222e;
+  --color-warning: #9a6700;
+  --color-info: #0969da;
 }

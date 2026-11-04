@@ -4,7 +4,7 @@ The library is pre-1.0: its exports may change between minor versions. Until the
 
 | Entry point | Contents |
 |---|---|
-| `structured-context-map-views` | `MapView`, `ParameterControls`, definition parsing and parameter helpers, and their types |
+| `structured-context-map-views` | `MapView`, the parameter controls, definition parsing, parameter and validation-result helpers, and their types |
 | `structured-context-map-views/node` | Finding definitions on disk. Node only |
 | `structured-context-map-views/styles.css` | Prebuilt styles, required by the components |
 
@@ -27,19 +27,16 @@ import 'structured-context-map-views/styles.css';
 | `definition` | `MapViewDefinition` | A parsed definition |
 | `graph` | `SpaceGraph` | The space to render, as structured-context's `assembleSpaceGraph` or `spaceGraphFrom` returns it |
 | `values` | `ParameterValues` | Current parameter values, owned by the host. Missing values use defaults |
+| `annotations` | `AnnotationIndex` | Validation results by node (see [Validation results](#validation-results)). Drawn only when the region's `nodes.validation` isn't `off` |
 | `onNodeSelect` | `(node: SpaceNode) => void` | Called when the reader selects a node |
 
 `MapView` sizes to its container and scrolls within it.
 
-### `ParameterControls`
+### Parameter controls
 
-Controls generated from the definition's parameters. Renders nothing when there are none.
+`ParameterControls` is a ready-made row of controls generated from the definition's parameters; it renders nothing when there are none. `values` holds the host's current values (missing or stale ones show as the default), and `onChange` receives the parameter name and new value.
 
-| Prop | Type | Meaning |
-|---|---|---|
-| `definition` | `MapViewDefinition` | |
-| `values` | `ParameterValues` | Missing or stale values show as the default, matching what renders |
-| `onChange` | `(name: string, value: unknown) => void` | |
+A host that wants its own layout builds from smaller parts: `useParameterControls(definition, values, onChange)` returns each parameter with its current value and a setter, with no markup, and `ParameterInput` renders the right input for a parameter. The typed inputs (`ToggleParameterInput`, `SelectParameterInput`, `MultiSelectParameterInput`) are exported for hosts that want one kind of input without the dispatch.
 
 ## Definitions
 
@@ -48,12 +45,21 @@ Controls generated from the definition's parameters. Renders nothing when there 
 - `mapViewsForSchema(definitions, schemaId)`: the definitions that apply to a schema.
 - `resolveParameterValues(definition, values)`: the effective value of every parameter.
 - `selectionFilter(definition, values)`: the first region's `select.filter`, for a host to apply when loading the space.
+- `viewValidationLevel(definition, values)`: the first region's `nodes.validation`, so a host can skip running validation when it is `off`.
 - `MAP_VIEW_SCHEMAS`: the format's JSON Schemas.
 
 ## Data
 
 Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsidian plugin) passes the graph `assembleSpaceGraph` returns. A host whose server and browser are separate sends the wire format: `exportSpaceGraph` on the server, `spaceGraphFrom` (from `structured-context/browser`) in the browser; see `apps/navigator/src/server/load-space.ts`. To pick definitions, hosts also need the space's schema id (`context.schema.$id`).
 
+## Validation results
+
+Hosts that validate a space can show the results on the nodes. Pass `annotationsFrom(input, graph)` the parts of structured-context's `ValidationResult` they have (`ruleViolations`, `hierarchyViolations` and `nodeErrors` are each optional, so a host that runs only some checks passes only those). It returns `{ annotations, unattached }`: an `AnnotationIndex` (results by node id) to pass to `MapView`, and the results with no node on the graph for the host to surface itself.
+
+structured-context names a result's node by `nodeId`. A result is attached when that node is in the graph. It is `unattached` when it has no `nodeId` (a global-scope rule) or its node isn't in the graph, which is every schema failure, since failed nodes aren't in a `SpaceGraph`. An unattached result keeps its `nodeId` and, for schema errors, its source `location`.
+
+Each annotation has a `severity` (`error`, `warning` or `info`), a `source` (`schema`, `hierarchy` or `rule`) and a `message`. Schema and hierarchy results are errors; rule results carry the rule's severity. Which show, and the lowest severity drawn, are the definition's `nodes.validation` and `nodes.validationSources` settings.
+
 ## Theming
 
-Override the `--mv-color-*` variables (`surface`, `card`, `ink`, `muted`, `edge`, `accent`) on an ancestor of the map view, for example mapping them onto the host's theme variables.
+Override the `--mv-color-*` variables (`surface`, `card`, `ink`, `muted`, `edge`, `accent`, and `error`, `warning`, `info` for validation badges) on an ancestor of the map view, for example mapping them onto the host's theme variables.

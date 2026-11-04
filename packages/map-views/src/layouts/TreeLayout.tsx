@@ -1,14 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
-import {
-  buildTree,
-  type LayoutConfig,
-  type Orientation,
-  type Region,
-  type TreeLayoutConfig,
-  type TreeOccurrence,
-  treeLinks,
-} from '../core';
+import type { LayoutConfig, Orientation, Region, TreeLayoutConfig } from '../core/definition';
+import { buildTree, type TreeOccurrence, treeLinks } from '../core/tree';
 import { EdgeOverlay } from './EdgeOverlay';
 import { NodeCard } from './NodeCard';
 

@@ -43,6 +43,10 @@ One step of a landscape's grouping: a node type, or a field whose values become 
 
 A setting the reader can change. A definition declares each parameter once, as a JSON Schema with a default, and binds it to settings with `{ "$param": "<name>" }`. Hosts generate controls from the declared parameters and own the current values.
 
+## Annotation
+
+A validation result attached to a node: a severity, a source (`schema`, `hierarchy` or `rule`) and a message. Hosts supply annotations; a region's `nodes.validation` and `nodes.validationSources` settings choose which are drawn.
+
 ## Host
 
 An app that embeds the library: it loads space data and definitions, owns parameter values and decides what selecting a node does. The navigator and the Obsidian plugin are hosts.

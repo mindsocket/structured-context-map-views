@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { type AxisConfig, buildXYPlot, type XYLayoutConfig } from '../core';
+import type { AxisConfig, XYLayoutConfig } from '../core/definition';
+import { buildXYPlot } from '../core/xy';
 import { EdgeOverlay } from './EdgeOverlay';
 import { NodeCard } from './NodeCard';
 import type { LayoutProps } from './TreeLayout';

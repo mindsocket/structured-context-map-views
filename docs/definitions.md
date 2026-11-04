@@ -45,6 +45,8 @@ A map view definition is a JSON5 file. Its format is a set of JSON Schemas publi
 | `select.filter` | | A structured-context filter: a filter view name from the space's config, or an expression such as `WHERE …` or `SELECT … WHERE …`. By default the region shows every node |
 | `nodes.style` | | `card` (title and fields, the default) or `shape` (a compact marker with a tooltip) |
 | `nodes.fields` | | Schema fields shown on cards |
+| `nodes.validation` | | The lowest severity of validation result drawn on nodes: `off` (the default), `error`, `warning` or `info`. Results come from the host; with none supplied nothing is drawn |
+| `nodes.validationSources` | | Which results are drawn: any of `schema`, `hierarchy`, `rule` (default all three) |
 | `edges.show` | | Whether connectors are drawn (default `true`) |
 
 ## Layouts
@@ -91,9 +93,9 @@ An axis has a `field` (required), a `domain` (`[min, max]`, or `'data'` for the 
 
 ## Parameters
 
-Any setting marked parameterisable in the schemas (`orientation`, `dag`, `intermediate`, `nodes.style`, `nodes.fields`, `edges.show`, a landscape level's `type`, an axis's `field` and `direction`, `types`, `edgeFields`) takes either a fixed value or `{ $param: '<name>' }`.
+Any setting marked parameterisable in the schemas (`orientation`, `dag`, `intermediate`, `nodes.style`, `nodes.fields`, `nodes.validation`, `nodes.validationSources`, `edges.show`, a landscape level's `type`, an axis's `field` and `direction`, `types`, `edgeFields`) takes either a fixed value or `{ $param: '<name>' }`.
 
-Each parameter is a JSON Schema with a `default` and an optional `title`. It can `$ref` a shared setting from `settings.json` (`orientation`, `nodeStyle`, `fieldList`) or a layout's own definitions (e.g. `layouts/tree.json#/$defs/dag`), and narrow it. Relative refs resolve against the format's `latest` folder; full URLs work too.
+Each parameter is a JSON Schema with a `default` and an optional `title`. It can `$ref` a shared setting from `settings.json` (`orientation`, `nodeStyle`, `fieldList`, `validationLevel`, `validationSources`) or a layout's own definitions (e.g. `layouts/tree.json#/$defs/dag`), and narrow it. Relative refs resolve against the format's `latest` folder; full URLs work too.
 
 ```json5
 parameters: {
@@ -105,6 +107,12 @@ parameters: {
   },
 },
 ```
+
+Writing a fixed value instead of a binding forces the setting and offers no control: `validation: 'warning'` always shows warnings and errors, `validation: 'off'` never shows results.
+
+### Where a setting belongs
+
+A setting lives at the narrowest scope where it can differ and still make sense. Per region: how that region presents its nodes (`nodes.style`, `nodes.validation`). Never in a definition: data the host supplies (such as validation results), where a definition only chooses how to show it.
 
 A definition is rejected when a parameter's default doesn't match its schema, when a binding names an undeclared parameter, or when a value the parameter allows isn't valid for a setting it's bound to.
 

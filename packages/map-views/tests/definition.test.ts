@@ -5,7 +5,7 @@ import {
   resolveParameterValues,
   resolveRegions,
   selectionFilter,
-} from '../src/core';
+} from '../src/core/definition';
 import { SCHEMA_URL } from '../src/core/format/schema-url';
 
 const minimal = `{ $id: 'sctx-map-view://t', schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`;
@@ -36,7 +36,7 @@ describe('parseMapViewDefinition', () => {
       {
         id: 'main',
         layout: { type: 'tree', orientation: 'vertical', dag: 'repeat' },
-        nodes: { style: 'card', fields: [] },
+        nodes: { style: 'card', fields: [], validation: 'off', validationSources: ['schema', 'hierarchy', 'rule'] },
         edges: { show: true },
       },
     ]);

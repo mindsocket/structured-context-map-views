@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test';
-import { buildXYPlot, type XYLayoutConfig } from '../src/core';
+import type { XYLayoutConfig } from '../src/core/definition';
+import { buildXYPlot } from '../src/core/xy';
 import { fixtureGraph } from './fixture-graph';
 import teaShop from './fixtures/tea-shop.json';
 

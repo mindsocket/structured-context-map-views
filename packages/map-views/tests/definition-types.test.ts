@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import type { AuthoredDefinition, Region } from '../src/core';
+import type { AuthoredDefinition, Region } from '../src/core/definition';
 
 // Compile-time checks: the types derived from the schemas (FromSchema) must stay precise.
 // A broken $ref silently collapses a type to `never` or `unknown`; these fail `bun run typecheck` if so.
@@ -7,7 +7,7 @@ import type { AuthoredDefinition, Region } from '../src/core';
 const region: Region = {
   id: 'main',
   layout: { type: 'tree', orientation: 'horizontal', dag: 'cross-edge' },
-  nodes: { style: 'shape', fields: ['status'] },
+  nodes: { style: 'shape', fields: ['status'], validation: 'warning', validationSources: ['schema', 'rule'] },
   edges: { show: false },
 };
 

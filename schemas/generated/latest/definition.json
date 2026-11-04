@@ -153,6 +153,34 @@
                   "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
                 }
               ]
+            },
+            "validation": {
+              "description": "The lowest severity of validation result shown on nodes, or off. Needs the host to supply results.",
+              "default": "off",
+              "anyOf": [
+                {
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/validationLevel"
+                },
+                {
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
+                }
+              ]
+            },
+            "validationSources": {
+              "description": "Which kinds of validation result are shown.",
+              "default": [
+                "schema",
+                "hierarchy",
+                "rule"
+              ],
+              "anyOf": [
+                {
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/validationSources"
+                },
+                {
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
+                }
+              ]
             }
           }
         },

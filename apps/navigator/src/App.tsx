@@ -1,133 +1,147 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { SpaceGraph, SpaceNode } from 'structured-context/api';
-import { spaceGraphFrom } from 'structured-context/browser';
+import type { SpaceNode } from 'structured-context/api';
 import {
+  annotationsFrom,
   MapView,
   type MapViewDefinition,
   mapViewsForSchema,
   ParameterControls,
-  type ParameterValues,
   selectionFilter,
+  viewValidationLevel,
 } from 'structured-context-map-views';
-import type { SpaceResponse } from './space-response';
+import { fetchJson, fetchSpace, fetchValidation, spaceUrl, validationUrl } from './api';
+import { NodeDetails } from './NodeDetails';
+import { UnattachedAnnotationPanel } from './UnattachedAnnotationPanel';
+import { useFetched } from './useFetched';
+import { useUrlState } from './useUrlState';
 
 type SpaceListItem = { name: string };
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-  const body = await res.json();
-  if (!res.ok) throw new Error(body.error ?? res.statusText);
-  return body as T;
-}
-
-type Space = { schemaId: string | undefined; graph: SpaceGraph };
-
-async function fetchSpace(url: string): Promise<Space> {
-  const { schemaId, graph } = await fetchJson<SpaceResponse>(url);
-  return { schemaId, graph: spaceGraphFrom(graph) };
-}
-
 export function App() {
-  const [spaces, setSpaces] = useState<SpaceListItem[]>([]);
-  const [definitions, setDefinitions] = useState<MapViewDefinition[]>([]);
-  const [selected, setSelected] = useState<string>('');
-  const [mapViewName, setMapViewName] = useState<string>('');
-  // The whole space, for its schema; then the space as the map view's filter selects it.
-  const [data, setData] = useState<Space>();
-  const [selection, setSelection] = useState<{ filter: string; data: Space }>();
-  const [node, setNode] = useState<SpaceNode>();
-  const [error, setError] = useState<string>();
-  // Session-only parameter values, per map view.
-  const [valuesByView, setValuesByView] = useState<Record<string, ParameterValues>>({});
+  const { spaceName, mapViewId, values, setSpaceName, setMapViewId, setValue } = useUrlState();
+  const [selectedNode, setSelectedNode] = useState<SpaceNode>();
+  const [unattachedPanelOpen, setUnattachedPanelOpen] = useState(false);
 
+  const spaceList = useFetched('/api/spaces', fetchJson<SpaceListItem[]>);
+  const allDefinitions = useFetched('/api/map-views', fetchJson<MapViewDefinition[]>);
+  // The whole space, unfiltered: gives the schema (to pick map views) and the nodes validation results attach to.
+  const fullSpace = useFetched(spaceName ? spaceUrl(spaceName) : undefined, fetchSpace);
+
+  const applicableDefinitions = useMemo(
+    () => mapViewsForSchema(allDefinitions.data ?? [], fullSpace.data?.schemaId),
+    [allDefinitions.data, fullSpace.data?.schemaId],
+  );
+  const activeDefinition = applicableDefinitions.find((d) => d.id === mapViewId) ?? applicableDefinitions[0];
+  // Settle on the map view actually drawn, so the URL names it and a stale or missing `view` is replaced.
   useEffect(() => {
-    fetchJson<SpaceListItem[]>('/api/spaces').then(setSpaces, (e) => setError(String(e)));
-    fetchJson<MapViewDefinition[]>('/api/map-views').then(setDefinitions, (e) => setError(String(e)));
-  }, []);
+    if (activeDefinition && activeDefinition.id !== mapViewId) setMapViewId(activeDefinition.id);
+  }, [activeDefinition, mapViewId, setMapViewId]);
 
-  useEffect(() => {
-    if (!selected) return;
-    setData(undefined);
-    setNode(undefined);
-    setError(undefined);
-    let current = true;
-    fetchSpace(`/api/spaces/${encodeURIComponent(selected)}`).then(
-      (d) => current && setData(d),
-      (e) => current && setError(String(e)),
-    );
-    return () => {
-      current = false;
-    };
-  }, [selected]);
+  // The map view may select a subset of the space; that subset is what the map draws.
+  const selectionExpression = activeDefinition ? selectionFilter(activeDefinition, values) : undefined;
+  const filteredSpace = useFetched(
+    spaceName && selectionExpression ? spaceUrl(spaceName, selectionExpression) : undefined,
+    fetchSpace,
+  );
+  // The unfiltered space stands in only for map views without a selection, never for a pending one.
+  const mapSpace = selectionExpression ? filteredSpace.data : fullSpace.data;
 
-  const available = useMemo(() => mapViewsForSchema(definitions, data?.schemaId), [definitions, data?.schemaId]);
-  const definition = available.find((d) => d.id === mapViewName) ?? available[0];
-  const values = definition ? valuesByView[definition.id] : undefined;
-  const filter = definition ? selectionFilter(definition, values) : undefined;
+  // Validation runs only when the map view asks to show its results.
+  const validationLevel = activeDefinition ? viewValidationLevel(activeDefinition, values) : 'off';
+  const validationResults = useFetched(
+    spaceName && validationLevel !== 'off' ? validationUrl(spaceName) : undefined,
+    fetchValidation,
+  );
+  // Attached against the full space, so a selection that leaves nodes out doesn't make their results look unattached.
+  const { annotations, unattached } = useMemo(
+    () =>
+      fullSpace.data && validationResults.data
+        ? annotationsFrom(validationResults.data, fullSpace.data.graph)
+        : { annotations: undefined, unattached: [] },
+    [fullSpace.data, validationResults.data],
+  );
 
-  useEffect(() => {
-    setSelection(undefined);
-    if (!selected || !filter) return;
-    let current = true;
-    fetchSpace(`/api/spaces/${encodeURIComponent(selected)}?filter=${encodeURIComponent(filter)}`).then(
-      (d) => current && setSelection({ filter, data: d }),
-      (e) => current && setError(String(e)),
-    );
-    return () => {
-      current = false;
-    };
-  }, [selected, filter]);
-  // Unfiltered data stands in only for map views without a filter, never for a pending selection.
-  const shown = filter ? (selection?.filter === filter ? selection.data : undefined) : data;
+  const isLoading =
+    spaceList.loading ||
+    allDefinitions.loading ||
+    fullSpace.loading ||
+    (selectionExpression !== undefined && filteredSpace.loading) ||
+    validationResults.loading;
+  const error =
+    spaceList.error ?? allDefinitions.error ?? fullSpace.error ?? filteredSpace.error ?? validationResults.error;
 
-  const setValue = (name: string, value: unknown) => {
-    if (!definition) return;
-    setValuesByView((all) => ({ ...all, [definition.id]: { ...all[definition.id], [name]: value } }));
+  const chooseSpace = (name: string) => {
+    setSelectedNode(undefined);
+    setSpaceName(name);
   };
 
   return (
-    <div className="mv:flex mv:h-screen mv:flex-col mv:bg-surface mv:text-ink">
-      <header className="mv:flex mv:items-center mv:gap-3 mv:border-b mv:border-edge mv:p-3">
-        <h1 className="mv:m-0 mv:text-base mv:font-semibold">Structured Context Navigator</h1>
-        <select value={selected} onChange={(e) => setSelected(e.target.value)} aria-label="Space">
+    <div className="app">
+      <header className="bar">
+        <h1>Structured Context Navigator</h1>
+        <select value={spaceName} onChange={(e) => chooseSpace(e.target.value)} aria-label="Space">
           <option value="">Choose a space…</option>
-          {spaces.map((s) => (
+          {spaceList.data?.map((s) => (
             <option key={s.name} value={s.name}>
               {s.name}
             </option>
           ))}
         </select>
-        {available.length > 0 && (
-          <select value={definition?.id} onChange={(e) => setMapViewName(e.target.value)} aria-label="Map view">
-            {available.map((d) => (
+        {applicableDefinitions.length > 0 && (
+          <select value={activeDefinition?.id} onChange={(e) => setMapViewId(e.target.value)} aria-label="Map view">
+            {applicableDefinitions.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.title}
               </option>
             ))}
           </select>
         )}
-        {data && <span className="mv:text-sm mv:text-muted">schema: {data.schemaId ?? 'none'}</span>}
+        {fullSpace.data && <span className="muted">schema: {fullSpace.data.schemaId ?? 'none'}</span>}
+        {unattached.length > 0 && (
+          <button type="button" className="link" onClick={() => setUnattachedPanelOpen((open) => !open)}>
+            {unattached.length} validation {unattached.length === 1 ? 'result isn’t' : 'results aren’t'} on a node
+          </button>
+        )}
+        {isLoading && <span className="muted">Loading…</span>}
       </header>
-      {definition && definition.parameters.length > 0 && (
-        <div className="mv:border-b mv:border-edge mv:px-3 mv:py-2">
-          <ParameterControls definition={definition} values={values ?? {}} onChange={setValue} />
+      {activeDefinition && activeDefinition.parameters.length > 0 && (
+        <div className="params">
+          <ParameterControls definition={activeDefinition} values={values} onChange={setValue} />
         </div>
       )}
-      {error && <p className="mv:m-0 mv:p-3 mv:text-red-600">{error}</p>}
-      {data && !definition && (
-        <p className="mv:m-0 mv:p-3 mv:text-muted">No map view applies to this space's schema.</p>
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
       )}
-      <main className="mv:flex mv:min-h-0 mv:flex-1">
-        <div className="mv:min-w-0 mv:flex-1">
-          {shown && definition && (
-            <MapView definition={definition} graph={shown.graph} values={values} onNodeSelect={setNode} />
+      {fullSpace.data && !activeDefinition && (
+        <p className="notice muted">No map view applies to this space's schema.</p>
+      )}
+      {!spaceName && !spaceList.loading && !error && (
+        <p className="notice muted">Choose a space to see its map views.</p>
+      )}
+      <main>
+        <div className="map">
+          {mapSpace && activeDefinition && (
+            <MapView
+              definition={activeDefinition}
+              graph={mapSpace.graph}
+              values={values}
+              annotations={annotations}
+              onNodeSelect={setSelectedNode}
+            />
           )}
         </div>
-        {node && (
-          <aside className="mv:w-80 mv:overflow-auto mv:border-l mv:border-edge mv:p-3 mv:text-sm">
-            <h2 className="mv:m-0 mv:font-semibold">{node.title}</h2>
-            <pre className="mv:mt-2 mv:whitespace-pre-wrap mv:text-xs">{JSON.stringify(node.schemaData, null, 2)}</pre>
-          </aside>
+        {unattachedPanelOpen && unattached.length > 0 ? (
+          <UnattachedAnnotationPanel unattached={unattached} onClose={() => setUnattachedPanelOpen(false)} />
+        ) : (
+          selectedNode && (
+            <NodeDetails
+              node={selectedNode}
+              annotations={annotations?.get(selectedNode.id)}
+              onClose={() => setSelectedNode(undefined)}
+            />
+          )
         )}
       </main>
     </div>

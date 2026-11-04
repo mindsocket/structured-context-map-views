@@ -3,14 +3,34 @@
  * is internal; add an export here when a host needs it.
  */
 export {
+  type AnnotationIndex,
+  type AnnotationSource,
+  annotationsFrom,
+  type NodeAnnotation,
+  type Severity,
+  type UnattachedAnnotation,
+  type ValidationInput,
+  worstSeverity,
+} from './core/annotations';
+export {
   MAP_VIEW_SCHEMAS,
   type MapViewDefinition,
   MapViewDefinitionError,
   mapViewsForSchema,
+  type Parameter,
+  type ParameterControl,
   type ParameterValues,
   parseMapViewDefinition,
   resolveParameterValues,
   selectionFilter,
-} from './core';
+  viewValidationLevel,
+} from './core/definition';
 export { MapView } from './layouts/MapView';
 export { ParameterControls } from './layouts/ParameterControls';
+export {
+  MultiSelectParameterInput,
+  ParameterInput,
+  SelectParameterInput,
+  ToggleParameterInput,
+} from './layouts/ParameterInputs';
+export { type ParameterControlState, useParameterControls } from './layouts/useParameterControls';

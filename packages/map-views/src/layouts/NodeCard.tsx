@@ -1,5 +1,7 @@
 import type { SpaceNode } from 'structured-context/api';
-import type { NodesConfig } from '../core';
+import { type NodeAnnotation, type Severity, worstSeverity } from '../core/annotations';
+import type { NodesConfig } from '../core/definition';
+import { useAnnotations } from './annotations-context';
 
 type Props = {
   node: SpaceNode;
@@ -16,7 +18,8 @@ type Props = {
  */
 export function NodeCard({ node, repeat, nodes, onSelect }: Props) {
   const select = () => onSelect?.(node);
-  const label = `${node.resolvedType}: ${node.title}${repeat ? ' (shown in full elsewhere)' : ''}`;
+  const annotations = useAnnotations().get(node.id);
+  const label = `${node.resolvedType}: ${node.title}${repeat ? ' (shown in full elsewhere)' : ''}${annotationsLabel(annotations)}`;
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -37,9 +40,10 @@ export function NodeCard({ node, repeat, nodes, onSelect }: Props) {
         onClick={select}
         onKeyDown={onKeyDown}
         aria-label={label}
-        className={`mv:flex mv:size-6 mv:cursor-pointer mv:items-center mv:justify-center mv:rounded-full mv:border-2 mv:bg-card mv:text-[0.65rem] mv:font-semibold mv:uppercase mv:text-muted mv:hover:border-accent mv:focus-visible:outline-2 mv:focus-visible:outline-accent ${border}`}
+        className={`mv:relative mv:flex mv:size-6 mv:cursor-pointer mv:items-center mv:justify-center mv:rounded-full mv:border-2 mv:bg-card mv:text-[0.65rem] mv:font-semibold mv:uppercase mv:text-muted mv:hover:border-accent mv:focus-visible:outline-2 mv:focus-visible:outline-accent ${border}`}
       >
         <span aria-hidden="true">{node.resolvedType.charAt(0)}</span>
+        <AnnotationBadge annotations={annotations} />
       </div>
     );
   }
@@ -56,7 +60,7 @@ export function NodeCard({ node, repeat, nodes, onSelect }: Props) {
       title={label}
       onClick={select}
       onKeyDown={onKeyDown}
-      className={`mv:w-44 mv:cursor-pointer mv:rounded-md mv:border mv:bg-card mv:px-2.5 mv:py-1.5 mv:text-left mv:shadow-sm mv:hover:border-accent mv:focus-visible:outline-2 mv:focus-visible:outline-accent ${border}`}
+      className={`mv:relative mv:w-44 mv:cursor-pointer mv:rounded-md mv:border mv:bg-card mv:px-2.5 mv:py-1.5 mv:text-left mv:shadow-sm mv:hover:border-accent mv:focus-visible:outline-2 mv:focus-visible:outline-accent ${border}`}
     >
       <span className="mv:block mv:text-[0.65rem] mv:uppercase mv:tracking-wide mv:text-muted">
         {node.resolvedType}
@@ -73,8 +77,35 @@ export function NodeCard({ node, repeat, nodes, onSelect }: Props) {
           ))}
         </dl>
       )}
+      <AnnotationBadge annotations={annotations} />
     </div>
   );
+}
+
+const BADGE: Record<Severity, string> = {
+  error: 'mv:bg-error',
+  warning: 'mv:bg-warning',
+  info: 'mv:bg-info',
+};
+
+/** A count of the node's validation results in the corner, coloured by the most serious. Decorative: the count is in the card's label. */
+function AnnotationBadge({ annotations }: { annotations: readonly NodeAnnotation[] | undefined }) {
+  const worst = annotations && worstSeverity(annotations);
+  if (!annotations || !worst) return null;
+  return (
+    <span
+      aria-hidden="true"
+      className={`mv:absolute mv:-top-1.5 mv:-right-1.5 mv:flex mv:h-4 mv:min-w-4 mv:items-center mv:justify-center mv:rounded-full mv:px-1 mv:text-[0.6rem] mv:font-semibold mv:text-white ${BADGE[worst]}`}
+    >
+      {annotations.length}
+    </span>
+  );
+}
+
+function annotationsLabel(annotations: readonly NodeAnnotation[] | undefined): string {
+  const worst = annotations && worstSeverity(annotations);
+  if (!annotations || !worst) return '';
+  return ` (${annotations.length} validation ${annotations.length === 1 ? 'result' : 'results'}, most serious: ${worst})`;
 }
 
 function formatValue(value: unknown): string | undefined {

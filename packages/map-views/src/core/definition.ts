@@ -214,6 +214,17 @@ export function selectionFilter(definition: MapViewDefinition, values: Parameter
   return resolveRegions(definition, values)[0]?.select?.filter;
 }
 
+/**
+ * The lowest severity of validation result the map view shows on nodes, or `off`. Hosts check it to
+ * decide whether to run validation at all, since results are only drawn when this isn't `off`.
+ */
+export function viewValidationLevel(
+  definition: MapViewDefinition,
+  values: ParameterValues = {},
+): NodesConfig['validation'] {
+  return resolveRegions(definition, values)[0]?.nodes.validation ?? 'off';
+}
+
 /** Map view definitions that apply to a space with the given schema. */
 export function mapViewsForSchema(
   definitions: readonly MapViewDefinition[],

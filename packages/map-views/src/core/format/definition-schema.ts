@@ -114,6 +114,16 @@ export const definitionSchema = {
               [],
               'Schema fields shown on cards.',
             ),
+            validation: parameterisable(
+              { $ref: `${SCHEMA_URL}/settings.json#/$defs/validationLevel` },
+              'off',
+              'The lowest severity of validation result shown on nodes, or off. Needs the host to supply results.',
+            ),
+            validationSources: parameterisable(
+              { $ref: `${SCHEMA_URL}/settings.json#/$defs/validationSources` },
+              ['schema', 'hierarchy', 'rule'],
+              'Which kinds of validation result are shown.',
+            ),
           },
         },
         edges: {

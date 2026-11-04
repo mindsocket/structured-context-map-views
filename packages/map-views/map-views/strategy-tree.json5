@@ -7,6 +7,7 @@
   parameters: {
     orientation: { $ref: 'settings.json#/$defs/orientation', default: 'vertical' },
     nodeStyle: { $ref: 'settings.json#/$defs/nodeStyle', default: 'card' },
+    validation: { $ref: 'settings.json#/$defs/validationLevel', default: 'off' },
     cardFields: {
       title: 'Card fields',
       type: 'array',
@@ -18,7 +19,7 @@
     {
       id: 'main',
       layout: { type: 'tree', orientation: { $param: 'orientation' } },
-      nodes: { style: { $param: 'nodeStyle' }, fields: { $param: 'cardFields' } },
+      nodes: { style: { $param: 'nodeStyle' }, fields: { $param: 'cardFields' }, validation: { $param: 'validation' } },
       edges: { show: true },
     },
   ],

@@ -1,7 +1,6 @@
 import { expect, test } from 'bun:test';
 import { buildSpaceGraph, type SpaceNode } from 'structured-context/api';
-import { isHierarchyEdge } from '../src/core';
-import { childEdges, edgesWithin, parentEdges } from '../src/core/graph';
+import { childEdges, edgesWithin, isHierarchyEdge, parentEdges } from '../src/core/graph';
 import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
 

@@ -2,7 +2,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { type Config, PLUGIN_PREFIX, resolveConfigPath, resolvePluginDir } from 'structured-context/api';
-import { type MapViewDefinition, parseMapViewDefinition } from '../core';
+import { type MapViewDefinition, parseMapViewDefinition } from '../core/definition';
 import { BUNDLED_DEFINITIONS } from './bundled-definitions';
 
 /**

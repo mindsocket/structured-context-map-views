@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from 'react';
-import type { Orientation } from '../core';
+import type { Orientation } from '../core/definition';
 
 /**
  * A connector between two occurrences. `cross` links (e.g. extra parents) are drawn dashed.

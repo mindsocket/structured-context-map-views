@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { buildSpaceGraph } from 'structured-context/api';
 import { makeHierarchy, makeLevel, makeParentRef, makeSpaceNode } from 'structured-context/testing';
-import { buildTree, type TreeOccurrence, treeLinks } from '../src/core';
+import { buildTree, type TreeOccurrence, treeLinks } from '../src/core/tree';
 import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
 

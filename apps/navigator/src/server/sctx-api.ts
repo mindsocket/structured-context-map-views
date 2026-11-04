@@ -3,6 +3,7 @@ import { loadConfig, SpaceNotFoundError } from 'structured-context/api';
 import { loadMapViewDefinitions } from 'structured-context-map-views/node';
 import type { Plugin } from 'vite';
 import { loadSpace } from './load-space';
+import { validateForOverlay } from './validate-space';
 
 /**
  * Dev-server middleware serving structured-context spaces and map view definitions to the
@@ -14,6 +15,9 @@ export function sctxApi(): Plugin {
     configureServer(server) {
       server.middlewares.use('/api/spaces', (req, res) => {
         handle(req, res).catch((err) => sendError(res, err));
+      });
+      server.middlewares.use('/api/validation', (req, res) => {
+        validation(req, res).catch((err) => sendError(res, err));
       });
       server.middlewares.use('/api/map-views', (_req, res) => {
         try {
@@ -45,6 +49,24 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
   try {
     const data = await loadSpace(spaceName, config, filter);
     sendJson(res, 200, data);
+  } catch (err) {
+    if (err instanceof SpaceNotFoundError) {
+      sendJson(res, 404, { error: err.message });
+      return;
+    }
+    throw err;
+  }
+}
+
+/** `/api/validation?space=<name>`: the validation results of a space that attach to nodes. */
+async function validation(req: IncomingMessage, res: ServerResponse) {
+  const spaceName = new URL(req.url ?? '/', 'http://localhost').searchParams.get('space');
+  if (!spaceName) {
+    sendJson(res, 400, { error: 'Missing "space" parameter' });
+    return;
+  }
+  try {
+    sendJson(res, 200, await validateForOverlay(spaceName, loadConfig()));
   } catch (err) {
     if (err instanceof SpaceNotFoundError) {
       sendJson(res, 404, { error: err.message });

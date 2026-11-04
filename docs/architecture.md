@@ -16,15 +16,17 @@ flowchart LR
 | Module | Holds | May import |
 |---|---|---|
 | `packages/map-views/src/core` | Definition parsing and validation, parameter resolution, graph helpers, and the projections (`buildTree`, `buildLandscape`, `buildXYPlot`) | Types from structured-context only. No React, DOM or Node |
-| `packages/map-views/src/layouts` | `MapView`, the layout components, `NodeCard`, `EdgeOverlay`, `ParameterControls`, styles | core, React |
+| `packages/map-views/src/layouts` | `MapView`, the layout components, `NodeCard`, `EdgeOverlay`, the parameter controls (`useParameterControls`, the typed inputs and the default `ParameterControls` layout), styles | core, React |
 | `packages/map-views/src/node` | `loadMapViewDefinitions`: finding definitions in the library (embedded at build time from `packages/map-views/map-views/`), plugins and config folders | core, Node, structured-context |
 | `apps/navigator` | The standalone host: a Vite app plus dev-server middleware calling the structured-context API | Anything |
 
-`packages/map-views/src/index.ts` is the published entry point and re-exports the few things hosts need; `src/node` is the second entry point. `packages/map-views/tests/module-boundaries.test.ts` enforces the core and layouts rules, including that neither imports the Node module. Core runs anywhere (browser, Node, worker) and is tested without a DOM, against fixtures captured from spaces (`packages/map-views/tests/fixtures/`, written by `packages/map-views/scripts/capture-fixtures.ts`). The public sample space in `samples/launch-playbook/` is the source of `launch-playbook.json`.
+`packages/map-views/src/index.ts` is the published entry point and re-exports the few things hosts need (modules import each other directly, with no barrel files); `src/node` is the second entry point. `packages/map-views/tests/module-boundaries.test.ts` enforces the core and layouts rules, including that neither imports the Node module. Core runs anywhere (browser, Node, worker) and is tested without a DOM, against fixtures captured from spaces (`packages/map-views/tests/fixtures/`, written by `packages/map-views/scripts/capture-fixtures.ts`). The public sample space in `samples/launch-playbook/` is the source of `launch-playbook.json`.
 
 ## Data in
 
 Hosts pass the library structured-context's `SpaceGraph`: nodes keyed by id, the main hierarchy, and every hierarchy and relationship edge with its metadata, readable in both directions (`parentEdges`, `childEdges`). The Obsidian plugin assembles it in-process; the navigator's server sends the wire format (`exportSpaceGraph`) and its browser rebuilds the graph (`spaceGraphFrom`). The graph keeps edges to nodes outside it; the helpers in `core/graph.ts` drop them, so a filtered space stays consistent.
+
+Hosts can also pass validation results as an `AnnotationIndex` (`core/annotations.ts`): results by node id, derived from structured-context's `ValidationResult` types. `MapView` narrows it by the region's `nodes.validation` and `nodes.validationSources` and provides the result to node cards through React context, so layouts don't thread it through. Every layout draws nodes with `NodeCard`, which draws the badge.
 
 ## Projections
 
@@ -46,9 +48,9 @@ Connectors are drawn by `EdgeOverlay`: a single `<svg>` over the layout containe
 
 Utilities use Tailwind with the `mv` prefix and no preflight, so nothing global leaks into the host. They are deliberately unlayered: host CSS outside a cascade layer beats anything inside one, and an Obsidian `button { … }` rule would otherwise override them. For the same reason, components avoid native elements that hosts style globally (cards are `div role="button"`, not `<button>`).
 
-Hosts theme map views through six variables: `--mv-color-surface`, `--mv-color-card`, `--mv-color-ink`, `--mv-color-muted`, `--mv-color-edge` and `--mv-color-accent`.
+Hosts theme map views through nine variables: `--mv-color-surface`, `--mv-color-card`, `--mv-color-ink`, `--mv-color-muted`, `--mv-color-edge` and `--mv-color-accent`, plus `--mv-color-error`, `--mv-color-warning` and `--mv-color-info` for validation badges.
 
 ## Hosts
 
-- **Navigator** (`apps/navigator`): dev-server middleware serves spaces (from the structured-context config) and the definitions `loadMapViewDefinitions` finds, as JSON. Selecting a node opens a side panel with its fields. Parameter values live in memory.
+- **Navigator** (`apps/navigator`): dev-server middleware serves spaces (from the structured-context config), the definitions `loadMapViewDefinitions` finds, and, when a map view asks for them, validation results (`validateSpace`, expression rules only), as JSON. The chosen space, map view and parameter values live in the query string, so a reload restores them. Selecting a node opens a side panel with its fields, content and validation results.
 - **Obsidian plugin** ([obsidian-structured-context](https://github.com/mindsocket/obsidian-structured-context)): renders map views in a pane, builds the data in-process, opens the source note on selection and keeps parameter values in the view state.
