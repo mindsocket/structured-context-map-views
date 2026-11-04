@@ -54,4 +54,9 @@ if (!ids.includes('sctx-map-view://core/strategy-tree')) throw new Error(`bundle
 if (typeof MapView !== 'function' || typeof parseMapViewDefinition !== 'function') throw new Error('root exports missing');
 EOF2
 bun smoke.mjs
+# The bin runs against a space in an empty project.
+mkdir space && echo '{ "spaces": [{ "name": "smoke", "path": "space", "schema": "strategy_general.json" }] }' >.sctx.json
+printf -- '---\ntype: vision\n---\n# Smoke\n' >space/smoke.md
+node_modules/.bin/structured-context-map-views export smoke >out.json || { cat out.json; exit 1; }
+bun -e 'const d = JSON.parse(await Bun.file("out.json").text()); if (d.space !== "smoke" || !d.graph || !d.validation || !Array.isArray(d.definitions)) throw new Error("export output incomplete")'
 echo "package ok"

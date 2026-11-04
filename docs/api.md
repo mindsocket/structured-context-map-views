@@ -52,6 +52,22 @@ A host that wants its own layout builds from smaller parts: `useParameterControl
 
 Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsidian plugin) passes the graph `assembleSpaceGraph` returns. A host whose server and browser are separate sends the wire format: `exportSpaceGraph` on the server, `spaceGraphFrom` (from `structured-context/browser`) in the browser; see `apps/navigator/src/server/load-space.ts`. To pick definitions, hosts also need the space's schema id (`context.schema.$id`).
 
+## The `export` command
+
+`structured-context-map-views export <space> [--config <file>]` prints one JSON document for hosts that can't run structured-context themselves (a Claude artifact, say):
+
+```json
+{
+  "space": "name",
+  "schemaId": "sctx://…",
+  "graph": { "formatVersion": 1 },
+  "validation": { "nodeErrors": [], "hierarchyViolations": [], "ruleViolations": [] },
+  "definitions": []
+}
+```
+
+`graph` is `exportSpaceGraph`'s wire format (rebuild it with `spaceGraphFrom`), `validation` is `validateSpace`'s result with no AI judge (so no spend; rules that need one don't run), and `definitions` are the `MapViewDefinition`s that apply to the space's schema, as plain data. Config is found the way structured-context finds it; `--config` overrides. Exit code 1 for an unknown space or invalid config. The command runs under Bun, like structured-context.
+
 ## Validation results
 
 Hosts that validate a space can show the results on the nodes. Pass `annotationsFrom(input, graph)` structured-context's `ValidationResult`, or just the parts a host has (`ruleViolations`, `hierarchyViolations` and `nodeErrors` are each optional, so a host that runs only some checks passes only those). It returns `{ annotations, unattached }`: an `AnnotationIndex` (results by node id) to pass to `MapView`, and the results with no node on the graph for the host to surface itself.

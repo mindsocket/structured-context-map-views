@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 
 /**
  * Library build, so hosts consume plain ES modules and declarations instead of compiling this
- * package's TypeScript and JSX themselves. Two entry points: the package root and `/node`.
+ * package's TypeScript and JSX themselves. Entry points: the package root, `/node` and the `export` bin.
  */
 export default defineConfig({
   plugins: [react()],
@@ -16,6 +16,7 @@ export default defineConfig({
       entry: {
         index: 'src/index.ts',
         node: 'src/node/index.ts',
+        cli: 'src/node/cli.ts',
       },
       formats: ['es'],
     },
