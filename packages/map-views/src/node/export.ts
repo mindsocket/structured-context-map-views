@@ -21,11 +21,14 @@ export type SpaceExport = {
 };
 
 /** The `validateSpace` options `export` passes through unchanged. */
-export type ExportValidateOptions = Pick<NonNullable<Parameters<typeof validateSpace>[1]>, 'depth' | 'includeGated'>;
+export type ExportValidateOptions = Pick<
+  NonNullable<Parameters<typeof validateSpace>[1]>,
+  'depth' | 'includeGated' | 'semantic' | 'ruleFilter'
+>;
 
 /**
  * Node-only: assemble a space for a browser-only host. Validation is structured-context's own
- * `validateSpace`; with no judge supplied, rules that need an AI judge are skipped.
+ * `validateSpace`; rules that need an AI judge run only when `semantic` is passed.
  */
 export async function exportSpace(
   spaceName: string,

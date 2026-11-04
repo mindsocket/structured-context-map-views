@@ -15,4 +15,12 @@ describe('exportSpace', () => {
     expect(result.definitions.every((d) => d.schema === result.schemaId)).toBe(true);
     expect(JSON.parse(JSON.stringify(result))).toEqual(result);
   });
+
+  test('passes validation options to validateSpace', async () => {
+    const config = loadConfig({ startDir: sample });
+    const all = await exportSpace('launch-playbook', config, sample);
+    const none = await exportSpace('launch-playbook', config, sample, { ruleFilter: ['id=no-such-rule'] });
+    expect(none.validation.ruleViolations).toEqual([]);
+    expect(all.validation.ruleViolations.length).toBeGreaterThanOrEqual(none.validation.ruleViolations.length);
+  });
 });
