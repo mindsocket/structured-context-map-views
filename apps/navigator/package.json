@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "structured-context": "^0.20.0",
+    "structured-context": "^0.21.0",
     "structured-context-map-views": "workspace:*"
   },
   "devDependencies": {

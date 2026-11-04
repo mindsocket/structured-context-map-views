@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { dirname, resolve } from 'node:path';
 import { Command } from 'commander';
-import { loadConfig, resolveConfigPath, SctxError, SpaceNotFoundError, setConfigPath } from 'structured-context/api';
+import { loadConfig, resolveConfigPath, SctxError, setConfigPath } from 'structured-context/api';
 import packageJson from '../../package.json' with { type: 'json' };
 import { type ExportValidateOptions, exportSpace } from './export';
 
@@ -33,9 +33,8 @@ program
       const result = await exportSpace(spaceName, config, configDir, options);
       process.stdout.write(`${JSON.stringify(result)}\n`);
     } catch (err) {
-      if (err instanceof SctxError) console.error(`${err.code}: ${err.message}`);
-      else if (err instanceof SpaceNotFoundError) console.error(`Error: ${err.message}`);
-      else throw err;
+      if (!(err instanceof SctxError)) throw err;
+      console.error(`${err.code}: ${err.message}`);
       process.exitCode = 1;
     }
   });
