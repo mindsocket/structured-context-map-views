@@ -45,7 +45,8 @@ body { background: var(--art-ground); color: var(--mv-color-ink); }
 .art-body { flex: 1; min-height: 0; display: flex; flex-wrap: wrap; }
 .art-map { flex: 1 1 24rem; min-width: 0; min-height: 50vh; }
 .art-panel { flex: 0 1 20rem; max-height: 100%; overflow: auto; padding: 0.75rem 1rem; border-left: 1px solid var(--mv-color-edge); }
-.art-panel h2, .art-panel h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+.art-panel h2 { margin: 0 0 0.75rem; font-size: 1.15rem; }
+.art-panel h3 { margin: 1rem 0 0.4rem; padding-top: 0.6rem; border-top: 1px solid var(--mv-color-edge); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--mv-color-muted); }
 .art-panel section + section { margin-top: 1rem; }
 .art-close { float: right; border: 0; background: none; color: inherit; font-size: 1.25rem; cursor: pointer; }
 .art-type { margin: 0; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--mv-color-muted); }

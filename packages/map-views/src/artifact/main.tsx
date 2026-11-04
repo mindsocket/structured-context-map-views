@@ -147,14 +147,17 @@ function Fields({ data }: { data: Record<string, unknown> }) {
   const fields = Object.entries(data).filter(([name, value]) => !SKIPPED_FIELDS.has(name) && !isEmpty(value));
   if (fields.length === 0) return null;
   return (
-    <dl className="art-fields">
-      {fields.map(([name, value]) => (
-        <div key={name}>
-          <dt>{name}</dt>
-          <dd>{asText(value)}</dd>
-        </div>
-      ))}
-    </dl>
+    <>
+      <h3>Fields</h3>
+      <dl className="art-fields">
+        {fields.map(([name, value]) => (
+          <div key={name}>
+            <dt>{name}</dt>
+            <dd>{asText(value)}</dd>
+          </div>
+        ))}
+      </dl>
+    </>
   );
 }
 
