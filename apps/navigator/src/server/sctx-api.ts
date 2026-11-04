@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { loadConfig, SpaceNotFoundError } from 'structured-context/api';
+import { loadConfig, SctxError } from 'structured-context/api';
 import { loadMapViewDefinitions } from 'structured-context-map-views/node';
 import type { Plugin } from 'vite';
 import { loadSpace } from './load-space';
@@ -50,7 +50,7 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
     const data = await loadSpace(spaceName, config, filter);
     sendJson(res, 200, data);
   } catch (err) {
-    if (err instanceof SpaceNotFoundError) {
+    if (err instanceof SctxError && err.code === 'E_SPACE_NOT_FOUND') {
       sendJson(res, 404, { error: err.message });
       return;
     }
@@ -68,7 +68,7 @@ async function validation(req: IncomingMessage, res: ServerResponse) {
   try {
     sendJson(res, 200, await validateForOverlay(spaceName, loadConfig()));
   } catch (err) {
-    if (err instanceof SpaceNotFoundError) {
+    if (err instanceof SctxError && err.code === 'E_SPACE_NOT_FOUND') {
       sendJson(res, 404, { error: err.message });
       return;
     }
