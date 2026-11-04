@@ -20,11 +20,19 @@ export type SpaceExport = {
   definitions: MapViewDefinition[];
 };
 
+/** The `validateSpace` options `export` passes through unchanged. */
+export type ExportValidateOptions = Pick<NonNullable<Parameters<typeof validateSpace>[1]>, 'depth' | 'includeGated'>;
+
 /**
- * Node-only: assemble a space for a browser-only host. Validation runs no AI judge, so it costs
- * nothing; rules that need one are skipped.
+ * Node-only: assemble a space for a browser-only host. Validation is structured-context's own
+ * `validateSpace`; with no judge supplied, rules that need an AI judge are skipped.
  */
-export async function exportSpace(spaceName: string, config: Config, configDir?: string): Promise<SpaceExport> {
+export async function exportSpace(
+  spaceName: string,
+  config: Config,
+  configDir?: string,
+  validateOptions: ExportValidateOptions = {},
+): Promise<SpaceExport> {
   const context = createSpaceContext(spaceName, config);
   const graph = await assembleSpaceGraph(context, {});
   const schemaId = context.schema.$id;
@@ -32,7 +40,7 @@ export async function exportSpace(spaceName: string, config: Config, configDir?:
     space: spaceName,
     schemaId,
     graph: exportSpaceGraph(graph.nodes.values(), context.schema.metadata),
-    validation: await validateSpace(context),
+    validation: await validateSpace(context, validateOptions),
     definitions: mapViewsForSchema(loadMapViewDefinitions(config, { configDir }), schemaId),
   };
 }
