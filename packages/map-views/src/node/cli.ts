@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { Command } from 'commander';
 import { loadConfig, resolveConfigPath, SctxError, setConfigPath } from 'structured-context/api';
 import packageJson from '../../package.json' with { type: 'json' };
-import { type ExportValidateOptions, exportSpace } from './export';
+import { type ExportValidateOptions, exportSnapshot } from './snapshot';
 
 const program = new Command();
 
@@ -15,7 +15,7 @@ program
 
 program
   .command('export')
-  .description("Print a space's graph, validation results and map view definitions as one JSON document")
+  .description('Print a JSON snapshot of a space: its graph, validation results and map view definitions')
   .argument('<space-name>', 'Space name')
   .option('--depth <n>', 'Validate only hierarchy nodes within N levels from the top', (v) => parseInt(v, 10))
   .option('--include-gated', 'Evaluate rules even on nodes gated by an upstream failure')
@@ -30,7 +30,7 @@ program
     try {
       const config = loadConfig();
       const configDir = dirname(resolve(resolveConfigPath().path));
-      const result = await exportSpace(spaceName, config, configDir, options);
+      const result = await exportSnapshot(spaceName, config, configDir, options);
       process.stdout.write(`${JSON.stringify(result)}\n`);
     } catch (err) {
       if (!(err instanceof SctxError)) throw err;

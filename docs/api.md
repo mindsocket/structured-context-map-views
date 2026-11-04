@@ -54,7 +54,7 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 
 ## The `export` command
 
-`structured-context-map-views [--config <file>] export <space> [--depth <n>] [--include-gated] [--rule-filter <dimension=values>] [--semantic [provider]]` prints one JSON document for hosts that can't run structured-context themselves (a Claude artifact, say):
+`structured-context-map-views [--config <file>] export <space> [options]` prints a JSON snapshot of a space (its graph, validation results and applicable map view definitions), so a host that can't run structured-context can render a map view from it. The validation options (see `--help`) mean what they do for `sctx validate`.
 
 ```json
 {
@@ -66,7 +66,7 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 }
 ```
 
-`graph` is `exportSpaceGraph`'s wire format (rebuild it with `spaceGraphFrom`), `validation` is `validateSpace`'s result, with the validation options passed straight through, so the flags mean what they do for `sctx validate`. Rules that need an AI judge run only with `--semantic`, and `definitions` are the `MapViewDefinition`s that apply to the space's schema, as plain data. Config is found the way structured-context finds it; the global `--config` overrides, as for `sctx`. Exit code 1 for an unknown space. Like `sctx`, the command is built with commander and runs under Bun.
+`graph` is the wire format described above and `validation` is what `annotationsFrom` takes.
 
 ## Validation results
 
