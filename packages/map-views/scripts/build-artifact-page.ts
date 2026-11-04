@@ -35,6 +35,22 @@ const imports: Record<string, string> = {
   json5: esm(`json5@${version('json5')}`),
 };
 
+// jsDelivr rewrites a dependency declared as a range to a URL with that range (`react@%5E19.3.0`), which
+// resolves to whatever is newest and loads a second React. Map any such URL to the pinned one.
+const ORIGIN = 'https://cdn.jsdelivr.net';
+const pinnedUrls = { ...imports };
+for (const url of Object.values(pinnedUrls)) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`${url}: ${response.status}`);
+  for (const [, path, name, subpath] of (await response.text()).matchAll(
+    /from"(\/npm\/(react|react-dom)@[^/]+(\/[^"]*?)?\/\+esm)"/g,
+  )) {
+    const pinned = pinnedUrls[`${name}${subpath ?? ''}`];
+    if (!pinned) throw new Error(`${url} imports ${path}, which has no pinned URL.`);
+    if (ORIGIN + path !== pinned) imports[ORIGIN + path] = pinned;
+  }
+}
+
 const css = [join(root, 'dist/styles.css'), join(root, 'src/artifact/page.css')]
   .map((f) => readFileSync(f, 'utf8'))
   .join('\n');
