@@ -70,7 +70,7 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 
 ## Publishing as a Claude artifact
 
-`dist/artifact.html` is a page that needs no edits: publish it as a Claude artifact declaring the `db` capability, then write each space as `spaces/<space>` from the `export` document: `{ schemaId, graph, validation, definitions }`, the last three as JSON strings. The page lists the `spaces` collection, so one artifact can show several spaces, and refreshing is writing the documents again. The page pins this package's version (loaded from jsDelivr) and carries the styles inline. Comments on a card report its accessible name, `<view>/<nodeId>: <type> <title>`; the node id resolves in the stored graph.
+`dist/artifact.html` is a page that needs no edits: publish it as a Claude artifact declaring the `db` capability, then write each space as `spaces/<space>` from the `export` document: `{ schemaId, graph, validation, definitions }`, the last three as JSON strings. The page lists the `spaces` collection, so one artifact can show several spaces, and refreshing is writing the documents again. The page pins this package's version (loaded from jsDelivr) and carries the styles inline. Comments on a card report its accessible name, `[<index>] <title> · <view>`; the index is the node's position in the stored graph's `nodes` array.
 
 ## Validation results
 

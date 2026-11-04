@@ -183,19 +183,22 @@ function Results({
 
 /**
  * Names each card for the viewer's comment mode, which reads the location of a comment from the
- * element's accessible name. The name leads with the map view and node id so it survives the
- * viewer's truncation, then gives the type and title: `<view>/<nodeId>: <type> <title>`. An agent
- * reading the comment resolves the id back to the node from the db.
+ * element's accessible name, which the viewer cuts at about 45 characters. Node ids are long (a file
+ * and heading), so the name leads with the node's position in the stored graph, then its title and the
+ * view: `[<index>] <title> · <view>`. An agent reading the comment takes `graph.nodes[<index>]` from the
+ * db and checks the title.
  */
 function useNodeLabels(graph: ReturnType<typeof spaceGraphFrom>, definition: MapViewDefinition | undefined) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const root = ref.current;
     if (!root || !definition) return;
+    const positions = new Map([...graph.nodes.keys()].map((id, index) => [id as string, index]));
+    const view = definition.id.slice(definition.id.lastIndexOf('/') + 1);
     const stamp = () => {
       for (const card of root.querySelectorAll<HTMLElement>('[data-node-id]')) {
         const node = graph.nodes.get(card.dataset.nodeId as never);
-        if (node) card.setAttribute('aria-label', `${definition.id}/${node.id}: ${node.resolvedType} ${node.title}`);
+        if (node) card.setAttribute('aria-label', `[${positions.get(node.id as string)}] ${node.title} · ${view}`);
       }
     };
     stamp();
