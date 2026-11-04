@@ -54,7 +54,7 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 
 ## Validation results
 
-Hosts that validate a space can show the results on the nodes. Pass `annotationsFrom(input, graph)` the parts of structured-context's `ValidationResult` they have (`ruleViolations`, `hierarchyViolations` and `nodeErrors` are each optional, so a host that runs only some checks passes only those). It returns `{ annotations, unattached }`: an `AnnotationIndex` (results by node id) to pass to `MapView`, and the results with no node on the graph for the host to surface itself.
+Hosts that validate a space can show the results on the nodes. Pass `annotationsFrom(input, graph)` structured-context's `ValidationResult`, or just the parts a host has (`ruleViolations`, `hierarchyViolations` and `nodeErrors` are each optional, so a host that runs only some checks passes only those). It returns `{ annotations, unattached }`: an `AnnotationIndex` (results by node id) to pass to `MapView`, and the results with no node on the graph for the host to surface itself.
 
 structured-context names a result's node by `nodeId`. A result is attached when that node is in the graph. It is `unattached` when it has no `nodeId` (a global-scope rule) or its node isn't in the graph, such as a node of an unknown type. Nodes with field errors stay in the graph, so their schema errors attach. An unattached result keeps its `nodeId` and, for schema errors, its source `location`.
 

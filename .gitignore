@@ -3,3 +3,4 @@ dist/
 lefthook-local.yml
 .claude/worktrees
 .claude/settings.local.json
+.claude/*.swp
