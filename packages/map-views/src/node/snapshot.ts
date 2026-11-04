@@ -12,7 +12,7 @@ import { loadMapViewDefinitions } from './index';
  * Everything a host without filesystem access needs to render a space: its graph, the validation
  * results that attach to nodes, and the map view definitions that apply to its schema. Plain JSON.
  */
-export type SpaceExport = {
+export type SpaceSnapshot = {
   space: string;
   schemaId: string | undefined;
   graph: ReturnType<typeof exportSpaceGraph>;
@@ -27,15 +27,15 @@ export type ExportValidateOptions = Pick<
 >;
 
 /**
- * Node-only: assemble a space for a browser-only host. Validation is structured-context's own
- * `validateSpace`; rules that need an AI judge run only when `semantic` is passed.
+ * Node-only: snapshot a space for a browser-only host. Validation is structured-context's own
+ * `validateSpace`, which also decides whether a judge runs.
  */
-export async function exportSpace(
+export async function exportSnapshot(
   spaceName: string,
   config: Config,
   configDir?: string,
   validateOptions: ExportValidateOptions = {},
-): Promise<SpaceExport> {
+): Promise<SpaceSnapshot> {
   const context = createSpaceContext(spaceName, config);
   const graph = await assembleSpaceGraph(context, {});
   const schemaId = context.schema.$id;

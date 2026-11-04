@@ -17,7 +17,7 @@ A **map view** is a short JSON5 definition that projects every space of one sche
 This repo holds:
 
 - **The library** (`packages/map-views`, package `structured-context-map-views`): React components that render a map view inside any host app, using the browser's own layout engine plus an SVG overlay for connectors.
-- **An `export` command** (`structured-context-map-views export <space>`): a space's graph, validation results and map view definitions as JSON, for hosts that can't read spaces themselves.
+- **An `export` command** (`structured-context-map-views export <space>`): a JSON snapshot of a space (graph, validation results, map view definitions) for rendering a map view in a host that can't run structured-context.
 - **The navigator** (`apps/navigator`, not published): a standalone app for browsing your spaces through their map views.
 
 Pre-1.0. Docs:
