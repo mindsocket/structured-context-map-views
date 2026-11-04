@@ -68,6 +68,10 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 
 `graph` is the wire format described above and `validation` is what `annotationsFrom` takes.
 
+## Publishing as a Claude artifact
+
+`dist/artifact.html` is a page that needs no edits: publish it as a Claude artifact declaring the `db` capability, then write each space as `spaces/<space>` from the `export` document: `{ schemaId, graph, validation, definitions }`, the last three as JSON strings. The page lists the `spaces` collection, so one artifact can show several spaces, and refreshing is writing the documents again. The page pins this package's version (loaded from jsDelivr) and carries the styles inline. Comments on a card report its accessible name, `<view>/<nodeId>: <type> <title>`; the node id resolves in the stored graph.
+
 ## Validation results
 
 Hosts that validate a space can show the results on the nodes. Pass `annotationsFrom(input, graph)` structured-context's `ValidationResult`, or just the parts a host has (`ruleViolations`, `hierarchyViolations` and `nodeErrors` are each optional, so a host that runs only some checks passes only those). It returns `{ annotations, unattached }`: an `AnnotationIndex` (results by node id) to pass to `MapView`, and the results with no node on the graph for the host to surface itself.

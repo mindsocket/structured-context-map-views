@@ -59,4 +59,8 @@ mkdir space && echo '{ "spaces": [{ "name": "smoke", "path": "space", "schema": 
 printf -- '---\ntype: vision\n---\n# Smoke\n' >space/smoke.md
 node_modules/.bin/structured-context-map-views export smoke >out.json || { cat out.json; exit 1; }
 bun -e 'const d = JSON.parse(await Bun.file("out.json").text()); if (d.space !== "smoke" || !d.graph || !d.validation || !Array.isArray(d.definitions)) throw new Error("export output incomplete")'
+# The artifact page pins this package's version and the host entry it loads is shipped.
+version=$(node -p 'require("./node_modules/structured-context-map-views/package.json").version')
+grep -q "structured-context-map-views@$version/dist/artifact.js" node_modules/structured-context-map-views/dist/artifact.html
+test -f node_modules/structured-context-map-views/dist/artifact.js
 echo "package ok"

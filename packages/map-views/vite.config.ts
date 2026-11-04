@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 
 /**
  * Library build, so hosts consume plain ES modules and declarations instead of compiling this
- * package's TypeScript and JSX themselves. Entry points: the package root, `/node` and the `export` bin.
+ * package's TypeScript and JSX themselves. Entry points: the package root, `/node`, the `export` bin and the Claude artifact host.
  */
 export default defineConfig({
   plugins: [react()],
@@ -17,6 +17,7 @@ export default defineConfig({
         index: 'src/index.ts',
         node: 'src/node/index.ts',
         cli: 'src/node/cli.ts',
+        artifact: 'src/artifact/main.tsx',
       },
       formats: ['es'],
     },

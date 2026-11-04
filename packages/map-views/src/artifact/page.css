@@ -1,0 +1,59 @@
+:root {
+  --mv-color-surface: #f8f8f7;
+  --mv-color-card: #ffffff;
+  --mv-color-ink: #1f2328;
+  --mv-color-muted: #59636e;
+  --mv-color-edge: #d1d9e0;
+  --mv-color-accent: #0969da;
+  --mv-color-error: #cf222e;
+  --mv-color-warning: #9a6700;
+  --mv-color-info: #0969da;
+  --art-ground: #ffffff;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --mv-color-surface: #161b22;
+    --mv-color-card: #21262d;
+    --mv-color-ink: #e6edf3;
+    --mv-color-muted: #9198a1;
+    --mv-color-edge: #3d444d;
+    --mv-color-accent: #4493f8;
+    --mv-color-error: #f85149;
+    --mv-color-warning: #d29922;
+    --mv-color-info: #4493f8;
+    --art-ground: #0d1117;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --mv-color-surface: #161b22;
+  --mv-color-card: #21262d;
+  --mv-color-ink: #e6edf3;
+  --mv-color-muted: #9198a1;
+  --mv-color-edge: #3d444d;
+  --mv-color-accent: #4493f8;
+  --mv-color-error: #f85149;
+  --mv-color-warning: #d29922;
+  --mv-color-info: #4493f8;
+  --art-ground: #0d1117;
+  color-scheme: dark;
+}
+body { background: var(--art-ground); color: var(--mv-color-ink); }
+.art-root { display: flex; flex-direction: column; height: 100vh; }
+.art-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; padding: 0.5rem 1rem; border-bottom: 1px solid var(--mv-color-edge); }
+.art-body { flex: 1; min-height: 0; display: flex; flex-wrap: wrap; }
+.art-map { flex: 1 1 24rem; min-width: 0; min-height: 50vh; }
+.art-panel { flex: 0 1 20rem; max-height: 100%; overflow: auto; padding: 0.75rem 1rem; border-left: 1px solid var(--mv-color-edge); }
+.art-panel h2, .art-panel h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+.art-panel section + section { margin-top: 1rem; }
+.art-close { float: right; border: 0; background: none; color: inherit; font-size: 1.25rem; cursor: pointer; }
+.art-type { margin: 0; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--mv-color-muted); }
+.art-muted { color: var(--mv-color-muted); }
+.art-message { padding: 1rem; }
+.art-results { margin: 0; padding: 0; list-style: none; }
+.art-results li { margin-bottom: 0.6rem; }
+.art-severity { font-weight: 600; }
+.art-error { color: var(--mv-color-error); }
+.art-warning { color: var(--mv-color-warning); }
+.art-info { color: var(--mv-color-info); }
