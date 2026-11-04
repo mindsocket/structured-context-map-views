@@ -60,6 +60,10 @@ structured-context names a result's node by `nodeId`. A result is attached when 
 
 Each annotation has a `severity` (`error`, `warning` or `info`), a `source` (`schema`, `hierarchy` or `rule`) and a `message`. Schema and hierarchy results are errors; rule results carry the rule's severity. Which show, and the lowest severity drawn, are the definition's `nodes.validation` and `nodes.validationSources` settings.
 
+### Showing the messages
+
+The library draws the badge and leaves the messages to the host, because a message list takes its markup and styling from the host (the navigator's side panel and a Claude artifact's differ). The pattern is the same everywhere: keep the `annotations` index you passed to `MapView`, and when a card is selected list `annotations.get(node.id)`, one row per result with its `severity`, its `source` (plus `ruleId` for rule results) and its `message`. List `unattached` separately, grouped by `nodeId`. `NodeAnnotation` and `UnattachedAnnotation` are exported for typing. See `AnnotationList` in `apps/navigator/src/NodeDetails.tsx`.
+
 ## Theming
 
 Override the `--mv-color-*` variables (`surface`, `card`, `ink`, `muted`, `edge`, `accent`, and `error`, `warning`, `info` for validation badges) on an ancestor of the map view, for example mapping them onto the host's theme variables.
