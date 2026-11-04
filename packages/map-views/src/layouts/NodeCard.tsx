@@ -37,6 +37,7 @@ export function NodeCard({ node, repeat, nodes, onSelect }: Props) {
         role="button"
         tabIndex={0}
         title={label}
+        data-node-id={node.id}
         onClick={select}
         onKeyDown={onKeyDown}
         aria-label={label}
@@ -58,6 +59,7 @@ export function NodeCard({ node, repeat, nodes, onSelect }: Props) {
       role="button"
       tabIndex={0}
       title={label}
+      data-node-id={node.id}
       onClick={select}
       onKeyDown={onKeyDown}
       className={`mv:relative mv:w-44 mv:cursor-pointer mv:rounded-md mv:border mv:bg-card mv:px-2.5 mv:py-1.5 mv:text-left mv:shadow-sm mv:hover:border-accent mv:focus-visible:outline-2 mv:focus-visible:outline-accent ${border}`}
