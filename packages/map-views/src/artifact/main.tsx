@@ -35,13 +35,14 @@ function Viewer({ spaces }: { spaces: LoadedSpace[] }) {
   const [viewId, setViewId] = useState(space.definitions[0]?.id);
   const definition = space.definitions.find((d) => d.id === viewId) ?? space.definitions[0];
   const [values, setValues] = useState<ParameterValues>({});
-  const [selected, setSelected] = useState<{ id: string; title: string; type: string }>();
+  const [selectedId, setSelectedId] = useState<string>();
 
   const graph = useMemo(() => spaceGraphFrom(space.graph), [space]);
   const annotated = useMemo(() => annotationsFrom(space.validation, graph), [space, graph]);
   const mapRef = useNodeLabels(graph, definition);
 
   if (!definition) return <p className="art-message">No map views apply to the schema of "{space.name}".</p>;
+  const selected = selectedId ? graph.nodes.get(selectedId as never) : undefined;
   const results = selected ? (annotated.annotations.get(selected.id as never) ?? []) : [];
 
   return (
@@ -56,7 +57,7 @@ function Viewer({ spaces }: { spaces: LoadedSpace[] }) {
               setSpaceName(next.name);
               setViewId(next.definitions[0]?.id);
               setValues({});
-              setSelected(undefined);
+              setSelectedId(undefined);
             }}
           >
             {spaces.map((s) => (
@@ -95,18 +96,21 @@ function Viewer({ spaces }: { spaces: LoadedSpace[] }) {
             graph={graph}
             values={values}
             annotations={annotated.annotations}
-            onNodeSelect={(node) => setSelected({ id: node.id, title: node.title, type: node.resolvedType })}
+            onNodeSelect={(node) => setSelectedId(node.id)}
           />
         </div>
         {(selected || annotated.unattached.length > 0) && (
           <aside className="art-panel" aria-label="Validation results">
             {selected && (
               <section>
-                <button type="button" className="art-close" aria-label="Close" onClick={() => setSelected(undefined)}>
+                <button type="button" className="art-close" aria-label="Close" onClick={() => setSelectedId(undefined)}>
                   ×
                 </button>
-                <p className="art-type">{selected.type}</p>
+                <p className="art-type">{selected.resolvedType}</p>
                 <h2>{selected.title}</h2>
+                <Fields data={selected.schemaData} />
+                {selected.content && <p className="art-content">{selected.content}</p>}
+                <h3>Validation</h3>
                 {results.length === 0 ? (
                   <p className="art-muted">No validation results.</p>
                 ) : (
@@ -124,6 +128,27 @@ function Viewer({ spaces }: { spaces: LoadedSpace[] }) {
         )}
       </div>
     </div>
+  );
+}
+
+const SKIPPED_FIELDS = new Set(['title', 'type', 'content']);
+const isEmpty = (v: unknown) => v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0);
+const asText = (v: unknown): string =>
+  Array.isArray(v) ? v.map(asText).join(', ') : v !== null && typeof v === 'object' ? JSON.stringify(v) : String(v);
+
+/** The node's fields as a list; the title, type and body are shown elsewhere. */
+function Fields({ data }: { data: Record<string, unknown> }) {
+  const fields = Object.entries(data).filter(([name, value]) => !SKIPPED_FIELDS.has(name) && !isEmpty(value));
+  if (fields.length === 0) return null;
+  return (
+    <dl className="art-fields">
+      {fields.map(([name, value]) => (
+        <div key={name}>
+          <dt>{name}</dt>
+          <dd>{asText(value)}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 

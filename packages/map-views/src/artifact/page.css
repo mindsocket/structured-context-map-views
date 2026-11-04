@@ -57,3 +57,8 @@ body { background: var(--art-ground); color: var(--mv-color-ink); }
 .art-error { color: var(--mv-color-error); }
 .art-warning { color: var(--mv-color-warning); }
 .art-info { color: var(--mv-color-info); }
+.art-fields { margin: 0 0 0.75rem; }
+.art-fields div { margin-bottom: 0.4rem; }
+.art-fields dt { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--mv-color-muted); }
+.art-fields dd { margin: 0; overflow-wrap: anywhere; }
+.art-content { white-space: pre-wrap; overflow-wrap: anywhere; }
