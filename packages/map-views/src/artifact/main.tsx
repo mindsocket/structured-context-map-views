@@ -108,11 +108,11 @@ function Viewer({ spaces }: { spaces: LoadedSpace[] }) {
                 </button>
                 <p className="art-type">{selected.resolvedType}</p>
                 <h2>{selected.title}</h2>
-                <h3>Validation</h3>
-                {results.length === 0 ? (
-                  <p className="art-muted">No validation results.</p>
-                ) : (
-                  <Results items={results} />
+                {results.length > 0 && (
+                  <>
+                    <h3>Validation</h3>
+                    <Results items={results} />
+                  </>
                 )}
                 <Fields data={selected.schemaData} />
                 {selected.content && (
