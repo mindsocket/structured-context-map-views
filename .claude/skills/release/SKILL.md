@@ -30,4 +30,4 @@ Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `package
    ```
    If `latest` is not the new version after 5 minutes, stop and tell the user.
 
-5. Tell the user which hosts to update to the new version (the Obsidian plugin depends on the published package), and that the schema URLs under `schemas/generated/<version>/` are now frozen.
+5. Schema freeze: check whether `schemas/generated/<version>/` exists. If it does, say its URLs are now frozen. If not, say the format didn't change.
