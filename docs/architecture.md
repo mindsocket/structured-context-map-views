@@ -44,6 +44,8 @@ Layout components render occurrences as DOM, sizing to their container rather th
 
 Connectors are drawn by `EdgeOverlay`: a single `<svg>` over the layout container. Each layout keeps a map from occurrence key to element (marked with a `data-occurrence` attribute), measures source and target with `getBoundingClientRect`, and redraws when the container resizes (`ResizeObserver`). DOM `id`s aren't used, so several map views can render side by side.
 
+Node cards and shapes carry `data-node-id` (the node's id, repeat occurrences included), so a host can find the node behind an element. It is markup for hosts, not API.
+
 ## Styling
 
 Utilities use Tailwind with the `mv` prefix and no preflight, so nothing global leaks into the host. They are deliberately unlayered: host CSS outside a cascade layer beats anything inside one, and an Obsidian `button { … }` rule would otherwise override them. For the same reason, components avoid native elements that hosts style globally (cards are `div role="button"`, not `<button>`).
