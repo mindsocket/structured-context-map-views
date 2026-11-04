@@ -10,6 +10,6 @@ export async function validateForOverlay(spaceName: string, config: Config): Pro
   return {
     ruleViolations: result.ruleViolations,
     hierarchyViolations: result.hierarchyViolations,
-    nodeErrors: result.nodeErrors.map(({ nodeId, source, errors }) => ({ nodeId, source, errors })),
+    nodeErrors: result.nodeErrors.map(({ nodeId, source, issues }) => ({ nodeId, source, issues })),
   };
 }

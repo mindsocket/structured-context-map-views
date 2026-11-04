@@ -12,13 +12,7 @@ const rule = (
   severity: 'error' | 'warning' | 'info',
   description: string,
 ) => ({ nodeId, ruleId: 'r', category: 'expression', severity, description }) as never;
-const schemaError = (message: string) => ({
-  instancePath: '/status',
-  message,
-  keyword: 'type',
-  schemaPath: '',
-  params: {},
-});
+const schemaIssue = (message: string) => ({ message, dedupeKey: message });
 
 describe('annotationsFrom', () => {
   test('attaches each kind of result to its node, with its source and severity', () => {
@@ -35,7 +29,7 @@ describe('annotationsFrom', () => {
             description: 'bad parent',
           },
         ],
-        nodeErrors: [{ nodeId: idOf('B'), errors: [schemaError('one'), schemaError('two')] }],
+        nodeErrors: [{ nodeId: idOf('B'), issues: [schemaIssue('one'), schemaIssue('two')] }],
       },
       graph,
     );
@@ -53,7 +47,7 @@ describe('annotationsFrom', () => {
     const { annotations, unattached } = annotationsFrom(
       {
         ruleViolations: [rule(undefined, 'error', 'global rule'), rule(missing, 'info', 'unknown node')],
-        nodeErrors: [{ nodeId: missing, source, errors: [schemaError('bad')] }],
+        nodeErrors: [{ nodeId: missing, source, issues: [schemaIssue('bad')] }],
       },
       graph,
     );

@@ -35,7 +35,7 @@ export type AnnotationIndex = ReadonlyMap<NodeId, readonly NodeAnnotation[]>;
  */
 export type ValidationInput = Partial<
   Pick<ValidationResult, 'ruleViolations' | 'hierarchyViolations'> & {
-    nodeErrors: ReadonlyArray<Pick<ValidationResult['nodeErrors'][number], 'nodeId' | 'source' | 'errors'>>;
+    nodeErrors: ReadonlyArray<Pick<ValidationResult['nodeErrors'][number], 'nodeId' | 'source' | 'issues'>>;
   }
 >;
 
@@ -58,13 +58,9 @@ export function annotationsFrom(
     }
   };
 
-  for (const { nodeId, source, errors } of input.nodeErrors ?? []) {
-    for (const error of errors) {
-      add(
-        nodeId,
-        { severity: 'error', source: 'schema', message: `${error.instancePath || '/'}: ${error.message}` },
-        source,
-      );
+  for (const { nodeId, source, issues } of input.nodeErrors ?? []) {
+    for (const issue of issues) {
+      add(nodeId, { severity: 'error', source: 'schema', message: issue.message }, source);
     }
   }
   for (const { nodeId, description } of input.hierarchyViolations ?? []) {
