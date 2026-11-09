@@ -84,6 +84,12 @@ Each annotation has a `severity` (`error`, `warning` or `info`), a `source` (`sc
 
 The library draws the badge and leaves the messages to the host, because a message list takes its markup and styling from the host (the navigator's side panel and a Claude artifact's differ). The pattern is the same everywhere: keep the `annotations` index you passed to `MapView`, and when a card is selected list `annotations.get(node.id)`, one row per result with its `severity`, its `source` (plus `ruleId` for rule results) and its `message`. List `unattached` separately, grouped by `nodeId`. `NodeAnnotation` and `UnattachedAnnotation` are exported for typing. See `AnnotationList` in `apps/navigator/src/NodeDetails.tsx`.
 
+## Drawing a tree yourself
+
+A host that cannot mount React, such as a Claude Code mod, can draw a tree from its projection. `buildTree(graph, regionId, dag)` returns a `Tree`: its `roots` and `orphans` are `TreeOccurrence`s, each with its `node`, its `children` and, for a node shown under several parents, `repeatOf`. `regionId` prefixes the occurrence keys. `dag` is `repeat` (the default) or `cross-edge`, as in the tree layout's setting. Pair it with `annotationsFrom` for the validation results.
+
+Importing only these from the package root pulls in neither React nor the definition parser (ajv, json5) when bundled.
+
 ## Theming
 
 Override the `--mv-color-*` variables (`surface`, `card`, `ink`, `muted`, `edge`, `accent`, and `error`, `warning`, `info` for validation badges) on an ancestor of the map view, for example mapping them onto the host's theme variables.
