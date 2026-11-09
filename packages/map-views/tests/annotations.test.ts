@@ -1,13 +1,8 @@
 import { describe, expect, test } from 'bun:test';
 import { buildSpaceGraph } from 'structured-context/api';
 import { makeSpaceNode } from 'structured-context/testing';
-import {
-  ANNOTATION_SOURCES,
-  annotationsFrom,
-  filterAnnotations,
-  type NodeAnnotation,
-  worstSeverity,
-} from '../src/core/annotations';
+import { VALIDATION_ISSUE_KINDS } from 'structured-context/types';
+import { annotationsFrom, filterAnnotations, type NodeAnnotation, worstSeverity } from '../src/core/annotations';
 
 const graph = buildSpaceGraph([makeSpaceNode('A', 'Thing'), makeSpaceNode('B', 'Thing')], undefined);
 const idOf = (title: string) => [...graph.nodes.values()].find((n) => n.title === title)!.id;
@@ -75,7 +70,7 @@ describe('filterAnnotations', () => {
     { severity: 'error', source: 'schema', message: 'e' },
   ];
   const index = new Map([[idOf('A'), a]]);
-  const all = ANNOTATION_SOURCES;
+  const all = VALIDATION_ISSUE_KINDS;
 
   test('the level is a minimum severity', () => {
     expect(

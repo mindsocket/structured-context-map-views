@@ -5,7 +5,7 @@ Declarative map views of structured-context spaces: the definition format, the r
 ## Layout
 
 - `packages/map-views`: the published library, `structured-context-map-views`. Its `src/index.ts` is the public surface; add an export only when a host needs it.
-- `packages/map-views/src/core`: framework-agnostic. Definitions, parameters, graph helpers and the projections. No React, DOM, Node or runtime structured-context imports (type-only is fine); `tests/module-boundaries.test.ts` enforces this.
+- `packages/map-views/src/core`: framework-agnostic. Definitions, parameters, graph helpers and the projections. No React, DOM, Node or runtime structured-context imports (type-only is fine, and `structured-context/types` is browser-safe); `tests/module-boundaries.test.ts` enforces this.
 - `packages/map-views/src/layouts`: React components and the SVG edge overlay. Don't import host code from here.
 - `packages/map-views/src/node`: Node-only definition discovery (`loadMapViewDefinitions`), shipped as its own entry point (`structured-context-map-views/node`). Core and layouts must not import it.
 - `apps/navigator`: the standalone host (private package: a Vite app plus dev-server middleware calling the structured-context API). It consumes the library like any other host.

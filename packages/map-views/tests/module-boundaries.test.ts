@@ -17,11 +17,14 @@ function importsIn(dir: string): { file: string; specifier: string }[] {
 }
 
 describe('module boundaries', () => {
+  // `structured-context/types` is the one runtime import allowed: it has no imports of its own, so it is browser-safe
   test('core has no React, DOM-host, Node or runtime structured-context dependencies and no upward imports', () => {
     const forbidden = /^(react|react-dom)(\/|$)|^node:|^structured-context(\/|$)|^(\.\.\/)+(layouts|node)(\/|$)/;
     const violations = importsIn('core').filter(
       ({ file, specifier }) =>
-        forbidden.test(specifier) && !(specifier.startsWith('structured-context') && isTypeOnly(file, specifier)),
+        forbidden.test(specifier) &&
+        specifier !== 'structured-context/types' &&
+        !(specifier.startsWith('structured-context') && isTypeOnly(file, specifier)),
     );
     expect(violations).toEqual([]);
   });

@@ -1,3 +1,4 @@
+import { VALIDATION_ISSUE_KINDS } from 'structured-context/types';
 import { PARAM_REF, parameterisable } from './param-ref';
 import { SCHEMA_URL } from './schema-url';
 
@@ -121,7 +122,7 @@ export const definitionSchema = {
             ),
             validationSources: parameterisable(
               { $ref: `${SCHEMA_URL}/settings.json#/$defs/validationSources` },
-              ['schema', 'duplicate', 'broken-link', 'hierarchy', 'rule', 'gated', 'content-link'],
+              VALIDATION_ISSUE_KINDS,
               'Which kinds of validation result are shown.',
             ),
           },
