@@ -26,7 +26,7 @@ flowchart LR
 
 Hosts pass the library structured-context's `SpaceGraph`: nodes keyed by id, the main hierarchy, and every hierarchy and relationship edge with its metadata, readable in both directions (`parentEdges`, `childEdges`). The Obsidian plugin assembles it in-process; the navigator's server sends the wire format (`exportSpaceGraph`) and its browser rebuilds the graph (`spaceGraphFrom`). The graph keeps edges to nodes outside it; the helpers in `core/graph.ts` drop them, so a filtered space stays consistent.
 
-Hosts can also pass validation results as an `AnnotationIndex` (`core/annotations.ts`): results by node id, derived from structured-context's `ValidationResult` types. `MapView` narrows it by the region's `nodes.validation` and `nodes.validationSources` and provides the result to node cards through React context, so layouts don't thread it through. Every layout draws nodes with `NodeCard`, which draws the badge.
+Hosts can also pass validation results as an `AnnotationIndex` (`core/annotations.ts`): results by node id, built by `annotationsFrom` from structured-context's per-node issues (`nodeIssues`, or the `issues` of `sctx validate --json`). `MapView` narrows it by the region's `nodes.validation` and `nodes.validationSources` and provides the result to node cards through React context, so layouts don't thread it through. Every layout draws nodes with `NodeCard`, which draws the badge.
 
 ## Projections
 

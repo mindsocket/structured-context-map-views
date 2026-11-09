@@ -24,9 +24,9 @@ export const settingsSchema = {
     validationSources: {
       title: 'Validation sources',
       description:
-        'Which kinds of validation result are shown. schema: a node failing its schema. hierarchy: a node under a parent type it is not allowed under. rule: a schema rule violation.',
+        'Which kinds of validation result are shown. schema: a node failing its schema. duplicate: an id more than one node uses. broken-link: a relationship to a node that does not exist. hierarchy: a node under a parent type it is not allowed under. rule: a schema rule violation. gated: a note that rules were not checked because an ancestor failed. content-link: a link in the body that resolves to no node.',
       type: 'array',
-      items: { enum: ['schema', 'hierarchy', 'rule'] },
+      items: { enum: ['schema', 'duplicate', 'broken-link', 'hierarchy', 'rule', 'gated', 'content-link'] },
       uniqueItems: true,
     },
     fieldList: {

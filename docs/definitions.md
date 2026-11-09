@@ -46,7 +46,7 @@ A map view definition is a JSON5 file. Its format is a set of JSON Schemas publi
 | `nodes.style` | | `card` (title and fields, the default) or `shape` (a compact marker with a tooltip) |
 | `nodes.fields` | | Schema fields shown on cards |
 | `nodes.validation` | | The lowest severity of validation result drawn on nodes: `off` (the default), `error`, `warning` or `info`. Results come from the host; with none supplied nothing is drawn |
-| `nodes.validationSources` | | Which results are drawn: any of `schema`, `hierarchy`, `rule` (default all three) |
+| `nodes.validationSources` | | Which results are drawn: any of `schema`, `duplicate`, `broken-link`, `hierarchy`, `rule`, `gated`, `content-link` (default all) |
 | `edges.show` | | Whether connectors are drawn (default `true`) |
 
 ## Layouts

@@ -36,7 +36,12 @@ describe('parseMapViewDefinition', () => {
       {
         id: 'main',
         layout: { type: 'tree', orientation: 'vertical', dag: 'repeat' },
-        nodes: { style: 'card', fields: [], validation: 'off', validationSources: ['schema', 'hierarchy', 'rule'] },
+        nodes: {
+          style: 'card',
+          fields: [],
+          validation: 'off',
+          validationSources: ['schema', 'duplicate', 'broken-link', 'hierarchy', 'rule', 'gated', 'content-link'],
+        },
         edges: { show: true },
       },
     ]);

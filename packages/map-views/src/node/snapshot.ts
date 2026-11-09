@@ -3,8 +3,10 @@ import {
   type Config,
   createSpaceContext,
   exportSpaceGraph,
+  nodeIssues,
   validateSpace,
 } from 'structured-context/api';
+import type { ValidationInput } from '../core/annotations';
 import { type MapViewDefinition, mapViewsForSchema } from '../core/definition';
 import { loadMapViewDefinitions } from './index';
 
@@ -16,7 +18,8 @@ export type SpaceSnapshot = {
   space: string;
   schemaId: string | undefined;
   graph: ReturnType<typeof exportSpaceGraph>;
-  validation: Awaited<ReturnType<typeof validateSpace>>;
+  /** What `annotationsFrom` attaches: each node's issues and the rule violations */
+  validation: ValidationInput;
   definitions: MapViewDefinition[];
 };
 
@@ -39,11 +42,12 @@ export async function exportSnapshot(
   const context = createSpaceContext(spaceName, config);
   const graph = await assembleSpaceGraph(context, {});
   const schemaId = context.schema.$id;
+  const validation = await validateSpace(context, validateOptions);
   return {
     space: spaceName,
     schemaId,
     graph: exportSpaceGraph(graph.nodes.values(), context.schema.metadata),
-    validation: await validateSpace(context, validateOptions),
+    validation: { issues: nodeIssues(validation, validateOptions), ruleViolations: validation.ruleViolations },
     definitions: mapViewsForSchema(loadMapViewDefinitions(config, { configDir }), schemaId),
   };
 }

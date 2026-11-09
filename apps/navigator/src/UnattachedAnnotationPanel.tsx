@@ -24,12 +24,7 @@ export function UnattachedAnnotationPanel({
       {[...groups].map(([nodeId, items]) => (
         <section key={nodeId}>
           <h3>{nodeId || 'Space'}</h3>
-          {items[0]?.location && (
-            <p className="source muted">
-              {items[0].location.file}
-              {items[0].location.line !== undefined && `:${items[0].location.line}`}
-            </p>
-          )}
+          {items[0]?.line !== undefined && <p className="source muted">line {items[0].line}</p>}
           <AnnotationList annotations={items} />
         </section>
       ))}
