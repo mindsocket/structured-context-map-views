@@ -1,5 +1,5 @@
 /**
- * The package's public surface. Everything else (layouts, node cards, the edge overlay, the projections)
+ * The package's public surface. Everything else (layouts, node cards, the edge overlay, the other projections)
  * is internal; add an export here when a host needs it.
  */
 export {
@@ -25,6 +25,7 @@ export {
   selectionFilter,
   viewValidationLevel,
 } from './core/definition';
+export { buildTree, type Tree, type TreeOccurrence } from './core/tree';
 export { MapView } from './layouts/MapView';
 export { ParameterControls } from './layouts/ParameterControls';
 export {
