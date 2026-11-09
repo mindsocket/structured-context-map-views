@@ -17,14 +17,15 @@ Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `package
    ```
    If any check fails, stop and report the errors.
 
-3. Publish from `packages/map-views`. npm may need browser or OTP authentication that Claude cannot handle; if `npm publish` asks for it, tell the user to run this in their terminal:
+3. The tag push starts the Release workflow (`.github/workflows/release.yml`). It reruns the CI checks, publishes `packages/map-views` to npm with provenance, attests the tarball and creates a GitHub release. Watch it:
    ```
-   npm login && npm publish
+   for i in $(seq 12); do id=$(gh run list --workflow release.yml --branch "v$v" --limit 1 --json databaseId --jq '.[0].databaseId'); [ -n "$id" ] && break; sleep 5; done
+   gh run watch "$id" --exit-status
    ```
+   If it fails, show the user `gh run view "$id" --log-failed`. For a transient failure, offer `gh run rerun "$id" --failed`. If the code needs a fix, fix it on `main` and cut a new patch release; never move or reuse a tag.
 
-4. Once the package is published, wait for the registry to serve the new version, polling for up to 5 minutes:
+4. Wait for the registry to serve the new version, polling for up to 5 minutes:
    ```
-   v=$(jq -r .version packages/map-views/package.json)
    for i in $(seq 20); do [ "$(npm view structured-context-map-views@$v version 2>/dev/null)" = "$v" ] && break; sleep 15; done
    npm view structured-context-map-views dist-tags
    ```
