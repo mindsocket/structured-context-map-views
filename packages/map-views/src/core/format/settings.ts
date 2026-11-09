@@ -1,3 +1,4 @@
+import { VALIDATION_ISSUE_KINDS } from 'structured-context/types';
 import { SCHEMA_URL } from './schema-url';
 /** Reusable setting definitions. Parameters can `$ref` these and narrow them, e.g. with `allOf` and `enum`. */
 export const settingsSchema = {
@@ -26,7 +27,7 @@ export const settingsSchema = {
       description:
         'Which kinds of validation result are shown. schema: a node failing its schema. duplicate: an id more than one node uses. broken-link: a relationship to a node that does not exist. hierarchy: a node under a parent type it is not allowed under. rule: a schema rule violation. gated: a note that rules were not checked because an ancestor failed. content-link: a link in the body that resolves to no node.',
       type: 'array',
-      items: { enum: ['schema', 'duplicate', 'broken-link', 'hierarchy', 'rule', 'gated', 'content-link'] },
+      items: { enum: VALIDATION_ISSUE_KINDS },
       uniqueItems: true,
     },
     fieldList: {

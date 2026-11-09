@@ -1,4 +1,5 @@
 import type { nodeIssues, RuleSeverity, SpaceGraph, SpaceNode, ValidationResult } from 'structured-context/api';
+import type { ValidationIssueKind } from 'structured-context/types';
 
 // core doesn't export NodeId from `structured-context/api` yet; this derives it.
 type NodeId = SpaceNode['id'];
@@ -7,18 +8,7 @@ type NodeId = SpaceNode['id'];
 export type Severity = RuleSeverity;
 
 /** The kind of check a result came from: structured-context's issue `kind`. */
-export type AnnotationSource = 'schema' | 'duplicate' | 'broken-link' | 'hierarchy' | 'rule' | 'gated' | 'content-link';
-
-/** Every annotation source, in the order a map view lists them. */
-export const ANNOTATION_SOURCES: readonly AnnotationSource[] = [
-  'schema',
-  'duplicate',
-  'broken-link',
-  'hierarchy',
-  'rule',
-  'gated',
-  'content-link',
-];
+export type AnnotationSource = ValidationIssueKind;
 
 /** One validation result attached to a node. */
 export type NodeAnnotation = {
@@ -53,8 +43,6 @@ export type ValidationInput = {
   >;
 };
 
-const KNOWN_SOURCES = new Set<string>(ANNOTATION_SOURCES);
-
 /**
  * Attach validation results to the nodes of `graph`, by node id. Results that can't be attached are
  * returned in `unattached` for the host to surface: global-scope rules (no node), and nodes that
@@ -70,13 +58,11 @@ export function annotationsFrom(
   for (const [id, issues] of Object.entries(input.issues)) {
     const nodeId = id as NodeId;
     for (const [key, { kind, message, severity, line, column }] of Object.entries(issues)) {
-      // A kind this version doesn't know yet still shows, as a schema result
-      const source = (KNOWN_SOURCES.has(kind) ? kind : 'schema') as AnnotationSource;
       const annotation: NodeAnnotation = {
         severity,
-        source,
+        source: kind,
         message,
-        ...(source === 'rule' && key.startsWith('rule:') && { ruleId: key.slice('rule:'.length) }),
+        ...(kind === 'rule' && key.startsWith('rule:') && { ruleId: key.slice('rule:'.length) }),
       };
       if (graph.nodes.has(nodeId)) {
         annotations.set(nodeId, [...(annotations.get(nodeId) ?? []), annotation]);
