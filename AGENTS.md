@@ -23,7 +23,7 @@ bun run build             # the library, then the navigator
 
 ## Releases
 
-Releases go through the `/release <major|minor|patch>` skill, which runs `bun pm version --no-git-tag-version` in `packages/map-views` (its `preversion` and `version` scripts run the checks and freeze the definition format's schemas in `schemas/generated/<version>/` when the format changed), then commits, tags and pushes. Don't run `generate:schemas --release` by hand.
+Releases go through the `/release <major|minor|patch>` skill, which runs `bun pm version --no-git-tag-version` in `packages/map-views` (its `preversion` and `version` scripts run the checks and freeze the definition format's schemas in `schemas/generated/<version>/` when the format changed), then commits, tags and pushes. The tag push runs `.github/workflows/release.yml`, which publishes the library to npm with provenance. Don't run `generate:schemas --release` by hand.
 
 ## Ways of working
 
