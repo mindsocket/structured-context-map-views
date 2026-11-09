@@ -45,7 +45,7 @@ A setting the reader can change. A definition declares each parameter once, as a
 
 ## Annotation
 
-A validation result attached to a node: a severity, a source (`schema`, `hierarchy` or `rule`) and a message. Hosts supply annotations; a region's `nodes.validation` and `nodes.validationSources` settings choose which are drawn.
+A validation result attached to a node: a severity, a source (the kind of check, such as `schema`, `hierarchy` or `rule`) and a message. Hosts supply annotations; a region's `nodes.validation` and `nodes.validationSources` settings choose which are drawn.
 
 ## Host
 

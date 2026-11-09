@@ -170,8 +170,12 @@
               "description": "Which kinds of validation result are shown.",
               "default": [
                 "schema",
+                "duplicate",
+                "broken-link",
                 "hierarchy",
-                "rule"
+                "rule",
+                "gated",
+                "content-link"
               ],
               "anyOf": [
                 {

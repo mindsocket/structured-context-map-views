@@ -121,7 +121,7 @@ export const definitionSchema = {
             ),
             validationSources: parameterisable(
               { $ref: `${SCHEMA_URL}/settings.json#/$defs/validationSources` },
-              ['schema', 'hierarchy', 'rule'],
+              ['schema', 'duplicate', 'broken-link', 'hierarchy', 'rule', 'gated', 'content-link'],
               'Which kinds of validation result are shown.',
             ),
           },
