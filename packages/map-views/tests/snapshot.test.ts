@@ -20,7 +20,8 @@ describe('exportSnapshot', () => {
     const config = loadConfig({ startDir: sample });
     const all = await exportSnapshot('launch-playbook', config, sample);
     const none = await exportSnapshot('launch-playbook', config, sample, { ruleFilter: ['id=no-such-rule'] });
-    expect(none.validation.ruleViolations).toEqual([]);
-    expect(all.validation.ruleViolations!.length).toBeGreaterThanOrEqual(none.validation.ruleViolations!.length);
+    const rules = (snapshot: typeof all) => snapshot.validation.issues.filter((issue) => issue.kind === 'rule');
+    expect(rules(none)).toEqual([]);
+    expect(rules(all).length).toBeGreaterThanOrEqual(rules(none).length);
   });
 });

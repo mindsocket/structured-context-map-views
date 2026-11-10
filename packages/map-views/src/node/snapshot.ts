@@ -3,7 +3,6 @@ import {
   type Config,
   createSpaceContext,
   exportSpaceGraph,
-  nodeIssues,
   validateSpace,
 } from 'structured-context/api';
 import type { ValidationInput } from '../core/annotations';
@@ -18,7 +17,7 @@ export type SpaceSnapshot = {
   space: string;
   schemaId: string | undefined;
   graph: ReturnType<typeof exportSpaceGraph>;
-  /** What `annotationsFrom` attaches: each node's issues and the rule violations */
+  /** What `annotationsFrom` attaches */
   validation: ValidationInput;
   definitions: MapViewDefinition[];
 };
@@ -47,7 +46,7 @@ export async function exportSnapshot(
     space: spaceName,
     schemaId,
     graph: exportSpaceGraph(graph.nodes.values(), context.schema.metadata),
-    validation: { issues: nodeIssues(validation, validateOptions), ruleViolations: validation.ruleViolations },
+    validation: { issues: validation.issues },
     definitions: mapViewsForSchema(loadMapViewDefinitions(config, { configDir }), schemaId),
   };
 }

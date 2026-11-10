@@ -17,7 +17,7 @@
       "dependencies": {
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
-        "structured-context": "^0.22.1",
+        "structured-context": "^0.23.0",
         "structured-context-map-views": "workspace:*",
       },
       "devDependencies": {
@@ -32,7 +32,7 @@
     },
     "packages/map-views": {
       "name": "structured-context-map-views",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "bin": {
         "structured-context-map-views": "dist/cli.js",
       },
@@ -50,14 +50,14 @@
         "@vitejs/plugin-react": "^6.1.1",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
-        "structured-context": "^0.22.1",
+        "structured-context": "^0.23.0",
         "tailwindcss": "^4.3.3",
         "vite": "^8.3.2",
       },
       "peerDependencies": {
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
-        "structured-context": "^0.22.1",
+        "structured-context": "^0.23.0",
       },
     },
   },
@@ -518,7 +518,7 @@
 
     "strip-bom-string": ["strip-bom-string@1.0.0", "", {}, "sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g=="],
 
-    "structured-context": ["structured-context@0.22.1", "", { "dependencies": { "ajv": "^8.20.0", "chokidar": "^5.0.0", "commander": "^15.0.0", "fast-glob": "^3.3.3", "gray-matter": "^4.0.3", "js-yaml": "^5.4.3", "json-schema-to-ts": "^3.1.1", "json5": "^2.2.3", "jsonata": "^2.2.1", "mdast-util-to-string": "^4.0.0", "remark-gfm": "^4.0.1", "remark-parse": "^11.0.0", "unified": "^11.0.5", "unist-util-visit": "^5.1.0" }, "peerDependencies": { "typescript": "^5" }, "bin": { "sctx": "dist/index.js" } }, "sha512-YBCurh4UAL+0uC0OLYTfAVONu3RQkuozqXkHn3/iM/z7xIsjQQPdwPrS8Lf16TaIVs/NufOiQwRwPsbj7pY8dA=="],
+    "structured-context": ["structured-context@0.23.0", "", { "dependencies": { "ajv": "^8.20.0", "chokidar": "^5.0.0", "commander": "^15.0.0", "fast-glob": "^3.3.3", "gray-matter": "^4.0.3", "js-yaml": "^5.4.3", "json-schema-to-ts": "^3.1.1", "json5": "^2.2.3", "jsonata": "^2.2.1", "mdast-util-to-string": "^4.0.0", "remark-gfm": "^4.0.1", "remark-parse": "^11.0.0", "unified": "^11.0.5", "unist-util-visit": "^5.1.0" }, "peerDependencies": { "typescript": "^5" }, "bin": { "sctx": "dist/index.js" } }, "sha512-KWriaOPuyYW2kDoYEjDYvyHm7s1bUQqQ6QT8c2fRUDRbKzS65mFJhc3o9e7TpdFLwXi6VM3NFZEKszww9ZoYPQ=="],
 
     "structured-context-map-views": ["structured-context-map-views@workspace:packages/map-views"],
 

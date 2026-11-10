@@ -169,6 +169,7 @@
             "validationSources": {
               "description": "Which kinds of validation result are shown.",
               "default": [
+                "parse",
                 "schema",
                 "duplicate",
                 "broken-link",

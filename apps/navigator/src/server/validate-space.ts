@@ -1,4 +1,4 @@
-import { type Config, createSpaceContext, nodeIssues, validateSpace } from 'structured-context/api';
+import { type Config, createSpaceContext, validateSpace } from 'structured-context/api';
 import type { ValidationInput } from 'structured-context-map-views';
 
 /**
@@ -6,6 +6,6 @@ import type { ValidationInput } from 'structured-context-map-views';
  * would cost money and are not requested here).
  */
 export async function validateForOverlay(spaceName: string, config: Config): Promise<ValidationInput> {
-  const result = await validateSpace(createSpaceContext(spaceName, config));
-  return { issues: nodeIssues(result), ruleViolations: result.ruleViolations };
+  const { issues } = await validateSpace(createSpaceContext(spaceName, config));
+  return { issues };
 }

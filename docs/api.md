@@ -61,7 +61,7 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
   "space": "name",
   "schemaId": "sctx://…",
   "graph": { "formatVersion": 1 },
-  "validation": { "nodeErrors": [], "hierarchyViolations": [], "ruleViolations": [] },
+  "validation": { "issues": [] },
   "definitions": []
 }
 ```
@@ -74,11 +74,11 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 
 ## Validation results
 
-Hosts that validate a space can show the results on the nodes. Pass `annotationsFrom(input, graph)` each node's issues as `issues`, and optionally the `ruleViolations`. From a `ValidationResult`, that is `{ issues: nodeIssues(result), ruleViolations: result.ruleViolations }`. The output of `sctx validate --json` has both fields, so it can be passed as it is. It returns `{ annotations, unattached }`: an `AnnotationIndex` (results by node id) to pass to `MapView`, and the results with no node on the graph for the host to surface itself.
+Hosts that validate a space can show the results on the nodes. Pass `annotationsFrom(input, graph)` a `ValidationResult` or the output of `sctx validate --json`, as it is. It returns `{ annotations, unattached }`: an `AnnotationIndex` (results by node id) to pass to `MapView`, and the results with no node on the graph for the host to surface itself.
 
-structured-context names a result's node by `nodeId`. A result is attached when that node is in the graph. It is `unattached` when it has no `nodeId` (a global-scope rule) or its node isn't in the graph, such as a node of an unknown type. Nodes with field errors stay in the graph, so their schema errors attach. An unattached result keeps its `nodeId` and, where known, its `line` and `column`.
+structured-context names a result's node by `nodeId`. A result is attached when that node is in the graph. It is `unattached` when it has no `nodeId` (a parse issue or a global-scope rule) or its node isn't in the graph, such as a node of an unknown type. Nodes with field errors stay in the graph, so their schema errors attach. An unattached result keeps its `nodeId` and, where known, its `location`.
 
-Each annotation has a `severity` (`error`, `warning` or `info`), a `source` and a `message`. The source is structured-context's issue kind: `schema`, `duplicate`, `broken-link`, `hierarchy`, `rule`, `gated` or `content-link`. Severity comes from structured-context with each result. Which show, and the lowest severity drawn, are the definition's `nodes.validation` and `nodes.validationSources` settings.
+Each annotation has a `severity` (`error`, `warning` or `info`), a `source` and a `message`. The source is structured-context's issue kind. Severity comes from structured-context with each result. Which show, and the lowest severity drawn, are the definition's `nodes.validation` and `nodes.validationSources` settings.
 
 ### Showing the messages
 

@@ -2,8 +2,8 @@ import type { UnattachedAnnotation } from 'structured-context-map-views';
 import { AnnotationList } from './NodeDetails';
 
 /**
- * Validation results with no node on the map: global rules, and nodes that failed their schema
- * (those aren't in the graph). Grouped by node id, or under "Space" when the result has none.
+ * Validation results with no node on the map: parse issues, global rules, and nodes that aren't in the
+ * graph. Grouped by node id, else by file, or under "Space" when the result has neither.
  */
 export function UnattachedAnnotationPanel({
   unattached,
@@ -12,7 +12,7 @@ export function UnattachedAnnotationPanel({
   unattached: readonly UnattachedAnnotation[];
   onClose: () => void;
 }) {
-  const groups = Map.groupBy(unattached, (u) => u.nodeId ?? '');
+  const groups = Map.groupBy(unattached, (u) => u.nodeId ?? u.location?.file ?? '');
   return (
     <aside className="details" aria-label="Validation results not on a node">
       <div className="details-head">
@@ -21,10 +21,10 @@ export function UnattachedAnnotationPanel({
           ×
         </button>
       </div>
-      {[...groups].map(([nodeId, items]) => (
-        <section key={nodeId}>
-          <h3>{nodeId || 'Space'}</h3>
-          {items[0]?.line !== undefined && <p className="source muted">line {items[0].line}</p>}
+      {[...groups].map(([name, items]) => (
+        <section key={name}>
+          <h3>{name || 'Space'}</h3>
+          {items[0]?.location?.line !== undefined && <p className="source muted">line {items[0].location.line}</p>}
           <AnnotationList annotations={items} />
         </section>
       ))}

@@ -1,5 +1,5 @@
-import type { nodeIssues, RuleSeverity, SpaceGraph, SpaceNode, ValidationResult } from 'structured-context/api';
-import type { ValidationIssueKind } from 'structured-context/types';
+import type { RuleSeverity, SpaceGraph, SpaceNode, ValidationResult } from 'structured-context/api';
+import type { SourceLocation, ValidationIssueKind } from 'structured-context/types';
 
 // core doesn't export NodeId from `structured-context/api` yet; this derives it.
 type NodeId = SpaceNode['id'];
@@ -21,32 +21,29 @@ export type NodeAnnotation = {
 
 /** A validation result with no node on the map to attach to. */
 export type UnattachedAnnotation = NodeAnnotation & {
-  /** The node it concerns. Absent for a global-scope rule. A node that failed its schema isn't in the graph. */
+  /** The node it concerns. Absent for a parse issue or a global rule. A node that failed its type isn't in the graph. */
   nodeId?: NodeId;
-  /** Where in that node's file the result points, if known (1-indexed). */
-  line?: number;
-  column?: number;
+  /** Where the result points, if known. */
+  location?: SourceLocation;
 };
 
 /** Annotations by the id of the node they apply to. */
 export type AnnotationIndex = ReadonlyMap<NodeId, readonly NodeAnnotation[]>;
 
+type Issue = ValidationResult['issues'][number];
+
 /**
- * Validation results to attach: each node's issues, from structured-context's `nodeIssues(result)` or the
- * `issues` of `sctx validate --json`, and the rule violations, of which only those without a node are read
- * (the others are in `issues`). `sctx validate --json` output can be passed as it is.
+ * Validation results to attach: structured-context's issues, from a `ValidationResult` or the output of
+ * `sctx validate --json`, either of which can be passed as it is.
  */
 export type ValidationInput = {
-  issues: Readonly<ReturnType<typeof nodeIssues>>;
-  ruleViolations?: ReadonlyArray<
-    Pick<ValidationResult['ruleViolations'][number], 'nodeId' | 'ruleId' | 'severity' | 'description'>
-  >;
+  issues: ReadonlyArray<Pick<Issue, 'kind' | 'severity' | 'message' | 'nodeId' | 'source'> & { ruleId?: string }>;
 };
 
 /**
  * Attach validation results to the nodes of `graph`, by node id. Results that can't be attached are
- * returned in `unattached` for the host to surface: global-scope rules (no node), and nodes that
- * aren't in the graph, which includes every node that failed its schema.
+ * returned in `unattached` for the host to surface: parse issues and global rules (no node), and nodes
+ * that aren't in the graph.
  */
 export function annotationsFrom(
   input: ValidationInput,
@@ -55,29 +52,22 @@ export function annotationsFrom(
   const annotations = new Map<NodeId, NodeAnnotation[]>();
   const unattached: UnattachedAnnotation[] = [];
 
-  for (const [id, issues] of Object.entries(input.issues)) {
-    const nodeId = id as NodeId;
-    for (const [key, { kind, message, severity, line, column }] of Object.entries(issues)) {
-      const annotation: NodeAnnotation = {
-        severity,
-        source: kind,
-        message,
-        ...(kind === 'rule' && key.startsWith('rule:') && { ruleId: key.slice('rule:'.length) }),
-      };
-      if (graph.nodes.has(nodeId)) {
-        annotations.set(nodeId, [...(annotations.get(nodeId) ?? []), annotation]);
-      } else {
-        unattached.push({
-          ...annotation,
-          nodeId,
-          ...(line !== undefined && { line }),
-          ...(column !== undefined && { column }),
-        });
-      }
+  for (const { kind, severity, message, nodeId, source, ruleId } of input.issues) {
+    const annotation: NodeAnnotation = {
+      severity,
+      source: kind,
+      message,
+      ...(kind === 'rule' && ruleId !== undefined && { ruleId }),
+    };
+    if (nodeId !== undefined && graph.nodes.has(nodeId)) {
+      annotations.set(nodeId, [...(annotations.get(nodeId) ?? []), annotation]);
+    } else {
+      unattached.push({
+        ...annotation,
+        ...(nodeId !== undefined && { nodeId }),
+        ...(source !== undefined && { location: source }),
+      });
     }
-  }
-  for (const { nodeId, description, severity, ruleId } of input.ruleViolations ?? []) {
-    if (nodeId === undefined) unattached.push({ severity, source: 'rule', message: description, ruleId });
   }
   return { annotations, unattached };
 }
