@@ -1,10 +1,7 @@
 import type { UnattachedAnnotation } from 'structured-context-map-views';
 import { AnnotationList } from './NodeDetails';
 
-/**
- * Validation results with no node on the map: parse issues, global rules, and nodes that aren't in the
- * graph. Grouped by node id, else by file, or under "Space" when the result has neither.
- */
+/** Validation results with no node on the map, grouped by node or file. */
 export function UnattachedAnnotationPanel({
   unattached,
   onClose,

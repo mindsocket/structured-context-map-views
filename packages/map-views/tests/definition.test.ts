@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import { VALIDATION_ISSUE_KINDS } from 'structured-context/types';
 import {
   mapViewsForSchema,
   parseMapViewDefinition,
@@ -40,16 +41,7 @@ describe('parseMapViewDefinition', () => {
           style: 'card',
           fields: [],
           validation: 'off',
-          validationSources: [
-            'parse',
-            'schema',
-            'duplicate',
-            'broken-link',
-            'hierarchy',
-            'rule',
-            'gated',
-            'content-link',
-          ],
+          validationSources: [...VALIDATION_ISSUE_KINDS],
         },
         edges: { show: true },
       },

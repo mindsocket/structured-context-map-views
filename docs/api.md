@@ -1,6 +1,6 @@
 # API
 
-The library is pre-1.0: its exports may change between minor versions. Until the first release is published, hosts consume a local build (`bun run build` in `packages/map-views`) through a `file:` dependency on that folder.
+The library is pre-1.0: its exports may change between minor versions.
 
 | Entry point | Contents |
 |---|---|
@@ -27,7 +27,7 @@ import 'structured-context-map-views/styles.css';
 | `definition` | `MapViewDefinition` | A parsed definition |
 | `graph` | `SpaceGraph` | The space to render, as structured-context's `assembleSpaceGraph` or `spaceGraphFrom` returns it |
 | `values` | `ParameterValues` | Current parameter values, owned by the host. Missing values use defaults |
-| `annotations` | `AnnotationIndex` | Validation results by node (see [Validation results](#validation-results)). Drawn only when the region's `nodes.validation` isn't `off` |
+| `annotations` | `AnnotationIndex` | Validation results by node (see [Validation results](#validation-results)) |
 | `onNodeSelect` | `(node: SpaceNode) => void` | Called when the reader selects a node |
 
 `MapView` sizes to its container and scrolls within it.
@@ -74,19 +74,13 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 
 ## Validation results
 
-Hosts that validate a space can show the results on the nodes. Pass `annotationsFrom(input, graph)` a `ValidationResult` or the output of `sctx validate --json`, as it is. It returns `{ annotations, unattached }`: an `AnnotationIndex` (results by node id) to pass to `MapView`, and the results with no node on the graph for the host to surface itself.
+`annotationsFrom(input, graph)` attaches structured-context's validation issues to the graph's nodes. Pass it a `ValidationResult` or the output of `sctx validate --json` as it is. It returns the `annotations` to pass to `MapView`, and the `unattached` issues, which have no node in the graph. The definition's `nodes.validation` and `nodes.validationSources` choose which annotations show.
 
-structured-context names a result's node by `nodeId`. A result is attached when that node is in the graph. It is `unattached` when it has no `nodeId` (a parse issue or a global-scope rule) or its node isn't in the graph, such as a node of an unknown type. Nodes with field errors stay in the graph, so their schema errors attach. An unattached result keeps its `nodeId` and, where known, its `location`.
-
-Each annotation has a `severity` (`error`, `warning` or `info`), a `source` and a `message`. The source is structured-context's issue kind. Severity comes from structured-context with each result. Which show, and the lowest severity drawn, are the definition's `nodes.validation` and `nodes.validationSources` settings.
-
-### Showing the messages
-
-The library draws the badge and leaves the messages to the host, because a message list takes its markup and styling from the host (the navigator's side panel and a Claude artifact's differ). The pattern is the same everywhere: keep the `annotations` index you passed to `MapView`, and when a card is selected list `annotations.get(node.id)`, one row per result with its `severity`, its `source` (plus `ruleId` for rule results) and its `message`. List `unattached` separately, grouped by `nodeId`. `NodeAnnotation` and `UnattachedAnnotation` are exported for typing. See `AnnotationList` in `apps/navigator/src/NodeDetails.tsx`.
+The library draws the badge, and the host lists the messages. See `AnnotationList` in `apps/navigator/src/NodeDetails.tsx`.
 
 ## Drawing a tree yourself
 
-A host that cannot mount React, such as a Claude Code mod, can draw a tree from its projection. `buildTree(graph, regionId, dag)` returns a `Tree`: its `roots` and `orphans` are `TreeOccurrence`s, each with its `node`, its `children` and, for a node shown under several parents, `repeatOf`. `regionId` prefixes the occurrence keys. `dag` is `repeat` (the default) or `cross-edge`, as in the tree layout's setting. Pair it with `annotationsFrom` for the validation results.
+A host that cannot mount React, such as a Claude Code mod, can draw a tree from `buildTree(graph, regionId, dag)`, the tree layout's projection, with `annotationsFrom` for the validation results.
 
 Importing only these from the package root pulls in neither React nor the definition parser (ajv, json5) when bundled.
 
