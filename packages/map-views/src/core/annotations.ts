@@ -4,10 +4,10 @@ import type { SourceLocation, ValidationIssueKind } from 'structured-context/typ
 // core doesn't export NodeId from `structured-context/api` yet; this derives it.
 type NodeId = SpaceNode['id'];
 
-/** How serious a result is: structured-context's rule severity, which every result carries. */
+/** structured-context's severity. */
 export type Severity = RuleSeverity;
 
-/** The kind of check a result came from: structured-context's issue `kind`. */
+/** structured-context's issue `kind`. */
 export type AnnotationSource = ValidationIssueKind;
 
 /** One validation result attached to a node. */
@@ -21,9 +21,7 @@ export type NodeAnnotation = {
 
 /** A validation result with no node on the map to attach to. */
 export type UnattachedAnnotation = NodeAnnotation & {
-  /** The node it concerns. Absent for a parse issue or a global rule. A node that failed its type isn't in the graph. */
   nodeId?: NodeId;
-  /** Where the result points, if known. */
   location?: SourceLocation;
 };
 
@@ -32,19 +30,12 @@ export type AnnotationIndex = ReadonlyMap<NodeId, readonly NodeAnnotation[]>;
 
 type Issue = ValidationResult['issues'][number];
 
-/**
- * Validation results to attach: structured-context's issues, from a `ValidationResult` or the output of
- * `sctx validate --json`, either of which can be passed as it is.
- */
+/** A `ValidationResult`, or the output of `sctx validate --json`. */
 export type ValidationInput = {
   issues: ReadonlyArray<Pick<Issue, 'kind' | 'severity' | 'message' | 'nodeId' | 'source'> & { ruleId?: string }>;
 };
 
-/**
- * Attach validation results to the nodes of `graph`, by node id. Results that can't be attached are
- * returned in `unattached` for the host to surface: parse issues and global rules (no node), and nodes
- * that aren't in the graph.
- */
+/** Attach validation issues to the nodes of `graph`. Issues whose node isn't in the graph are `unattached`. */
 export function annotationsFrom(
   input: ValidationInput,
   graph: SpaceGraph,
