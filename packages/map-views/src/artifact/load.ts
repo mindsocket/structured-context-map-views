@@ -1,15 +1,4 @@
-import type { spaceGraphFrom } from 'structured-context/browser';
-import type { ValidationInput } from '../core/annotations';
-import type { MapViewDefinition } from '../core/definition';
-
-/** A space as the artifact's db holds it: the `export` command's document with its parts as JSON strings. */
-export type LoadedSpace = {
-  name: string;
-  schemaId: string | undefined;
-  graph: Parameters<typeof spaceGraphFrom>[0];
-  validation: ValidationInput;
-  definitions: MapViewDefinition[];
-};
+import type { SpaceSnapshot } from '../core/snapshot';
 
 const SPACES = 'spaces';
 const TIMEOUT_MS = 10_000;
@@ -18,8 +7,11 @@ type Db = {
   collection(path: string): { get(): Promise<{ docs: { id: string; data(): Record<string, unknown> | undefined }[] }> };
 };
 
-/** Every space written to the artifact's `spaces` collection. Rejects with a message fit to show the viewer. */
-export async function loadSpaces(): Promise<LoadedSpace[]> {
+/**
+ * Every space written to the artifact's `spaces` collection: the `export` command's document, keyed by space
+ * name, with its parts as JSON strings. Rejects with a message fit to show the viewer.
+ */
+export async function loadSpaces(): Promise<SpaceSnapshot[]> {
   const claude = (window as unknown as { claude?: { use(name: string): Promise<unknown> } }).claude;
   const db = (claude ? await claude.use('db') : null) as Db | null;
   if (!db) throw new Error('This page needs the artifact database, which is not available to this viewer.');
@@ -38,14 +30,14 @@ export async function loadSpaces(): Promise<LoadedSpace[]> {
   return spaces;
 }
 
-function toSpace(name: string, data: Record<string, unknown>): LoadedSpace {
+function toSpace(space: string, data: Record<string, unknown>): SpaceSnapshot {
   const json = (field: string) => {
     const value = data[field];
-    if (typeof value !== 'string') throw new Error(`Space "${name}": missing "${field}" in the artifact database.`);
+    if (typeof value !== 'string') throw new Error(`Space "${space}": missing "${field}" in the artifact database.`);
     return JSON.parse(value);
   };
   return {
-    name,
+    space,
     schemaId: typeof data.schemaId === 'string' ? data.schemaId : undefined,
     graph: json('graph'),
     validation: json('validation'),
