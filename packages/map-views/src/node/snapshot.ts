@@ -5,22 +5,9 @@ import {
   exportSpaceGraph,
   validateSpace,
 } from 'structured-context/api';
-import type { ValidationInput } from '../core/annotations';
-import { type MapViewDefinition, mapViewsForSchema } from '../core/definition';
+import { mapViewsForSchema } from '../core/definition';
+import type { SpaceSnapshot } from '../core/snapshot';
 import { loadMapViewDefinitions } from './index';
-
-/**
- * Everything a host without filesystem access needs to render a space: its graph, the validation
- * results that attach to nodes, and the map view definitions that apply to its schema. Plain JSON.
- */
-export type SpaceSnapshot = {
-  space: string;
-  schemaId: string | undefined;
-  graph: ReturnType<typeof exportSpaceGraph>;
-  /** What `annotationsFrom` attaches */
-  validation: ValidationInput;
-  definitions: MapViewDefinition[];
-};
 
 /** The `validateSpace` options `export` passes through unchanged. */
 export type ExportValidateOptions = Pick<
