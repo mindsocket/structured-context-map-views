@@ -124,8 +124,8 @@ Definitions are found the way structured-context finds plugin schemas, and each 
 |---|---|
 | Bundled with this library (`map-views/`), for structured-context's bundled schemas | `sctx-map-view://core/<name>` |
 | A plugin: the folder named by `"sctx": { "mapViews": "…" }` in its `package.json`, else its `map-views/` folder | `sctx-map-view://<plugin>/<name>` (the plugin's name without `sctx-`) |
-| A `map-views/` folder next to a structured-context config file (including files pulled in by `includeSpacesFrom`) | `sctx-map-view://<name>` |
+| The `.sctx/map-views/` folder of a structured-context config root, or `map-views/` beside the global config ([resources folder](https://github.com/mindsocket/structured-context/blob/main/docs/config.md#resources-folder)), including configs pulled in by `includeSpacesFrom` | `sctx-map-view://<name>` |
 
-Plugins are those in a config folder's `plugins/`, plus those a space or the config names (in `plugins`, or as the prefix of `schema`). Two definitions with the same `$id` are an error: to change a definition, write another with its own `$id`.
+Plugins are those in a config root's `.sctx/plugins/`, plus those a space or the config names (in `plugins`, or as the prefix of `schema`). Two definitions with the same `$id` are an error: to change a definition, write another with its own `$id`.
 
 A host lists the definitions whose `schema` matches the space's schema `$id` (`mapViewsForSchema`).
