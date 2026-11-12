@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, spyOn, test } from 'bun:test';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -23,10 +23,10 @@ const ids = (config: Config, configDir = join(root, 'config')) =>
 
 describe('loadMapViewDefinitions', () => {
   test('finds bundled, plugin and config folder definitions', () => {
-    write('config/plugins/sctx-conventional/map-views/a.json5', definition('sctx-map-view://conventional/a'));
-    write('config/plugins/sctx-declared/package.json', JSON.stringify({ sctx: { mapViews: 'views' } }));
-    write('config/plugins/sctx-declared/views/b.json5', definition('sctx-map-view://declared/b'));
-    write('config/map-views/c.json5', definition('sctx-map-view://c'));
+    write('config/.sctx/plugins/sctx-conventional/map-views/a.json5', definition('sctx-map-view://conventional/a'));
+    write('config/.sctx/plugins/sctx-declared/package.json', JSON.stringify({ sctx: { mapViews: 'views' } }));
+    write('config/.sctx/plugins/sctx-declared/views/b.json5', definition('sctx-map-view://declared/b'));
+    write('config/.sctx/map-views/c.json5', definition('sctx-map-view://c'));
     expect(ids(noSpaces)).toEqual([
       'sctx-map-view://core/strategy-tree',
       'sctx-map-view://conventional/a',
@@ -37,7 +37,7 @@ describe('loadMapViewDefinitions', () => {
 
   test('includes plugins named by a space and the folders of included configs', () => {
     write('included/node_modules/sctx-named/map-views/a.json5', definition('sctx-map-view://named/a'));
-    write('included/map-views/b.json5', definition('sctx-map-view://b'));
+    write('included/.sctx/map-views/b.json5', definition('sctx-map-view://b'));
     const config: Config = {
       spaces: [
         {
@@ -52,18 +52,34 @@ describe('loadMapViewDefinitions', () => {
   });
 
   test.each([
-    ['config/map-views/a.json5', 'sctx-map-view://core/a', /Use the form "sctx-map-view:\/\/<name>"/],
-    ['config/plugins/sctx-p/map-views/a.json5', 'sctx-map-view://a', /Use the form "sctx-map-view:\/\/p\/<name>"/],
-    ['config/plugins/sctx-p/map-views/a.json5', 'sctx-map-view://q/a', /Use the form "sctx-map-view:\/\/p\/<name>"/],
-    ['config/plugins/sctx-core/map-views/a.json5', 'sctx-map-view://core/a', /namespace violation/],
+    ['config/.sctx/map-views/a.json5', 'sctx-map-view://core/a', /Use the form "sctx-map-view:\/\/<name>"/],
+    [
+      'config/.sctx/plugins/sctx-p/map-views/a.json5',
+      'sctx-map-view://a',
+      /Use the form "sctx-map-view:\/\/p\/<name>"/,
+    ],
+    [
+      'config/.sctx/plugins/sctx-p/map-views/a.json5',
+      'sctx-map-view://q/a',
+      /Use the form "sctx-map-view:\/\/p\/<name>"/,
+    ],
+    ['config/.sctx/plugins/sctx-core/map-views/a.json5', 'sctx-map-view://core/a', /namespace violation/],
   ])('rejects %s with $id %s', (path, id, message) => {
     write(path, definition(id));
     expect(() => ids(noSpaces)).toThrow(message);
   });
 
+  test('still finds plugins/ and map-views/ beside a config, the old layout', () => {
+    write('config/plugins/sctx-old/map-views/a.json5', definition('sctx-map-view://old/a'));
+    write('config/map-views/b.json5', definition('sctx-map-view://b'));
+    const warn = spyOn(console, 'warn').mockImplementation(() => {});
+    expect(ids(noSpaces)).toEqual(['sctx-map-view://core/strategy-tree', 'sctx-map-view://old/a', 'sctx-map-view://b']);
+    warn.mockRestore();
+  });
+
   test('rejects two definitions with the same id', () => {
-    write('config/map-views/a.json5', definition('sctx-map-view://a'));
-    write('included/map-views/a.json5', definition('sctx-map-view://a'));
+    write('config/.sctx/map-views/a.json5', definition('sctx-map-view://a'));
+    write('included/.sctx/map-views/a.json5', definition('sctx-map-view://a'));
     const config: Config = { spaces: [{ name: 's', path: '.', sourceDir: join(root, 'included') }] };
     expect(() => ids(config)).toThrow(/"sctx-map-view:\/\/a" is defined by both/);
   });

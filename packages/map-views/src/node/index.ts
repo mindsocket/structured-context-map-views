@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { type Config, PLUGIN_PREFIX, resolveConfigPath, resolvePluginDir } from 'structured-context/api';
+import { join, resolve } from 'node:path';
+import { type Config, PLUGIN_PREFIX, resolveConfigPath, resolvePluginDir, resourceDir } from 'structured-context/api';
 import { type MapViewDefinition, parseMapViewDefinition } from '../core/definition';
 import { BUNDLED_DEFINITIONS } from './bundled-definitions';
 
@@ -18,7 +18,7 @@ const PACKAGE_NAME = 'structured-context-map-views';
 type Source = { kind: 'core' } | { kind: 'plugin'; plugin: string } | { kind: 'config' };
 
 export type LoadMapViewDefinitionsOptions = {
-  /** Directory of the main config file. Defaults to where structured-context finds it. */
+  /** Root of the main config file (`resolveConfigPath().root`). Defaults to where structured-context finds it. */
   configDir?: string;
 };
 
@@ -27,7 +27,7 @@ export type LoadMapViewDefinitionsOptions = {
  * - this package's embedded definitions (`sctx-map-view://core/<name>`), for structured-context's bundled schemas;
  * - each plugin found from a config folder or named by a space (`sctx-map-view://<plugin>/<name>`): the
  *   folder named by `"sctx": { "mapViews": "…" }` in its package.json, else its `map-views/` folder;
- * - a `map-views/` folder next to each config file (`sctx-map-view://<name>`).
+ * - the `map-views` resources folder of each config root (`sctx-map-view://<name>`).
  *
  * Each definition's `$id` must be in the namespace of where it was found, and ids must be unique.
  * Throws on the first invalid definition.
@@ -36,7 +36,7 @@ export function loadMapViewDefinitions(
   config: Config,
   options: LoadMapViewDefinitionsOptions = {},
 ): MapViewDefinition[] {
-  const configDir = options.configDir ?? dirname(resolve(resolveConfigPath().path));
+  const configDir = options.configDir ?? resolveConfigPath().root;
   const configDirs = [...new Set([configDir, ...config.spaces.flatMap((s) => (s.sourceDir ? [s.sourceDir] : []))])];
 
   const folders: { dir: string; source: Source }[] = [
@@ -44,7 +44,10 @@ export function loadMapViewDefinitions(
       const definitions = pluginDefinitionsDir(dir);
       return definitions ? [{ dir: definitions, source: { kind: 'plugin', plugin } as const }] : [];
     }),
-    ...configDirs.map((dir) => ({ dir: join(dir, DEFINITIONS_DIR), source: { kind: 'config' } as const })),
+    ...configDirs.flatMap((dir) => {
+      const definitions = resourceDir(dir, DEFINITIONS_DIR);
+      return definitions ? [{ dir: definitions, source: { kind: 'config' } as const }] : [];
+    }),
   ];
 
   const foundAt = new Map<string, string>();
@@ -72,7 +75,7 @@ export function loadMapViewDefinitions(
   return definitions;
 }
 
-/** Plugin short name → root directory, for plugins in a config folder's `plugins/` or named by the config. */
+/** Plugin short name → root directory, for plugins in a config root's plugins folder or named by the config. */
 function pluginDirs(config: Config, configDir: string, configDirs: string[]): [string, string][] {
   const found = new Map<string, string>();
   const add = (name: string, fromDir: string) => {
@@ -83,8 +86,8 @@ function pluginDirs(config: Config, configDir: string, configDirs: string[]): [s
   };
 
   for (const dir of configDirs) {
-    const plugins = join(dir, CONFIG_PLUGINS_DIR);
-    if (!isDirectory(plugins)) continue;
+    const plugins = resourceDir(dir, CONFIG_PLUGINS_DIR);
+    if (!plugins) continue;
     for (const entry of readdirSync(plugins)
       .filter((e) => e.startsWith(PLUGIN_PREFIX))
       .sort())
