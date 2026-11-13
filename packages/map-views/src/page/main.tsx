@@ -2,11 +2,7 @@ import { createRoot } from 'react-dom/client';
 import type { SpaceSnapshot } from '../core/snapshot';
 import { Viewer } from '../viewer/Viewer';
 
-/**
- * The host for a self-contained HTML page: shows the snapshots carried inline in the page, in the
- * `<script type="application/json" id="sctx-snapshots">` element that `fillPage` writes. It reads nothing
- * else, so the page works offline. See docs/architecture.md.
- */
+/** The host for a self-contained page: shows the snapshots the page carries. */
 
 function readSnapshots(): SpaceSnapshot[] {
   const text = document.getElementById('sctx-snapshots')?.textContent?.trim();
