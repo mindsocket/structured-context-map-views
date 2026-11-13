@@ -1,8 +1,4 @@
-/**
- * Writes dist/page.html: the template for a self-contained page, with the page host (`src/page/main.tsx`),
- * React and everything else it imports bundled and inlined, and the CSS inlined. `fillPage` writes a title and
- * the snapshots into it. Run after the library build, which writes dist/styles.css.
- */
+/** Writes dist/page.html, the page template with its JS and CSS inlined. Run after the library build. */
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
