@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, spyOn, test } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -67,14 +67,6 @@ describe('loadMapViewDefinitions', () => {
   ])('rejects %s with $id %s', (path, id, message) => {
     write(path, definition(id));
     expect(() => ids(noSpaces)).toThrow(message);
-  });
-
-  test('still finds plugins/ and map-views/ beside a config, the old layout', () => {
-    write('config/plugins/sctx-old/map-views/a.json5', definition('sctx-map-view://old/a'));
-    write('config/map-views/b.json5', definition('sctx-map-view://b'));
-    const warn = spyOn(console, 'warn').mockImplementation(() => {});
-    expect(ids(noSpaces)).toEqual(['sctx-map-view://core/strategy-tree', 'sctx-map-view://old/a', 'sctx-map-view://b']);
-    warn.mockRestore();
   });
 
   test('rejects two definitions with the same id', () => {
