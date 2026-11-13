@@ -3,6 +3,8 @@ import {
   type Config,
   createSpaceContext,
   exportSpaceGraph,
+  type SpaceContext,
+  type SpaceGraph,
   validateSpace,
 } from 'structured-context/api';
 import { mapViewsForSchema } from '../core/definition';
@@ -26,14 +28,26 @@ export async function exportSnapshot(
   validateOptions: ExportValidateOptions = {},
 ): Promise<SpaceSnapshot> {
   const context = createSpaceContext(spaceName, config);
-  const graph = await assembleSpaceGraph(context, {});
+  return snapshotOf(context, await assembleSpaceGraph(context, {}), configDir, validateOptions);
+}
+
+/**
+ * Node-only: snapshot a space from a context and a graph already assembled for it, such as a filtered one.
+ * Validation covers the whole space, so issues about nodes outside a filtered graph arrive unattached.
+ */
+export async function snapshotOf(
+  context: SpaceContext,
+  graph: SpaceGraph,
+  configDir?: string,
+  validateOptions: ExportValidateOptions = {},
+): Promise<SpaceSnapshot> {
   const schemaId = context.schema.$id;
   const validation = await validateSpace(context, validateOptions);
   return {
-    space: spaceName,
+    space: context.space.name,
     schemaId,
     graph: exportSpaceGraph(graph.nodes.values(), context.schema.metadata),
     validation: { issues: validation.issues },
-    definitions: mapViewsForSchema(loadMapViewDefinitions(config, { configDir }), schemaId),
+    definitions: mapViewsForSchema(loadMapViewDefinitions(context.config, { configDir }), schemaId),
   };
 }

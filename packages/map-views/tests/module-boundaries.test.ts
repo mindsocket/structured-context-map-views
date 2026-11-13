@@ -39,9 +39,9 @@ describe('module boundaries', () => {
     expect(importsIn('viewer').filter(({ specifier }) => !allowed.test(specifier))).toEqual([]);
   });
 
-  test('no module imports the artifact host', () => {
+  test('no module imports a host', () => {
     const imports = ['core', 'layouts', 'node', 'viewer'].flatMap(importsIn);
-    expect(imports.filter(({ specifier }) => /^(\.\.\/)+artifact(\/|$)/.test(specifier))).toEqual([]);
+    expect(imports.filter(({ specifier }) => /^(\.\.\/)+(artifact|page)(\/|$)/.test(specifier))).toEqual([]);
   });
 });
 
