@@ -1,0 +1,40 @@
+{
+  "name": "sctx-map-views",
+  "version": "0.0.0",
+  "description": "structured-context render plugin: a space's map views as one self-contained interactive HTML file.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mindsocket/structured-context-map-views.git",
+    "directory": "packages/sctx-map-views"
+  },
+  "keywords": [
+    "structured-context",
+    "sctx",
+    "plugin",
+    "map-view"
+  ],
+  "files": [
+    "dist/"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "bun run clean && bun run --cwd ../map-views build:library && bun scripts/build.ts && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "peerDependencies": {
+    "structured-context": "^0.24.0"
+  },
+  "devDependencies": {
+    "structured-context": "^0.24.0",
+    "structured-context-map-views": "workspace:*"
+  }
+}

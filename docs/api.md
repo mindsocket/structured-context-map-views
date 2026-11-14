@@ -72,6 +72,10 @@ Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsid
 
 `dist/artifact.html` is a page that needs no edits: publish it as a Claude artifact declaring the `db` capability, then write each space as `spaces/<space>` from the `export` document: `{ schemaId, graph, validation, definitions }`, the last three as JSON strings. The page lists the `spaces` collection, so one artifact can show several spaces, and refreshing is writing the documents again. The page pins this package's version (loaded from jsDelivr) and carries the styles inline. Comments on a card report its accessible name, `[<index>] <title> · <view>`; the index is the node's position in the stored graph's `nodes` array.
 
+## Rendering to an HTML file
+
+`sctx-map-views` is a structured-context plugin. Name it in a space's `plugins`, or put it in the config root's plugins folder, and `sctx render <space> map-views.html -o map.html` writes one HTML file with the page, its scripts and the space's data inlined. Definitions come from the same places as everywhere else. Validation runs with the `-d` options `semantic`, `depth`, `ruleFilter` (comma-separated) and `includeGated`.
+
 ## Validation results
 
 `annotationsFrom(input, graph)` attaches structured-context's validation issues to the graph's nodes. Pass it a `ValidationResult` or the output of `sctx validate --json` as it is. It returns the `annotations` to pass to `MapView`, and the `unattached` issues, which have no node in the graph. The definition's `nodes.validation` and `nodes.validationSources` choose which annotations show.
