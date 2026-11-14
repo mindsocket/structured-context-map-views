@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test';
 import { buildSpaceGraph } from 'structured-context/api';
-import { makeSpaceNode } from 'structured-context/testing';
 import { VALIDATION_ISSUE_KINDS } from 'structured-context/types';
 import { annotationsFrom, filterAnnotations, type NodeAnnotation, worstSeverity } from '../src/core/annotations';
+import { makeSpaceNode } from './builders';
 
 const graph = buildSpaceGraph([makeSpaceNode('A', 'Thing'), makeSpaceNode('B', 'Thing')], undefined);
 const idOf = (title: string) => [...graph.nodes.values()].find((n) => n.title === title)!.id;
