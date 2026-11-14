@@ -42,12 +42,15 @@ if ! bun install --frozen-lockfile >/dev/null 2>&1; then
 fi
 
 # Workspaces keep their dependencies in per-package node_modules directories.
-for rel in . packages/map-views apps/navigator; do
+for rel in . packages/map-views packages/sctx-map-views apps/navigator; do
   src="$root/$rel/node_modules"
   [ -d "$src" ] || src="$main_root/$rel/node_modules"
   [ -d "$src" ] && ln -s "$src" "$wt/$rel/node_modules"
 done
 cd "$wt" || exit 1
+
+# sctx-map-views imports the library's build output.
+bun run --cwd packages/map-views build:library >/dev/null || exit 1
 
 status=0
 echo "checking $(git rev-parse --short HEAD), not the working tree"
