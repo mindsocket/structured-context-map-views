@@ -19,6 +19,7 @@ This repo holds:
 - **The library** (`packages/map-views`, package `structured-context-map-views`): React components that render a map view inside any host app, using the browser's own layout engine plus an SVG overlay for connectors.
 - **An `export` command** (`structured-context-map-views export <space>`): a JSON snapshot of a space (graph, validation results, map view definitions) for rendering a map view in a host that can't run structured-context.
 - **A Claude artifact host** (`dist/artifact.html`, `dist/artifact.js`): publishes a space's map views as a private artifact whose data lives in the artifact database.
+- **A render plugin** (`packages/sctx-map-views`, package `sctx-map-views`): `sctx render <space> map-views.html` writes a space and its map views as one self-contained interactive HTML file.
 - **The navigator** (`apps/navigator`, not published): a standalone app for browsing your spaces through their map views.
 
 Pre-1.0. Docs:

@@ -33,14 +33,16 @@
       "types": "./dist/types/node/index.d.ts",
       "default": "./dist/node.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./page.html": "./dist/page.html"
   },
   "scripts": {
     "clean": "rm -rf dist",
     "generate": "bun run generate:schemas && bun run generate:definitions",
     "generate:schemas": "bun scripts/generate-schemas.ts",
     "generate:definitions": "bun scripts/generate-definitions.ts",
-    "build": "bun run clean && bun run generate && bun --bun vite build && tsc -p tsconfig.build.json && tailwindcss -i src/layouts/styles.css -o dist/styles.css && bun scripts/build-page.ts && bun scripts/build-artifact-page.ts",
+    "build:library": "bun run clean && bun run generate && bun --bun vite build && tsc -p tsconfig.build.json && tailwindcss -i src/layouts/styles.css -o dist/styles.css && bun scripts/build-page.ts",
+    "build": "bun run build:library && bun scripts/build-artifact-page.ts",
     "typecheck": "tsc --noEmit",
     "capture-fixtures": "bun scripts/capture-fixtures.ts",
     "test": "bun test",

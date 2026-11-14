@@ -15,6 +15,7 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
+      - run: bun run --cwd packages/map-views build:library
       - run: bun run lint
       - run: bun run typecheck
       - run: bun run test

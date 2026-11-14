@@ -15,7 +15,7 @@ const DEFINITIONS_DIR = 'map-views';
 const CONFIG_PLUGINS_DIR = 'plugins';
 const PACKAGE_NAME = 'structured-context-map-views';
 
-type Source = { kind: 'core' } | { kind: 'plugin'; plugin: string } | { kind: 'config' };
+export type DefinitionSource = { kind: 'core' } | { kind: 'plugin'; plugin: string } | { kind: 'config' };
 
 export type LoadMapViewDefinitionsOptions = {
   /** Root of the main config file (`resolveConfigPath().root`). Defaults to where structured-context finds it. */
@@ -39,7 +39,7 @@ export function loadMapViewDefinitions(
   const configDir = options.configDir ?? resolveConfigPath().root;
   const configDirs = [...new Set([configDir, ...config.spaces.flatMap((s) => (s.sourceDir ? [s.sourceDir] : []))])];
 
-  const folders: { dir: string; source: Source }[] = [
+  const folders: { dir: string; source: DefinitionSource }[] = [
     ...pluginDirs(config, configDir, configDirs).flatMap(([plugin, dir]) => {
       const definitions = pluginDefinitionsDir(dir);
       return definitions ? [{ dir: definitions, source: { kind: 'plugin', plugin } as const }] : [];
@@ -50,9 +50,17 @@ export function loadMapViewDefinitions(
     }),
   ];
 
+  return readDefinitionFolders(folders);
+}
+
+/**
+ * Definitions in `folders` and this package's embedded ones, each checked against the namespace of its source.
+ * Throws on the first invalid definition or a repeated id.
+ */
+export function readDefinitionFolders(folders: { dir: string; source: DefinitionSource }[]): MapViewDefinition[] {
   const foundAt = new Map<string, string>();
   const definitions: MapViewDefinition[] = [];
-  const add = (label: string, text: string, source: Source) => {
+  const add = (label: string, text: string, source: DefinitionSource) => {
     const definition = parseMapViewDefinition(label, text);
     assertIdNamespace(definition.id, source, label);
     const existing = foundAt.get(definition.id);
@@ -114,7 +122,7 @@ function pluginDefinitionsDir(pluginDir: string): string | undefined {
   return join(pluginDir, DEFINITIONS_DIR);
 }
 
-function assertIdNamespace(id: string, source: Source, path: string): void {
+function assertIdNamespace(id: string, source: DefinitionSource, path: string): void {
   const segments = id.slice(SCHEME.length).split('/');
   const expected =
     source.kind === 'core'
@@ -134,3 +142,5 @@ function assertIdNamespace(id: string, source: Source, path: string): void {
 function isDirectory(path: string): boolean {
   return existsSync(path) && statSync(path).isDirectory();
 }
+
+export { fillPage } from './page';
