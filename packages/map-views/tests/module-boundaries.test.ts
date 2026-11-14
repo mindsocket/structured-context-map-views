@@ -32,6 +32,17 @@ describe('module boundaries', () => {
   test('layouts does not import from host code or Node-only modules', () => {
     expect(importsIn('layouts').filter(({ specifier }) => /\/node(\/|$)|^node:/.test(specifier))).toEqual([]);
   });
+
+  // The viewer is shared by hosts, so it knows nothing about any one of them
+  test('viewer imports only core, layouts, React and structured-context/browser', () => {
+    const allowed = /^\.\.\/(core|layouts)\/|^\.\/|^(react|react-dom)(\/|$)|^structured-context\/browser$/;
+    expect(importsIn('viewer').filter(({ specifier }) => !allowed.test(specifier))).toEqual([]);
+  });
+
+  test('no module imports a host', () => {
+    const imports = ['core', 'layouts', 'node', 'viewer'].flatMap(importsIn);
+    expect(imports.filter(({ specifier }) => /^(\.\.\/)+(artifact|page)(\/|$)/.test(specifier))).toEqual([]);
+  });
 });
 
 /** `import type` is erased at build time, so it is browser-safe. */

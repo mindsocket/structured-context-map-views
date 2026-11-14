@@ -51,7 +51,7 @@ for (const url of Object.values(pinnedUrls)) {
   }
 }
 
-const css = [join(root, 'dist/styles.css'), join(root, 'src/artifact/page.css')]
+const css = [join(root, 'dist/styles.css'), join(root, 'src/viewer/viewer.css')]
   .map((f) => readFileSync(f, 'utf8'))
   .join('\n');
 const entry = `${CDN}/${pkg.name}@${pkg.version}/dist/artifact.js`;
