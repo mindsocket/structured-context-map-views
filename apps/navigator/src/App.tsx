@@ -18,7 +18,7 @@ import { useUrlState } from './useUrlState';
 type SpaceListItem = { name: string };
 
 export function App() {
-  const { spaceName, mapViewId, values, setSpaceName, setMapViewId, setValue } = useUrlState();
+  const { spaceName, mapViewId, focus, values, setSpaceName, setMapViewId, setFocus, setValue } = useUrlState();
   const [selectedNode, setSelectedNode] = useState<SpaceNode>();
   const [unattachedPanelOpen, setUnattachedPanelOpen] = useState(false);
 
@@ -129,6 +129,8 @@ export function App() {
               values={values}
               annotations={annotations}
               onNodeSelect={setSelectedNode}
+              focus={(focus || undefined) as SpaceNode['id'] | undefined}
+              onFocusChange={setFocus}
             />
           )}
         </div>
