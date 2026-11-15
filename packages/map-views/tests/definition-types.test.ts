@@ -8,7 +8,7 @@ const region: Region = {
   id: 'main',
   layout: { type: 'tree', orientation: 'horizontal', dag: 'cross-edge' },
   nodes: { style: 'shape', fields: ['status'], validation: 'warning', validationSources: ['schema', 'rule'] },
-  edges: { show: false },
+  edges: { show: false, labels: false },
 };
 
 // @ts-expect-error resolved regions have no parameter bindings

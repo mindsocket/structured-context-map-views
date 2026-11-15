@@ -20,7 +20,11 @@ export type LayoutProps<L extends LayoutConfig = LayoutConfig> = {
 export function TreeLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<TreeLayoutConfig>) {
   const { orientation, dag } = region.layout;
   const tree = useMemo(() => buildTree(graph, region.id, dag), [graph, region.id, dag]);
-  const links = useMemo(() => (region.edges.show ? treeLinks(tree) : []), [tree, region.edges.show]);
+  const { show, labels } = region.edges;
+  const links = useMemo(
+    () => (show ? treeLinks(tree).map(({ field, ...link }) => ({ ...link, label: labels ? field : undefined })) : []),
+    [tree, show, labels],
+  );
 
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   // Filled by ref callbacks during commit, read by the overlay's layout effect afterwards.

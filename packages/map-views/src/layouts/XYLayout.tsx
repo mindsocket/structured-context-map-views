@@ -24,9 +24,10 @@ export function XYLayout({ graph, region, instanceId, onNodeSelect }: LayoutProp
             id: field,
             lane,
             kind: hierarchy ? ('tree' as const) : ('cross' as const),
+            label: region.edges.labels ? field : undefined,
           }))
         : [],
-    [plot, region.edges.show],
+    [plot, region.edges.show, region.edges.labels],
   );
   const shape = region.nodes.style === 'shape';
 

@@ -43,7 +43,7 @@ describe('parseMapViewDefinition', () => {
           validation: 'off',
           validationSources: [...VALIDATION_ISSUE_KINDS],
         },
-        edges: { show: true },
+        edges: { show: true, labels: false },
       },
     ]);
   });
