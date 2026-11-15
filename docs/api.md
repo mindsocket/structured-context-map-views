@@ -8,8 +8,6 @@ The library is pre-1.0: its exports may change between minor versions.
 | `structured-context-map-views/node` | Finding definitions on disk. Node only |
 | `structured-context-map-views/styles.css` | Prebuilt styles, required by the components |
 
-React 19 and `structured-context` are peer dependencies, so the host's copy of each is the one used. Layouts, node cards, the edge overlay and the projections are internal; exports are added when a host needs one.
-
 ## Rendering a map view
 
 ```tsx
@@ -20,73 +18,41 @@ import 'structured-context-map-views/styles.css';
 <MapView definition={definition} graph={graph} values={values} onNodeSelect={(node) => open(node)} />
 ```
 
-### `MapView`
+`graph` is a structured-context `SpaceGraph` (see [Data](#data)); `values` and the controls' `onChange` belong to the host. Pass `annotations` to show validation results (see [Validation results](#validation-results)).
 
-| Prop | Type | Meaning |
-|---|---|---|
-| `definition` | `MapViewDefinition` | A parsed definition |
-| `graph` | `SpaceGraph` | The space to render, as structured-context's `assembleSpaceGraph` or `spaceGraphFrom` returns it |
-| `values` | `ParameterValues` | Current parameter values, owned by the host. Missing values use defaults |
-| `annotations` | `AnnotationIndex` | Validation results by node (see [Validation results](#validation-results)) |
-| `onNodeSelect` | `(node: SpaceNode) => void` | Called when the reader selects a node |
-
-`MapView` sizes to its container and scrolls within it.
-
-### Parameter controls
-
-`ParameterControls` is a ready-made row of controls generated from the definition's parameters; it renders nothing when there are none. `values` holds the host's current values (missing or stale ones show as the default), and `onChange` receives the parameter name and new value.
-
-A host that wants its own layout builds from smaller parts: `useParameterControls(definition, values, onChange)` returns each parameter with its current value and a setter, with no markup, and `ParameterInput` renders the right input for a parameter. The typed inputs (`ToggleParameterInput`, `SelectParameterInput`, `MultiSelectParameterInput`) are exported for hosts that want one kind of input without the dispatch.
+A host that lays out the controls itself builds them from `useParameterControls` and `ParameterInput`.
 
 ## Definitions
 
-- `loadMapViewDefinitions(config, { configDir? })` (from `/node`): every definition available with a structured-context config, checked for namespaced, unique `$id`s (see [where definitions are found](definitions.md#where-definitions-are-found)). The library's own definitions are embedded in the module, so it works in a host's bundle. Browser-only hosts get the result from a server.
-- `parseMapViewDefinition(name, text)`: parses and validates JSON5 text (`name` labels error messages), throwing `MapViewDefinitionError` with the problems found. A `MapViewDefinition`'s `id` is its `$id`.
-- `mapViewsForSchema(definitions, schemaId)`: the definitions that apply to a schema.
-- `resolveParameterValues(definition, values)`: the effective value of every parameter.
-- `selectionFilter(definition, values)`: the first region's `select.filter`, for a host to apply when loading the space.
-- `viewValidationLevel(definition, values)`: the first region's `nodes.validation`, so a host can skip running validation when it is `off`.
-- `MAP_VIEW_SCHEMAS`: the format's JSON Schemas.
+A Node host loads definitions with `loadMapViewDefinitions` (from `/node`; see [where definitions are found](definitions.md#where-definitions-are-found)) and lists those for the space's schema with `mapViewsForSchema(definitions, context.schema.$id)`. Browser-only hosts get the result from a server. After the reader picks a view and its parameters, apply `selectionFilter(definition, values)` when loading the space, and skip validation when `viewValidationLevel(definition, values)` is `off`.
 
 ## Data
 
-Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsidian plugin) passes the graph `assembleSpaceGraph` returns. A host whose server and browser are separate sends the wire format: `exportSpaceGraph` on the server, `spaceGraphFrom` (from `structured-context/browser`) in the browser; see `apps/navigator/src/server/load-space.ts`. To pick definitions, hosts also need the space's schema id (`context.schema.$id`).
+Map views take structured-context's `SpaceGraph`. A Node host (such as the Obsidian plugin) passes the graph `assembleSpaceGraph` returns. A host whose server and browser are separate sends the wire format: `exportSpaceGraph` on the server, `spaceGraphFrom` (from `structured-context/browser`) in the browser; see `apps/navigator/src/server/load-space.ts`.
 
 ## The `export` command
 
-`structured-context-map-views [--config <file>] export <space> [options]` prints a JSON snapshot of a space (its graph, validation results and applicable map view definitions), so a host that can't run structured-context can render a map view from it. The validation options (see `--help`) mean what they do for `sctx validate`.
+`structured-context-map-views [--config <file>] export <space> [options]` prints a JSON snapshot of a space (its graph, validation results and applicable map view definitions), so a host that can't run structured-context can render a map view from it.
 
-```json
-{
-  "space": "name",
-  "schemaId": "sctx://…",
-  "graph": { "formatVersion": 1 },
-  "validation": { "issues": [] },
-  "definitions": []
-}
-```
-
-`graph` is the wire format described above and `validation` is what `annotationsFrom` takes.
+In the output, `graph` is the wire format above and `validation` is what `annotationsFrom` takes.
 
 ## Publishing as a Claude artifact
 
-`dist/artifact.html` is a page that needs no edits: publish it as a Claude artifact declaring the `db` capability, then write each space as `spaces/<space>` from the `export` document: `{ schemaId, graph, validation, definitions }`, the last three as JSON strings. The page lists the `spaces` collection, so one artifact can show several spaces, and refreshing is writing the documents again. The page pins this package's version (loaded from jsDelivr) and carries the styles inline. Comments on a card report its accessible name, `[<index>] <title> · <view>`; the index is the node's position in the stored graph's `nodes` array.
+Publish `dist/artifact.html`, unedited, as a Claude artifact declaring the `db` capability. Write each space as `spaces/<space>` from the `export` document: `{ schemaId, graph, validation, definitions }`, the last three as JSON strings. One artifact shows every space in the collection, and refreshing is writing the documents again.
 
 ## Rendering to an HTML file
 
-`sctx-map-views` is a structured-context plugin. Name it in a space's `plugins`, or put it in the config root's plugins folder, and `sctx render <space> map-views.html -o map.html` writes one HTML file with the page, its scripts and the space's data inlined. Definitions come from the same places as everywhere else. Validation runs with the `-d` options `semantic`, `depth`, `ruleFilter` (comma-separated) and `includeGated`.
+`sctx-map-views` is a structured-context plugin. Name it in a space's `plugins`, or put it in the config root's plugins folder, and `sctx render <space> map-views.html -o map.html` writes one HTML file with the page, its scripts and the space's data inlined. Validation takes the `-d` options `semantic`, `depth`, `ruleFilter` (comma-separated) and `includeGated`.
 
 ## Validation results
 
-`annotationsFrom(input, graph)` attaches structured-context's validation issues to the graph's nodes. Pass it a `ValidationResult` or the output of `sctx validate --json` as it is. It returns the `annotations` to pass to `MapView`, and the `unattached` issues, which have no node in the graph. The definition's `nodes.validation` and `nodes.validationSources` choose which annotations show.
+`annotationsFrom(input, graph)` attaches structured-context's validation issues to the graph's nodes. Pass its `annotations` to `MapView`. The definition's `nodes.validation` and `nodes.validationSources` choose which show.
 
 The library draws the badge, and the host lists the messages. See `AnnotationList` in `apps/navigator/src/NodeDetails.tsx`.
 
 ## Drawing a tree yourself
 
 A host that cannot mount React, such as a Claude Code mod, can draw a tree from `buildTree(graph, regionId, dag)`, the tree layout's projection, with `annotationsFrom` for the validation results.
-
-Importing only these from the package root pulls in neither React nor the definition parser (ajv, json5) when bundled.
 
 ## Theming
 

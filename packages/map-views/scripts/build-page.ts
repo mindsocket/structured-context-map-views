@@ -41,4 +41,6 @@ ${css}
 </html>
 `;
 writeFileSync(join(root, 'dist/page.html'), page);
+// TypeScript can't type an import of an HTML file; this tells consumers it is the page text.
+writeFileSync(join(root, 'dist/page.html.d.ts'), 'declare const page: string;\nexport default page;\n');
 console.log(`dist/page.html: ${(page.length / 1024).toFixed(0)} KB`);

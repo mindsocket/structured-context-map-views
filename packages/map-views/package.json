@@ -34,7 +34,10 @@
       "default": "./dist/node.js"
     },
     "./styles.css": "./dist/styles.css",
-    "./page.html": "./dist/page.html"
+    "./page.html": {
+      "types": "./dist/page.html.d.ts",
+      "default": "./dist/page.html"
+    }
   },
   "scripts": {
     "clean": "rm -rf dist",
