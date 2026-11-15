@@ -26,7 +26,7 @@ export type LoadMapViewDefinitionsOptions = {
  * Every map view definition available with `config`, from:
  * - this package's embedded definitions (`sctx-map-view://core/<name>`), for structured-context's bundled schemas;
  * - each plugin found from a config folder or named by a space (`sctx-map-view://<plugin>/<name>`): the
- *   folder named by `"sctx": { "mapViews": "…" }` in its package.json, else its `map-views/` folder;
+ *   folder named by `"sctx": { "map-views": "…" }` in its package.json, else its `map-views/` folder;
  * - the `map-views` resources folder of each config root (`sctx-map-view://<name>`).
  *
  * Each definition's `$id` must be in the namespace of where it was found, and ids must be unique.
@@ -116,7 +116,7 @@ function pluginDirs(config: Config, configDir: string, configDirs: string[]): [s
 function pluginDefinitionsDir(pluginDir: string): string | undefined {
   const pkgPath = join(pluginDir, 'package.json');
   if (existsSync(pkgPath)) {
-    const declared = JSON.parse(readFileSync(pkgPath, 'utf8')).sctx?.mapViews;
+    const declared = JSON.parse(readFileSync(pkgPath, 'utf8')).sctx?.[DEFINITIONS_DIR];
     if (typeof declared === 'string') return resolve(pluginDir, declared);
   }
   return join(pluginDir, DEFINITIONS_DIR);
