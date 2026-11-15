@@ -1,0 +1,19 @@
+// The hierarchy as a tree. Any schema that has one.
+{
+  $schema: 'https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json',
+  $id: 'sctx-map-view://core/tree',
+  title: 'Tree',
+  parameters: {
+    orientation: { $ref: 'settings.json#/$defs/orientation', default: 'vertical' },
+    nodeStyle: { $ref: 'settings.json#/$defs/nodeStyle', default: 'card' },
+    validation: { $ref: 'settings.json#/$defs/validationLevel', default: 'off' },
+  },
+  regions: [
+    {
+      id: 'main',
+      layout: { type: 'tree', orientation: { $param: 'orientation' } },
+      nodes: { style: { $param: 'nodeStyle' }, validation: { $param: 'validation' } },
+      edges: { show: true },
+    },
+  ],
+}

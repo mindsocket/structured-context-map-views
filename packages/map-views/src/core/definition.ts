@@ -2,10 +2,11 @@ import Ajv2020, { type AnySchemaObject, type ErrorObject } from 'ajv/dist/2020';
 import type { FromSchema } from 'json-schema-to-ts';
 import JSON5 from 'json5';
 import {
-  type compassLayoutSchema,
   definitionSchema,
+  type graphLayoutSchema,
   type landscapeLayoutSchema,
   MAP_VIEW_SCHEMAS,
+  type neighbourhoodLayoutSchema,
   type settingsSchema,
   type treeLayoutSchema,
   type xyLayoutSchema,
@@ -20,7 +21,8 @@ type References = {
     typeof treeLayoutSchema,
     typeof landscapeLayoutSchema,
     typeof xyLayoutSchema,
-    typeof compassLayoutSchema,
+    typeof neighbourhoodLayoutSchema,
+    typeof graphLayoutSchema,
     typeof definitionSchema,
   ];
   // Grouping levels dispatch with if/then/else (see the landscape layout schema).
@@ -49,7 +51,8 @@ export type LayoutConfig = Region['layout'];
 export type TreeLayoutConfig = Extract<LayoutConfig, { type: 'tree' }>;
 export type LandscapeLayoutConfig = Extract<LayoutConfig, { type: 'landscape' }>;
 export type XYLayoutConfig = Extract<LayoutConfig, { type: 'xy' }>;
-export type CompassLayoutConfig = Extract<LayoutConfig, { type: 'compass' }>;
+export type NeighbourhoodLayoutConfig = Extract<LayoutConfig, { type: 'neighbourhood' }>;
+export type GraphLayoutConfig = Extract<LayoutConfig, { type: 'graph' }>;
 export type AxisConfig = XYLayoutConfig['x'];
 export type GroupLevel = LandscapeLayoutConfig['group'][number];
 export type IntermediateDisplay = Extract<GroupLevel, { type: string }>['intermediate'];
@@ -69,8 +72,8 @@ export type MapViewDefinition = {
   id: string;
   title: string;
   description?: string;
-  /** `$id` of the schema whose spaces this map view applies to. */
-  schema: string;
+  /** `$id` of the schema whose spaces this map view applies to; unset: every schema. */
+  schema?: string;
   parameters: Parameter[];
   /** The definition as authored. */
   source: AuthoredDefinition;
@@ -173,7 +176,7 @@ export function parseMapViewDefinition(name: string, text: string): MapViewDefin
     id: source.$id,
     title: source.title ?? source.$id.slice(source.$id.lastIndexOf('/') + 1),
     ...(source.description !== undefined && { description: source.description }),
-    schema: source.schema,
+    ...(source.schema !== undefined && { schema: source.schema }),
     parameters,
     source,
   };
@@ -228,12 +231,12 @@ export function viewValidationLevel(
   return resolveRegions(definition, values)[0]?.nodes.validation ?? 'off';
 }
 
-/** Map view definitions that apply to a space with the given schema. */
+/** Map view definitions that apply to a space with the given schema, including those for every schema. */
 export function mapViewsForSchema(
   definitions: readonly MapViewDefinition[],
   schemaId: string | undefined,
 ): MapViewDefinition[] {
-  return schemaId === undefined ? [] : definitions.filter((d) => d.schema === schemaId);
+  return definitions.filter((d) => d.schema === undefined || d.schema === schemaId);
 }
 
 /** Resolve `$ref`s relative to the format schemas, so parameters can write `settings.json#/$defs/orientation`. */

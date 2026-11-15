@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/compass.json",
-  "title": "Compass layout",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/neighbourhood.json",
+  "title": "Neighbourhood layout",
   "description": "The neighbourhood of one focus node, with related nodes placed around it by role. Each role lists the fields that put a node there. A node is placed by the first role that matches, in the order left, right, above, below, around.",
   "type": "object",
   "required": [
@@ -10,7 +10,7 @@
   "additionalProperties": false,
   "properties": {
     "type": {
-      "const": "compass"
+      "const": "neighbourhood"
     },
     "above": {
       "description": "Fields through which the focus has a parent, shown above it. Empty: every field.",

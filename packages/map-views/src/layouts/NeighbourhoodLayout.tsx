@@ -1,12 +1,12 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { SpaceNode } from 'structured-context/api';
-import { buildCompass, type CompassNeighbour } from '../core/compass';
-import type { CompassLayoutConfig } from '../core/definition';
+import type { NeighbourhoodLayoutConfig } from '../core/definition';
+import { buildNeighbourhood, type Neighbour } from '../core/neighbourhood';
 import { EdgeOverlay } from './EdgeOverlay';
 import { NodeCard } from './NodeCard';
 import type { LayoutProps } from './TreeLayout';
 
-type Props = LayoutProps<CompassLayoutConfig> & {
+type Props = LayoutProps<NeighbourhoodLayoutConfig> & {
   /** The focus node; the layout keeps its own once the reader picks another. */
   focus?: SpaceNode['id'];
   onFocusChange?: (id: SpaceNode['id']) => void;
@@ -16,19 +16,21 @@ type Props = LayoutProps<CompassLayoutConfig> & {
  * One node with its neighbours around it. Selecting a neighbour moves the focus to it; selecting
  * the focus is a regular node selection.
  */
-export function CompassLayout({ graph, region, instanceId, onNodeSelect, focus, onFocusChange }: Props) {
+export function NeighbourhoodLayout({ graph, region, instanceId, onNodeSelect, focus, onFocusChange }: Props) {
   const [picked, setPicked] = useState<{ from: SpaceNode['id'] | undefined; id: SpaceNode['id'] }>();
   // A focus the host sets later wins over the reader's earlier pick.
   const focusId = picked && picked.from === focus ? picked.id : focus;
-  const compass = useMemo(
-    () => buildCompass(graph, region.id, region.layout, focusId),
+  const neighbourhood = useMemo(
+    () => buildNeighbourhood(graph, region.id, region.layout, focusId),
     [graph, region.id, region.layout, focusId],
   );
   const { labels, show } = region.edges;
   const links = useMemo(
     () =>
-      show ? compass.links.map((link) => ({ ...link, id: link.field, label: labels ? link.field : undefined })) : [],
-    [compass, show, labels],
+      show
+        ? neighbourhood.links.map((link) => ({ ...link, id: link.field, label: labels ? link.field : undefined }))
+        : [],
+    [neighbourhood, show, labels],
   );
 
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
@@ -41,8 +43,8 @@ export function CompassLayout({ graph, region, instanceId, onNodeSelect, focus, 
     [elements],
   );
 
-  if (!compass.focus) return null;
-  const current = compass.focus.node;
+  if (!neighbourhood.focus) return null;
+  const current = neighbourhood.focus.node;
   const select = (node: SpaceNode) => {
     if (node.id === current.id) return onNodeSelect?.(node);
     setPicked({ from: focus, id: node.id });
@@ -58,11 +60,11 @@ export function CompassLayout({ graph, region, instanceId, onNodeSelect, focus, 
       <NodeCard node={item.node} repeat={false} nodes={region.nodes} onSelect={select} />
     </div>
   );
-  const group = (items: CompassNeighbour[], className: string) =>
+  const group = (items: Neighbour[], className: string) =>
     items.length > 0 && (
       <div className={`mv:flex mv:flex-wrap mv:justify-center mv:gap-3 ${className}`}>{items.map(cell)}</div>
     );
-  const { above, below, left, right, around } = compass.roles;
+  const { above, below, left, right, around } = neighbourhood.roles;
 
   return (
     <div
@@ -72,7 +74,7 @@ export function CompassLayout({ graph, region, instanceId, onNodeSelect, focus, 
       {group(above, '')}
       <div className="mv:flex mv:items-center mv:gap-24">
         {group(left, 'mv:flex-col')}
-        {cell(compass.focus)}
+        {cell(neighbourhood.focus)}
         {group(right, 'mv:flex-col')}
       </div>
       {group(below, '')}

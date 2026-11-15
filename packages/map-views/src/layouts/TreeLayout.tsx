@@ -58,6 +58,8 @@ export function TreeLayout({ graph, region, instanceId, onNodeSelect }: LayoutPr
     </li>
   );
 
+  if (!graph.hierarchy) return <p className="mv:p-4 mv:text-muted">This schema has no hierarchy to draw as a tree.</p>;
+
   return (
     <div ref={setContainer} className="mv:relative mv:w-max mv:min-w-full mv:p-4">
       <Branches orientation={orientation}>{[...tree.roots, ...tree.orphans].map(branch)}</Branches>

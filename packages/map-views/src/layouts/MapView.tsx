@@ -3,8 +3,9 @@ import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import { type AnnotationIndex, filterAnnotations } from '../core/annotations';
 import { type MapViewDefinition, type ParameterValues, type Region, resolveRegions } from '../core/definition';
 import { AnnotationsContext } from './annotations-context';
-import { CompassLayout } from './CompassLayout';
+import { GraphLayout } from './GraphLayout';
 import { LandscapeLayout } from './LandscapeLayout';
+import { NeighbourhoodLayout } from './NeighbourhoodLayout';
 import { type LayoutProps, TreeLayout } from './TreeLayout';
 import { XYLayout } from './XYLayout';
 
@@ -19,7 +20,7 @@ type Props = {
    */
   annotations?: AnnotationIndex;
   onNodeSelect?: (node: SpaceNode) => void;
-  /** The node a compass layout centres on (see {@link CompassLayout}). */
+  /** The node a neighbourhood layout centres on (see {@link NeighbourhoodLayout}). */
   focus?: SpaceNode['id'];
   onFocusChange?: (id: SpaceNode['id']) => void;
 };
@@ -51,7 +52,7 @@ export function MapView({ definition, graph, values, annotations, onNodeSelect, 
 function layoutFor(
   region: Region,
   props: Omit<LayoutProps, 'region'>,
-  compass: Pick<Props, 'focus' | 'onFocusChange'>,
+  neighbourhood: Pick<Props, 'focus' | 'onFocusChange'>,
 ) {
   const { layout } = region;
   switch (layout.type) {
@@ -61,7 +62,9 @@ function layoutFor(
       return <LandscapeLayout {...props} region={{ ...region, layout }} />;
     case 'xy':
       return <XYLayout {...props} region={{ ...region, layout }} />;
-    case 'compass':
-      return <CompassLayout {...props} {...compass} region={{ ...region, layout }} />;
+    case 'graph':
+      return <GraphLayout {...props} region={{ ...region, layout }} />;
+    case 'neighbourhood':
+      return <NeighbourhoodLayout {...props} {...neighbourhood} region={{ ...region, layout }} />;
   }
 }

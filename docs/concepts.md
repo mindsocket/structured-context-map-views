@@ -21,7 +21,8 @@ The arrangement a region uses, chosen from a fixed catalogue:
 - **tree**: a tree over the schema's hierarchy.
 - **landscape**: nested containers following an authored grouping.
 - **xy**: nodes positioned by two numeric fields.
-- **compass**: one node with its neighbours placed around it by role.
+- **neighbourhood**: one node with its neighbours placed around it by role.
+- **graph**: every node and edge as a network.
 
 Each layout carries its own opinions (spacing, card sizes, colours). Definitions choose and configure a layout; they don't compose one.
 
@@ -38,7 +39,7 @@ The two ways a tree shows a node with several parents:
 
 ## Focus
 
-The node a compass layout centres on. Hosts can set it; otherwise the reader's picks move it.
+The node a neighbourhood layout centres on. Hosts can set it; otherwise the reader's picks move it.
 
 ## Grouping level
 

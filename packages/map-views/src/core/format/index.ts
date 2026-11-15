@@ -1,15 +1,17 @@
-import { compassLayoutSchema } from './compass-layout';
 import { definitionSchema } from './definition-schema';
+import { graphLayoutSchema } from './graph-layout';
 import { landscapeLayoutSchema } from './landscape-layout';
+import { neighbourhoodLayoutSchema } from './neighbourhood-layout';
 import { settingsSchema } from './settings';
 import { treeLayoutSchema } from './tree-layout';
 import { xyLayoutSchema } from './xy-layout';
 
 export { PARAM_REF } from './param-ref';
 export {
-  compassLayoutSchema,
   definitionSchema,
+  graphLayoutSchema,
   landscapeLayoutSchema,
+  neighbourhoodLayoutSchema,
   settingsSchema,
   treeLayoutSchema,
   xyLayoutSchema,
@@ -22,5 +24,6 @@ export const MAP_VIEW_SCHEMAS = [
   treeLayoutSchema,
   landscapeLayoutSchema,
   xyLayoutSchema,
-  compassLayoutSchema,
+  neighbourhoodLayoutSchema,
+  graphLayoutSchema,
 ] as const;

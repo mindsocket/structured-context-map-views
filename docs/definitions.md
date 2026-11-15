@@ -30,7 +30,7 @@ A map view definition is a JSON5 file. Its format is a set of JSON Schemas publi
 | Field | Required | Meaning |
 |---|---|---|
 | `$id` | yes | Identifier, namespaced by where the definition is found (below) |
-| `schema` | yes | `$id` of the structured-context schema whose spaces this map view applies to |
+| `schema` | | `$id` of the structured-context schema whose spaces this map view applies to. Omitted: every schema |
 | `regions` | yes | Parts of the map view (at least one; only the first is rendered) |
 | `title` | | Display name. Defaults to the last segment of the `$id` |
 | `description` | | |
@@ -92,7 +92,15 @@ Nodes positioned on two axes by numeric fields. Plotted nodes without a usable v
 
 An axis has a `field` (required), a `domain` (`[min, max]`, or `'data'` for the smallest and largest plotted values; default `'data'`), a `direction` (`ascending`, the default, or `descending`) and a `label` (defaults to the field name).
 
-### compass
+### graph
+
+Every node and edge as a network: connected nodes sit close together. It needs no hierarchy, so it suits any schema.
+
+| Setting | Values | Default |
+|---|---|---|
+| `edgeFields` | Fields whose edges are drawn and pull nodes together | all edges |
+
+### neighbourhood
 
 One focus node with its neighbours around it. Selecting a neighbour makes it the focus; selecting the focus is a normal node selection. A node is placed by the first role that matches, in the order `left`, `right`, `above`, `below`, then `around` for the rest.
 
@@ -106,7 +114,7 @@ The focus is the host's to set (`focus` on `MapView`); by default it is the firs
 
 ## Parameters
 
-Any setting marked parameterisable in the schemas (`orientation`, `dag`, `intermediate`, `nodes.style`, `nodes.fields`, `nodes.validation`, `nodes.validationSources`, `edges.show`, `edges.labels`, a landscape level's `type`, an axis's `field` and `direction`, `types`, `edgeFields`, a compass's role fields) takes either a fixed value or `{ $param: '<name>' }`.
+Any setting marked parameterisable in the schemas (`orientation`, `dag`, `intermediate`, `nodes.style`, `nodes.fields`, `nodes.validation`, `nodes.validationSources`, `edges.show`, `edges.labels`, a landscape level's `type`, an axis's `field` and `direction`, `types`, `edgeFields`, a neighbourhood's role fields) takes either a fixed value or `{ $param: '<name>' }`.
 
 Each parameter is a JSON Schema with a `default` and an optional `title`. It can `$ref` a shared setting from `settings.json` (`orientation`, `nodeStyle`, `fieldList`, `validationLevel`, `validationSources`) or a layout's own definitions (e.g. `layouts/tree.json#/$defs/dag`), and narrow it. Relative refs resolve against the format's `latest` folder; full URLs work too.
 
@@ -135,7 +143,7 @@ Definitions are found the way structured-context finds plugin schemas, and each 
 
 | Where | `$id` |
 |---|---|
-| Bundled with this library (`map-views/`), for structured-context's bundled schemas | `sctx-map-view://core/<name>` |
+| Bundled with this library (`map-views/`): views that suit any schema, and views for structured-context's bundled schemas | `sctx-map-view://core/<name>` |
 | A plugin: the folder named by `"sctx": { "map-views": "…" }` in its `package.json`, else its `map-views/` folder | `sctx-map-view://<plugin>/<name>` (the plugin's name without `sctx-`) |
 | The `.sctx/map-views/` folder of a structured-context config root, or `map-views/` beside the global config ([resources folder](https://github.com/mindsocket/structured-context/blob/main/docs/config.md#resources-folder)), including configs pulled in by `includeSpacesFrom` | `sctx-map-view://<name>` |
 
