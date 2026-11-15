@@ -10,13 +10,16 @@ trap 'rm -rf "$tmp"' EXIT
 
 cd "$root"
 bun run build >/dev/null
-# Core passes everything the plugin needs through the render callbacks.
-! grep -q 'structured-context/api' dist/index.js || { echo "the bundle imports structured-context/api"; exit 1; }
+# Core passes everything the plugin needs through the render callbacks, so the bundle imports nothing from it.
+! grep -Eq "(from|import ?\(|require ?\()[[:space:]]*['\"]structured-context" dist/index.js || { echo "the bundle imports structured-context"; exit 1; }
 npm pack --silent --pack-destination "$tmp" >/dev/null
 
 cd "$tmp"
 echo '{ "type": "module" }' >package.json
-bun add ./sctx-map-views-*.tgz structured-context >/dev/null
+bun add ./sctx-map-views-*.tgz >/dev/null
+# Loads without structured-context installed.
+node --input-type=module -e "const { default: plugin } = await import('sctx-map-views'); if (plugin.name !== 'sctx-map-views') process.exit(1)"
+bun add structured-context >/dev/null
 
 mkdir space
 echo '{ "spaces": [{ "name": "smoke", "path": "space", "schema": "strategy_general.json", "plugins": { "sctx-map-views": {} } }] }' >.sctx.json
