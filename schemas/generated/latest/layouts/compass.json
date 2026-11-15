@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/compass.json",
+  "title": "Compass layout",
+  "description": "The neighbourhood of one focus node, with related nodes placed around it by role. Each role lists the fields that put a node there. A node is placed by the first role that matches, in the order left, right, above, below, around.",
+  "type": "object",
+  "required": [
+    "type"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "compass"
+    },
+    "above": {
+      "description": "Fields through which the focus has a parent, shown above it. Empty: every field.",
+      "default": [],
+      "anyOf": [
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/fieldList"
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
+        }
+      ]
+    },
+    "below": {
+      "description": "Fields through which the focus has a child, shown below it. Empty: every field.",
+      "default": [],
+      "anyOf": [
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/fieldList"
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
+        }
+      ]
+    },
+    "left": {
+      "description": "Fields, in either direction, shown to the left. Empty: none.",
+      "default": [],
+      "anyOf": [
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/fieldList"
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
+        }
+      ]
+    },
+    "right": {
+      "description": "Fields, in either direction, shown to the right. Empty: none.",
+      "default": [],
+      "anyOf": [
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/fieldList"
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
+        }
+      ]
+    }
+  }
+}

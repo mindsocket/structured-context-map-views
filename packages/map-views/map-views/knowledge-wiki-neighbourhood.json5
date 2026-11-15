@@ -1,0 +1,18 @@
+// A knowledge wiki page with the sources and concepts it connects to, around it.
+{
+  $schema: 'https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json',
+  $id: 'sctx-map-view://core/knowledge-wiki-neighbourhood',
+  title: 'Neighbourhood',
+  schema: 'sctx://core/knowledge_wiki',
+  parameters: {
+    labels: { type: 'boolean', title: 'Relationship labels', default: true },
+  },
+  regions: [
+    {
+      id: 'main',
+      layout: { type: 'compass' },
+      nodes: { style: 'card', fields: ['summary'] },
+      edges: { show: true, labels: { $param: 'labels' } },
+    },
+  ],
+}

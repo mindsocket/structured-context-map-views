@@ -28,6 +28,7 @@ describe('loadMapViewDefinitions', () => {
     write('config/.sctx/plugins/sctx-declared/views/b.json5', definition('sctx-map-view://declared/b'));
     write('config/.sctx/map-views/c.json5', definition('sctx-map-view://c'));
     expect(ids(noSpaces)).toEqual([
+      'sctx-map-view://core/knowledge-wiki-neighbourhood',
       'sctx-map-view://core/strategy-tree',
       'sctx-map-view://conventional/a',
       'sctx-map-view://declared/b',
@@ -48,7 +49,12 @@ describe('loadMapViewDefinitions', () => {
         },
       ],
     };
-    expect(ids(config)).toEqual(['sctx-map-view://core/strategy-tree', 'sctx-map-view://named/a', 'sctx-map-view://b']);
+    expect(ids(config)).toEqual([
+      'sctx-map-view://core/knowledge-wiki-neighbourhood',
+      'sctx-map-view://core/strategy-tree',
+      'sctx-map-view://named/a',
+      'sctx-map-view://b',
+    ]);
   });
 
   test.each([

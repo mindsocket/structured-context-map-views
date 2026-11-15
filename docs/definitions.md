@@ -92,9 +92,21 @@ Nodes positioned on two axes by numeric fields. Plotted nodes without a usable v
 
 An axis has a `field` (required), a `domain` (`[min, max]`, or `'data'` for the smallest and largest plotted values; default `'data'`), a `direction` (`ascending`, the default, or `descending`) and a `label` (defaults to the field name).
 
+### compass
+
+One focus node with its neighbours around it. Selecting a neighbour makes it the focus; selecting the focus is a normal node selection. A node is placed by the first role that matches, in the order `left`, `right`, `above`, `below`, then `around` for the rest.
+
+| Setting | Meaning |
+|---|---|
+| `above` | Fields through which the focus has a parent. Empty: every field |
+| `below` | Fields through which the focus has a child. Empty: every field |
+| `left`, `right` | Fields, in either direction. Empty: none |
+
+The focus is the host's to set (`focus` on `MapView`); by default it is the first hierarchy root, else the first node.
+
 ## Parameters
 
-Any setting marked parameterisable in the schemas (`orientation`, `dag`, `intermediate`, `nodes.style`, `nodes.fields`, `nodes.validation`, `nodes.validationSources`, `edges.show`, `edges.labels`, a landscape level's `type`, an axis's `field` and `direction`, `types`, `edgeFields`) takes either a fixed value or `{ $param: '<name>' }`.
+Any setting marked parameterisable in the schemas (`orientation`, `dag`, `intermediate`, `nodes.style`, `nodes.fields`, `nodes.validation`, `nodes.validationSources`, `edges.show`, `edges.labels`, a landscape level's `type`, an axis's `field` and `direction`, `types`, `edgeFields`, a compass's role fields) takes either a fixed value or `{ $param: '<name>' }`.
 
 Each parameter is a JSON Schema with a `default` and an optional `title`. It can `$ref` a shared setting from `settings.json` (`orientation`, `nodeStyle`, `fieldList`, `validationLevel`, `validationSources`) or a layout's own definitions (e.g. `layouts/tree.json#/$defs/dag`), and narrow it. Relative refs resolve against the format's `latest` folder; full URLs work too.
 

@@ -3,6 +3,7 @@ import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import { type AnnotationIndex, filterAnnotations } from '../core/annotations';
 import { type MapViewDefinition, type ParameterValues, type Region, resolveRegions } from '../core/definition';
 import { AnnotationsContext } from './annotations-context';
+import { CompassLayout } from './CompassLayout';
 import { LandscapeLayout } from './LandscapeLayout';
 import { type LayoutProps, TreeLayout } from './TreeLayout';
 import { XYLayout } from './XYLayout';
@@ -18,12 +19,15 @@ type Props = {
    */
   annotations?: AnnotationIndex;
   onNodeSelect?: (node: SpaceNode) => void;
+  /** The node a compass layout centres on (see {@link CompassLayout}). */
+  focus?: SpaceNode['id'];
+  onFocusChange?: (id: SpaceNode['id']) => void;
 };
 
 const EMPTY: AnnotationIndex = new Map();
 
 /** Renders a map view definition against a space. Sizes to its container and scrolls within it. */
-export function MapView({ definition, graph, values, annotations, onNodeSelect }: Props) {
+export function MapView({ definition, graph, values, annotations, onNodeSelect, focus, onFocusChange }: Props) {
   const instanceId = useId();
   const regions = useMemo(() => resolveRegions(definition, values), [definition, values]);
   // PROTOTYPE: only the first region is rendered. Arranging several regions is undesigned (#8).
@@ -37,12 +41,18 @@ export function MapView({ definition, graph, values, annotations, onNodeSelect }
 
   return (
     <AnnotationsContext.Provider value={visibleAnnotations}>
-      <div className="mv:h-full mv:w-full mv:overflow-auto mv:bg-surface mv:text-ink">{layoutFor(region, props)}</div>
+      <div className="mv:h-full mv:w-full mv:overflow-auto mv:bg-surface mv:text-ink">
+        {layoutFor(region, props, { focus, onFocusChange })}
+      </div>
     </AnnotationsContext.Provider>
   );
 }
 
-function layoutFor(region: Region, props: Omit<LayoutProps, 'region'>) {
+function layoutFor(
+  region: Region,
+  props: Omit<LayoutProps, 'region'>,
+  compass: Pick<Props, 'focus' | 'onFocusChange'>,
+) {
   const { layout } = region;
   switch (layout.type) {
     case 'tree':
@@ -51,5 +61,7 @@ function layoutFor(region: Region, props: Omit<LayoutProps, 'region'>) {
       return <LandscapeLayout {...props} region={{ ...region, layout }} />;
     case 'xy':
       return <XYLayout {...props} region={{ ...region, layout }} />;
+    case 'compass':
+      return <CompassLayout {...props} {...compass} region={{ ...region, layout }} />;
   }
 }
