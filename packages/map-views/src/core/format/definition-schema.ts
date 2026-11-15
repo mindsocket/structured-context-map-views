@@ -98,6 +98,7 @@ export const definitionSchema = {
             { $ref: `${SCHEMA_URL}/layouts/tree.json` },
             { $ref: `${SCHEMA_URL}/layouts/landscape.json` },
             { $ref: `${SCHEMA_URL}/layouts/xy.json` },
+            { $ref: `${SCHEMA_URL}/layouts/compass.json` },
           ],
         },
         nodes: {

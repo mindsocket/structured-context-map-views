@@ -1,6 +1,7 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { AxisConfig, XYLayoutConfig } from './definition';
 import { edgesWithin, isHierarchyEdge } from './graph';
+import { assignLanes } from './lanes';
 import { occurrenceKey } from './occurrence';
 
 /** A plotted node. `x` and `y` run from 0 to 1 across the plot, left to right and bottom to top. */
@@ -94,18 +95,4 @@ function position(node: SpaceNode, axis: AxisConfig, [min, max]: readonly [numbe
   if (value < min || value > max) return `${axis.field} ${value} is outside ${min}–${max}`;
   const t = (value - min) / (max - min);
   return axis.direction === 'descending' ? 1 - t : t;
-}
-
-/** Spread links joining the same pair of nodes (in either direction) into lanes around 0. */
-function assignLanes(links: XYLink[]) {
-  const byPair = new Map<string, XYLink[]>();
-  for (const link of links) {
-    const pair = [link.from, link.to].sort().join('\n');
-    byPair.set(pair, [...(byPair.get(pair) ?? []), link]);
-  }
-  for (const group of byPair.values()) {
-    group.forEach((link, i) => {
-      link.lane = i - (group.length - 1) / 2;
-    });
-  }
 }

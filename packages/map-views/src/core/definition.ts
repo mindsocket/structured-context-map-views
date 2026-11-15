@@ -2,6 +2,7 @@ import Ajv2020, { type AnySchemaObject, type ErrorObject } from 'ajv/dist/2020';
 import type { FromSchema } from 'json-schema-to-ts';
 import JSON5 from 'json5';
 import {
+  type compassLayoutSchema,
   definitionSchema,
   type landscapeLayoutSchema,
   MAP_VIEW_SCHEMAS,
@@ -19,6 +20,7 @@ type References = {
     typeof treeLayoutSchema,
     typeof landscapeLayoutSchema,
     typeof xyLayoutSchema,
+    typeof compassLayoutSchema,
     typeof definitionSchema,
   ];
   // Grouping levels dispatch with if/then/else (see the landscape layout schema).
@@ -47,6 +49,7 @@ export type LayoutConfig = Region['layout'];
 export type TreeLayoutConfig = Extract<LayoutConfig, { type: 'tree' }>;
 export type LandscapeLayoutConfig = Extract<LayoutConfig, { type: 'landscape' }>;
 export type XYLayoutConfig = Extract<LayoutConfig, { type: 'xy' }>;
+export type CompassLayoutConfig = Extract<LayoutConfig, { type: 'compass' }>;
 export type AxisConfig = XYLayoutConfig['x'];
 export type GroupLevel = LandscapeLayoutConfig['group'][number];
 export type IntermediateDisplay = Extract<GroupLevel, { type: string }>['intermediate'];
