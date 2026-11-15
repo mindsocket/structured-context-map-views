@@ -57,6 +57,11 @@ jobs:
           done
           echo "dir=$RUNNER_TEMP" >>"$GITHUB_OUTPUT"
           echo "tarballs=${tarballs# }" >>"$GITHUB_OUTPUT"
+      - name: Check each tarball carries its build
+        run: |
+          for t in ${{ steps.pack.outputs.tarballs }}; do
+            tar tzf "${{ steps.pack.outputs.dir }}/$t" | grep -q '^package/dist/' || { echo "::error::$t has no dist/"; exit 1; }
+          done
       - uses: actions/attest-build-provenance@v3
         with:
           subject-path: ${{ steps.pack.outputs.dir }}/*.tgz
