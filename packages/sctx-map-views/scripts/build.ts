@@ -3,9 +3,12 @@
  * issue kinds (`/types`, which holds plain data) are inlined, so the plugin needs no structured-context at runtime.
  */
 
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const root = join(import.meta.dir, '..');
+if (!existsSync(join(root, '../map-views/dist/html.js')))
+  throw new Error('Build the library first: bun run --cwd ../map-views build:library');
 const result = await Bun.build({
   entrypoints: [join(root, 'src/index.ts')],
   outdir: join(root, 'dist'),
