@@ -26,13 +26,11 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "bun run clean && bun run --cwd ../map-views build:library && bun scripts/build.ts && tsc -p tsconfig.build.json",
+    "build": "bun run --cwd ../map-views build:library && bun run bundle",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "test:package": "bash scripts/test-package.sh"
-  },
-  "peerDependencies": {
-    "structured-context": "^0.24.0"
+    "test:package": "bash scripts/test-package.sh",
+    "bundle": "bun run clean && bun scripts/build.ts && tsc -p tsconfig.build.json"
   },
   "devDependencies": {
     "structured-context": "^0.24.0",

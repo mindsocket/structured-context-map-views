@@ -32,7 +32,7 @@
     },
     "packages/map-views": {
       "name": "structured-context-map-views",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "bin": {
         "structured-context-map-views": "dist/cli.js",
       },
@@ -62,7 +62,7 @@
     },
     "packages/sctx-map-views": {
       "name": "sctx-map-views",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "devDependencies": {
         "structured-context": "^0.24.0",
         "structured-context-map-views": "workspace:*",
