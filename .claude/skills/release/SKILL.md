@@ -5,7 +5,7 @@ description: Cut an npm release of the structured-context-map-views library. Use
 
 ## Task
 
-Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `packages/map-views`. The navigator app is private and isn't released.
+Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `packages/map-views` and the plugin in `packages/sctx-map-views`, which always share one version. The navigator app is private and isn't released.
 
 1. Verify the branch is `main` and the working tree is clean. If not, stop and tell the user. `bun pm version` also refuses untracked files: if there are any, run `git stash push --include-untracked` before step 2 and `git stash pop` after it, whether step 2 passes or fails.
 
@@ -13,11 +13,12 @@ Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `package
    ```
    (cd packages/map-views && bun pm version --no-git-tag-version $ARGUMENTS)
    v=$(jq -r .version packages/map-views/package.json)
+   jq --arg v "$v" '.version = $v' packages/sctx-map-views/package.json >package.tmp && mv package.tmp packages/sctx-map-views/package.json
    git add -A && git commit -m "v$v" && git tag -a "v$v" -m "v$v" && git push --follow-tags
    ```
    If any check fails, stop and report the errors.
 
-3. The tag push starts the Release workflow (`.github/workflows/release.yml`). It reruns the CI checks, publishes `packages/map-views` to npm with provenance, attests the tarball and creates a GitHub release. Watch it:
+3. The tag push starts the Release workflow (`.github/workflows/release.yml`). It reruns the CI checks, publishes both packages to npm with provenance, attests the tarballs and creates a GitHub release. Watch it:
    ```
    for i in $(seq 12); do id=$(gh run list --workflow release.yml --branch "v$v" --limit 1 --json databaseId --jq '.[0].databaseId'); [ -n "$id" ] && break; sleep 5; done
    gh run watch "$id" --exit-status
@@ -26,8 +27,9 @@ Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `package
 
 4. Wait for the registry to serve the new version, polling for up to 5 minutes:
    ```
-   for i in $(seq 20); do [ "$(npm view structured-context-map-views@$v version 2>/dev/null)" = "$v" ] && break; sleep 15; done
+   for i in $(seq 20); do [ "$(npm view structured-context-map-views@$v version 2>/dev/null)" = "$v" ] && [ "$(npm view sctx-map-views@$v version 2>/dev/null)" = "$v" ] && break; sleep 15; done
    npm view structured-context-map-views dist-tags
+   npm view sctx-map-views dist-tags
    ```
    If `latest` is not the new version after 5 minutes, stop and tell the user.
 
