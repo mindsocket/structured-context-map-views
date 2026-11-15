@@ -1,6 +1,6 @@
 import type { PluginContext } from 'structured-context/api';
 import { mapViewsForSchema } from 'structured-context-map-views';
-import { fillPage, readDefinitionFolders } from 'structured-context-map-views/node';
+import { fillPage, readDefinitionFolders } from 'structured-context-map-views/html';
 import pageTemplate from 'structured-context-map-views/page.html' with { type: 'text' };
 
 const DEFINITIONS = 'map-views';
