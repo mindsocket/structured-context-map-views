@@ -1,14 +1,8 @@
 # sctx-map-views
 
-A [structured-context](https://github.com/mindsocket/structured-context) plugin that renders a space and its [map views](https://github.com/mindsocket/structured-context-map-views#readme) as one self-contained, interactive HTML file.
+The [structured-context](https://github.com/mindsocket/structured-context) plugin that renders a space and its [map views](https://github.com/mindsocket/structured-context-map-views#readme) as one self-contained, interactive HTML file.
 
-Install it next to structured-context and name it in the space's `plugins`:
-
-```json
-{
-  "spaces": [{ "name": "my-space", "path": "content", "schema": "my_schema.json", "plugins": { "sctx-map-views": {} } }]
-}
-```
+It is part of structured-context, so `map-views.html` is available to every space:
 
 ```bash
 sctx render my-space map-views.html -o my-space.html
