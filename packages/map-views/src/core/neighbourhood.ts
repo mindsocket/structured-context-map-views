@@ -1,42 +1,42 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
-import type { CompassLayoutConfig } from './definition';
+import type { NeighbourhoodLayoutConfig } from './definition';
 import { childEdges, parentEdges } from './graph';
 import { assignLanes } from './lanes';
 import { occurrenceKey } from './occurrence';
 
-export type CompassRole = 'left' | 'right' | 'above' | 'below' | 'around';
+export type NeighbourhoodRole = 'left' | 'right' | 'above' | 'below' | 'around';
 
 /** A neighbour of the focus, placed once however many fields join them. */
-export type CompassNeighbour = { key: string; node: SpaceNode };
+export type Neighbour = { key: string; node: SpaceNode };
 
 /** An edge between the focus and a neighbour, in the edge's own direction. `lane` as in `XYLink`. */
-export type CompassLink = { from: string; to: string; field: string; lane: number };
+export type NeighbourhoodLink = { from: string; to: string; field: string; lane: number };
 
-export type Compass = {
+export type Neighbourhood = {
   /** `undefined` when the graph has no nodes. */
   focus: { key: string; node: SpaceNode } | undefined;
-  roles: Record<CompassRole, CompassNeighbour[]>;
-  links: CompassLink[];
+  roles: Record<NeighbourhoodRole, Neighbour[]>;
+  links: NeighbourhoodLink[];
 };
 
-const ORDER: readonly CompassRole[] = ['left', 'right', 'above', 'below', 'around'];
+const ORDER: readonly NeighbourhoodRole[] = ['left', 'right', 'above', 'below', 'around'];
 
 /**
  * The focus and its neighbours placed by role. Without a usable `focusId`, the focus is the
  * first hierarchy root, else the first node.
  */
-export function buildCompass(
+export function buildNeighbourhood(
   graph: SpaceGraph,
   regionId: string,
-  layout: CompassLayoutConfig,
+  layout: NeighbourhoodLayoutConfig,
   focusId?: SpaceNode['id'],
-): Compass {
-  const roles: Compass['roles'] = { left: [], right: [], above: [], below: [], around: [] };
+): Neighbourhood {
+  const roles: Neighbourhood['roles'] = { left: [], right: [], above: [], below: [], around: [] };
   const node = (focusId && graph.nodes.get(focusId)) || graph.hierarchyRoots[0] || graph.nodes.values().next().value;
   if (!node) return { focus: undefined, roles, links: [] };
   const focus = { key: occurrenceKey(regionId, [node.id]), node };
 
-  const roleOf = (direction: 'parent' | 'child', field: string): CompassRole => {
+  const roleOf = (direction: 'parent' | 'child', field: string): NeighbourhoodRole => {
     const listed = (fields: readonly string[]) => fields.includes(field);
     const open = (fields: readonly string[]) => fields.length === 0 || listed(fields);
     if (listed(layout.left)) return 'left';
@@ -46,8 +46,8 @@ export function buildCompass(
     return 'around';
   };
 
-  const best = new Map<SpaceNode['id'], CompassRole>();
-  const links: CompassLink[] = [];
+  const best = new Map<SpaceNode['id'], NeighbourhoodRole>();
+  const links: NeighbourhoodLink[] = [];
   const neighbour = (id: SpaceNode['id'], direction: 'parent' | 'child', field: string) => {
     if (id === node.id || !graph.nodes.has(id)) return;
     const role = roleOf(direction, field);

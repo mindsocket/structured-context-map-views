@@ -15,7 +15,7 @@ export const definitionSchema = {
   description:
     'Declares how spaces of one schema are projected into a map view: shared parameters, and the regions the map view is composed of.',
   type: 'object',
-  required: ['$id', 'schema', 'regions'],
+  required: ['$id', 'regions'],
   additionalProperties: false,
   properties: {
     $schema: { type: 'string' },
@@ -30,7 +30,8 @@ export const definitionSchema = {
     schema: {
       type: 'string',
       minLength: 1,
-      description: '`$id` of the structured-context schema whose spaces this map view applies to.',
+      description:
+        '`$id` of the structured-context schema whose spaces this map view applies to. Omitted: it applies to every schema.',
     },
     parameters: {
       type: 'object',
@@ -98,7 +99,8 @@ export const definitionSchema = {
             { $ref: `${SCHEMA_URL}/layouts/tree.json` },
             { $ref: `${SCHEMA_URL}/layouts/landscape.json` },
             { $ref: `${SCHEMA_URL}/layouts/xy.json` },
-            { $ref: `${SCHEMA_URL}/layouts/compass.json` },
+            { $ref: `${SCHEMA_URL}/layouts/neighbourhood.json` },
+            { $ref: `${SCHEMA_URL}/layouts/graph.json` },
           ],
         },
         nodes: {

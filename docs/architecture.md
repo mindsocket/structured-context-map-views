@@ -6,7 +6,7 @@ A space graph and a definition go in; a DOM layout with an SVG overlay comes out
 flowchart LR
   space[structured-context space] -->|host assembles| graph[SpaceGraph]
   def[definition .json5] -->|parseMapViewDefinition| mvd[MapViewDefinition]
-  graph --> proj[projection<br>tree · landscape · xy · compass]
+  graph --> proj[projection<br>tree · landscape · xy · neighbourhood · graph]
   mvd --> proj
   proj --> dom[layout component<br>DOM + SVG overlay]
 ```
@@ -15,7 +15,7 @@ flowchart LR
 
 | Module | Holds | May import |
 |---|---|---|
-| `packages/map-views/src/core` | Definition parsing and validation, parameter resolution, graph helpers, and the projections (`buildTree`, `buildLandscape`, `buildXYPlot`, `buildCompass`) | Types from structured-context only. No React, DOM or Node |
+| `packages/map-views/src/core` | Definition parsing and validation, parameter resolution, graph helpers, and the projections (`buildTree`, `buildLandscape`, `buildXYPlot`, `buildNeighbourhood`, `buildForceGraph`) | Types from structured-context only. No React, DOM or Node |
 | `packages/map-views/src/layouts` | `MapView`, the layout components, `NodeCard`, `EdgeOverlay`, the parameter controls (`useParameterControls`, the typed inputs and the default `ParameterControls` layout), styles | core, React |
 | `packages/map-views/src/viewer` | `Viewer`, the page-filling UI that hosts share. What is specific to a host comes in as an option | core, layouts, React, `structured-context/browser` |
 | `packages/map-views/src/node` | `loadMapViewDefinitions`: finding definitions in the library (embedded at build time from `packages/map-views/map-views/`), plugins and config folders; `exportSnapshot` and the `export` bin, which snapshot a space for browser-only hosts; `fillPage`, which writes snapshots into the self-contained page. `fillPage` and `readDefinitionFolders` are also the `/html` entry, which imports nothing from structured-context's API | core, Node, structured-context |
@@ -37,7 +37,8 @@ Each layout has a pure projection in core that turns the graph and the region's 
 - **Tree**: walks the hierarchy from the root type. A node with several parents is repeated (subtree once) or placed once with cross-links. Cycles end in a repeat.
 - **Landscape**: walks the grouping levels, joining node levels by edges in either direction, through `via` chains or by field values.
 - **XY**: normalises two numeric fields to percentages within each axis's domain and lists the nodes it can't place.
-- **Compass**: places the focus's neighbours by the role of the field joining them.
+- **Neighbourhood**: places the focus's neighbours by the role of the field joining them.
+- **Graph**: positions every node with a force simulation (`d3-force`), seeded so the same graph gives the same positions.
 
 Occurrence keys are paths (region, ancestors, node), so a node appearing several times gets distinct keys.
 

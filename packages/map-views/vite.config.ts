@@ -30,6 +30,7 @@ export default defineConfig({
         /^react(\/|$)/,
         /^react-dom(\/|$)/,
         /^ajv(\/|$)/,
+        /^d3-/,
         'json5',
         'commander',
         /^structured-context(\/|$)/,

@@ -6,7 +6,6 @@
   "type": "object",
   "required": [
     "$id",
-    "schema",
     "regions"
   ],
   "additionalProperties": false,
@@ -30,7 +29,7 @@
     "schema": {
       "type": "string",
       "minLength": 1,
-      "description": "`$id` of the structured-context schema whose spaces this map view applies to."
+      "description": "`$id` of the structured-context schema whose spaces this map view applies to. Omitted: it applies to every schema."
     },
     "parameters": {
       "type": "object",
@@ -124,7 +123,10 @@
               "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/xy.json"
             },
             {
-              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/compass.json"
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/neighbourhood.json"
+            },
+            {
+              "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/graph.json"
             }
           ]
         },

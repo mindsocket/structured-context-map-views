@@ -17,6 +17,12 @@ function write(path: string, text: string) {
 }
 const definition = (id: string) =>
   `{ $id: '${id}', schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`;
+const BUNDLED = [
+  'sctx-map-view://core/graph',
+  'sctx-map-view://core/neighbourhood',
+  'sctx-map-view://core/strategy-tree',
+  'sctx-map-view://core/tree',
+];
 const noSpaces: Config = { spaces: [] };
 const ids = (config: Config, configDir = join(root, 'config')) =>
   loadMapViewDefinitions(config, { configDir }).map((d) => d.id);
@@ -28,8 +34,7 @@ describe('loadMapViewDefinitions', () => {
     write('config/.sctx/plugins/sctx-declared/views/b.json5', definition('sctx-map-view://declared/b'));
     write('config/.sctx/map-views/c.json5', definition('sctx-map-view://c'));
     expect(ids(noSpaces)).toEqual([
-      'sctx-map-view://core/knowledge-wiki-neighbourhood',
-      'sctx-map-view://core/strategy-tree',
+      ...BUNDLED,
       'sctx-map-view://conventional/a',
       'sctx-map-view://declared/b',
       'sctx-map-view://c',
@@ -49,12 +54,7 @@ describe('loadMapViewDefinitions', () => {
         },
       ],
     };
-    expect(ids(config)).toEqual([
-      'sctx-map-view://core/knowledge-wiki-neighbourhood',
-      'sctx-map-view://core/strategy-tree',
-      'sctx-map-view://named/a',
-      'sctx-map-view://b',
-    ]);
+    expect(ids(config)).toEqual([...BUNDLED, 'sctx-map-view://named/a', 'sctx-map-view://b']);
   });
 
   test.each([

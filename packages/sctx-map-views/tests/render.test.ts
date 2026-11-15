@@ -47,7 +47,10 @@ describe('map-views.html', () => {
     const page = await render(context().context);
     const [snapshot] = snapshotsOf(page);
     expect(snapshot!.space).toBe('demo');
-    expect(snapshot!.definitions.map((d) => d.id)).toEqual(['sctx-map-view://mine']);
+    const ids = snapshot!.definitions.map((d) => d.id);
+    expect(ids).toContain('sctx-map-view://mine');
+    expect(ids).toContain('sctx-map-view://core/graph');
+    expect(ids).not.toContain('sctx-map-view://core/strategy-tree');
   });
 
   test('passes validation options from -d', async () => {

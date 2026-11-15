@@ -12,7 +12,7 @@ describe('exportSnapshot', () => {
     expect(result.space).toBe('launch-playbook');
     expect(result.graph.formatVersion).toBe(1);
     expect(result.validation).toHaveProperty('issues');
-    expect(result.definitions.every((d) => d.schema === result.schemaId)).toBe(true);
+    expect(result.definitions.every((d) => d.schema === undefined || d.schema === result.schemaId)).toBe(true);
     expect(JSON.parse(JSON.stringify(result))).toEqual(result);
   });
 

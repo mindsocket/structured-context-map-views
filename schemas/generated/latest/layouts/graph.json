@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/layouts/graph.json",
+  "title": "Graph layout",
+  "description": "Nodes and edges as a network: connected nodes sit close together. Works with any schema.",
+  "type": "object",
+  "required": [
+    "type"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "graph"
+    },
+    "edgeFields": {
+      "description": "Fields whose edges are drawn and pull nodes together. Empty: all edges.",
+      "default": [],
+      "anyOf": [
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/settings.json#/$defs/fieldList"
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
+        }
+      ]
+    }
+  }
+}
