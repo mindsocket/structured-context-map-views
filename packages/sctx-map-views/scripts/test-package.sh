@@ -10,6 +10,8 @@ trap 'rm -rf "$tmp"' EXIT
 
 cd "$root"
 bun run build >/dev/null
+# Core passes everything the plugin needs through the render callbacks.
+! grep -q 'structured-context/api' dist/index.js || { echo "the bundle imports structured-context/api"; exit 1; }
 npm pack --silent --pack-destination "$tmp" >/dev/null
 
 cd "$tmp"

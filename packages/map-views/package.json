@@ -33,6 +33,10 @@
       "types": "./dist/types/node/index.d.ts",
       "default": "./dist/node.js"
     },
+    "./html": {
+      "types": "./dist/types/node/html.d.ts",
+      "default": "./dist/html.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./page.html": {
       "types": "./dist/page.html.d.ts",
