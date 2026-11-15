@@ -1,7 +1,8 @@
 name: Release
 
 # Pushing a version tag (the /release skill does this) publishes the library in
-# packages/map-views to npm. The repo root is a private workspace and is never published.
+# packages/map-views and the plugin in packages/sctx-map-views to npm at the same version.
+# The repo root is a private workspace and is never published.
 on:
   push:
     tags: ["v[0-9]+.[0-9]+.[0-9]+"]
@@ -26,9 +27,6 @@ jobs:
       contents: write # GitHub release
       id-token: write # npm trusted publishing and provenance
       attestations: write # artifact attestation of the tarball
-    defaults:
-      run:
-        working-directory: packages/map-views
     steps:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
@@ -38,28 +36,38 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-      - name: Check the tag matches package.json
+      - name: Check the tag matches both packages
         run: |
-          v=$(jq -r .version package.json)
-          if [ "$GITHUB_REF_NAME" != "v$v" ]; then
-            echo "::error::Tag $GITHUB_REF_NAME does not match packages/map-views version $v"
-            exit 1
-          fi
+          for pkg in map-views sctx-map-views; do
+            v=$(jq -r .version "packages/$pkg/package.json")
+            if [ "$GITHUB_REF_NAME" != "v$v" ]; then
+              echo "::error::Tag $GITHUB_REF_NAME does not match packages/$pkg version $v"
+              exit 1
+            fi
+          done
       - run: bun install --frozen-lockfile
-        working-directory: .
       - run: bun run build
-      # Pack once, so the tarball that is attested is the one published and attached.
+      # Pack once, so the tarballs that are attested are the ones published and attached.
       - name: Pack
         id: pack
-        run: echo "tarball=$(npm pack --ignore-scripts --silent)" >>"$GITHUB_OUTPUT"
+        run: |
+          tarballs=""
+          for pkg in map-views sctx-map-views; do
+            tarballs="$tarballs $(cd "packages/$pkg" && npm pack --ignore-scripts --silent --pack-destination "$RUNNER_TEMP")"
+          done
+          echo "dir=$RUNNER_TEMP" >>"$GITHUB_OUTPUT"
+          echo "tarballs=${tarballs# }" >>"$GITHUB_OUTPUT"
       - uses: actions/attest-build-provenance@v3
         with:
-          subject-path: packages/map-views/${{ steps.pack.outputs.tarball }}
-      - run: npm publish "$TARBALL" --provenance --access public
+          subject-path: ${{ steps.pack.outputs.dir }}/*.tgz
+      - name: Publish to npm
+        run: for t in $TARBALLS; do npm publish "$DIR/$t" --provenance --access public; done
         env:
-          TARBALL: ${{ steps.pack.outputs.tarball }}
+          DIR: ${{ steps.pack.outputs.dir }}
+          TARBALLS: ${{ steps.pack.outputs.tarballs }}
       - name: Create the GitHub release
-        run: gh release create "$GITHUB_REF_NAME" "$TARBALL" --verify-tag --generate-notes
+        run: gh release create "$GITHUB_REF_NAME" $(for t in $TARBALLS; do echo "$DIR/$t"; done) --verify-tag --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}
-          TARBALL: ${{ steps.pack.outputs.tarball }}
+          DIR: ${{ steps.pack.outputs.dir }}
+          TARBALLS: ${{ steps.pack.outputs.tarballs }}

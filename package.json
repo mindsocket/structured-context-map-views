@@ -13,7 +13,7 @@
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "test": "bun test",
-    "test:package": "bun run --cwd packages/map-views test:package",
+    "test:package": "bun run --cwd packages/map-views test:package && bun run --cwd packages/sctx-map-views test:package",
     "generate": "bun run --cwd packages/map-views generate"
   },
   "devDependencies": {
