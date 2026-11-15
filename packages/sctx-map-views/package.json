@@ -1,6 +1,6 @@
 {
   "name": "sctx-map-views",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "structured-context render plugin: a space's map views as one self-contained interactive HTML file.",
   "license": "MIT",
   "type": "module",
