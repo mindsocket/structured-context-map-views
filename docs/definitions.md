@@ -48,6 +48,7 @@ A map view definition is a JSON5 file. Its format is a set of JSON Schemas publi
 | `nodes.validation` | | The lowest severity of validation result drawn on nodes: `off` (the default), `error`, `warning` or `info`. Results come from the host; with none supplied nothing is drawn |
 | `nodes.validationSources` | | Which results are drawn: any of structured-context's issue kinds, such as `schema`, `hierarchy` or `rule` (default all) |
 | `edges.show` | | Whether connectors are drawn (default `true`) |
+| `edges.labels` | | Whether each connector shows the field the relationship is declared in (default `false`) |
 
 ## Layouts
 
@@ -93,7 +94,7 @@ An axis has a `field` (required), a `domain` (`[min, max]`, or `'data'` for the 
 
 ## Parameters
 
-Any setting marked parameterisable in the schemas (`orientation`, `dag`, `intermediate`, `nodes.style`, `nodes.fields`, `nodes.validation`, `nodes.validationSources`, `edges.show`, a landscape level's `type`, an axis's `field` and `direction`, `types`, `edgeFields`) takes either a fixed value or `{ $param: '<name>' }`.
+Any setting marked parameterisable in the schemas (`orientation`, `dag`, `intermediate`, `nodes.style`, `nodes.fields`, `nodes.validation`, `nodes.validationSources`, `edges.show`, `edges.labels`, a landscape level's `type`, an axis's `field` and `direction`, `types`, `edgeFields`) takes either a fixed value or `{ $param: '<name>' }`.
 
 Each parameter is a JSON Schema with a `default` and an optional `title`. It can `$ref` a shared setting from `settings.json` (`orientation`, `nodeStyle`, `fieldList`, `validationLevel`, `validationSources`) or a layout's own definitions (e.g. `layouts/tree.json#/$defs/dag`), and narrow it. Relative refs resolve against the format's `latest` folder; full URLs work too.
 

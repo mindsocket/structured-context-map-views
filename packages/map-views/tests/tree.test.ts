@@ -35,6 +35,11 @@ describe('sample tree', () => {
     expect(all.some((o) => o.node.resolvedType === 'Outcomes')).toBe(false);
   });
 
+  test('every link carries the field the parent declares the child through', () => {
+    const links = treeLinks(tree);
+    expect(links.every((link) => typeof link.field === 'string' && link.field.length > 0)).toBe(true);
+  });
+
   test('links pair each rendered child with its parent occurrence', () => {
     const links = treeLinks(tree);
     expect(links.length).toBe(all.length - tree.roots.length - tree.orphans.length);

@@ -205,6 +205,18 @@
                   "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
                 }
               ]
+            },
+            "labels": {
+              "description": "Whether each connector is labelled with the field the relationship is declared in.",
+              "default": false,
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/latest/definition.json#/$defs/paramRef"
+                }
+              ]
             }
           }
         }

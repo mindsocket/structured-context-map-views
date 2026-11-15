@@ -14,6 +14,8 @@ export type TreeOccurrence = {
    * appears under each of them, but its subtree is only rendered at its first occurrence.
    */
   repeatOf?: string;
+  /** The field the parent declares this node through (the edge's label); unset for roots. */
+  field?: string;
 };
 
 export type Tree = {
@@ -32,7 +34,7 @@ export type Tree = {
   crossLinks: TreeLink[];
 };
 
-export type TreeLink = { from: string; to: string; kind: 'tree' | 'cross' };
+export type TreeLink = { from: string; to: string; kind: 'tree' | 'cross'; field?: string };
 
 /**
  * Lay a space out as a tree over its hierarchy.
@@ -48,7 +50,7 @@ export function buildTree(graph: SpaceGraph, regionId: string, dag: DagMode = 'r
   const rootType = hierarchy?.levels[0]?.type;
   const primary = new Map<string, string>();
   // Parent occurrence → child title, resolved to the child's primary occurrence afterwards.
-  const pendingCross: { from: string; child: string }[] = [];
+  const pendingCross: { from: string; child: string; field: string }[] = [];
 
   const hierarchyParents = (title: SpaceNode['id']) =>
     parentEdges(graph, title).filter((edge) => isHierarchyEdge(edge, hierarchy));
@@ -57,20 +59,25 @@ export function buildTree(graph: SpaceGraph, regionId: string, dag: DagMode = 'r
     const nodePath = [...path, node.id];
     const key = occurrenceKey(regionId, nodePath);
     primary.set(node.id, key);
-    // A child can reference the same parent through more than one field; it occurs once.
-    const childTitles = new Set(
-      childEdges(graph, node.id)
-        .filter((edge) => isHierarchyEdge(edge, hierarchy))
-        .map((edge) => edge.child),
-    );
+    // A child can reference the same parent through more than one field; it occurs once, under the first.
+    const childFields = new Map<SpaceNode['id'], string>();
+    for (const edge of childEdges(graph, node.id)) {
+      if (isHierarchyEdge(edge, hierarchy) && !childFields.has(edge.child)) childFields.set(edge.child, edge.field);
+    }
     const children: TreeOccurrence[] = [];
-    for (const title of childTitles) {
+    for (const [title, field] of childFields) {
       const child = graph.nodes.get(title)!;
       const repeatOf = primary.get(title);
-      if (repeatOf === undefined) children.push(visit(child, nodePath));
+      if (repeatOf === undefined) children.push({ ...visit(child, nodePath), field });
       else if (dag === 'repeat')
-        children.push({ key: occurrenceKey(regionId, [...nodePath, title]), node: child, children: [], repeatOf });
-      else pendingCross.push({ from: key, child: title });
+        children.push({
+          key: occurrenceKey(regionId, [...nodePath, title]),
+          node: child,
+          children: [],
+          repeatOf,
+          field,
+        });
+      else pendingCross.push({ from: key, child: title, field });
     }
     return { key, node, children };
   };
@@ -85,7 +92,12 @@ export function buildTree(graph: SpaceGraph, regionId: string, dag: DagMode = 'r
     if (!primary.has(node.id)) orphans.push(visit(node, []));
   }
 
-  const crossLinks = pendingCross.map(({ from, child }) => ({ from, to: primary.get(child)!, kind: 'cross' as const }));
+  const crossLinks = pendingCross.map(({ from, child, field }) => ({
+    from,
+    to: primary.get(child)!,
+    kind: 'cross' as const,
+    field,
+  }));
   return { roots, orphans, primary, crossLinks };
 }
 
@@ -94,7 +106,7 @@ export function treeLinks(tree: Tree): TreeLink[] {
   const links: TreeLink[] = [];
   const walk = (occurrence: TreeOccurrence) => {
     for (const child of occurrence.children) {
-      links.push({ from: occurrence.key, to: child.key, kind: 'tree' });
+      links.push({ from: occurrence.key, to: child.key, kind: 'tree', field: child.field });
       walk(child);
     }
   };

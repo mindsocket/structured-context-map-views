@@ -133,6 +133,11 @@ export const definitionSchema = {
           default: {},
           properties: {
             show: parameterisable({ type: 'boolean' }, true, 'Whether connectors are drawn.'),
+            labels: parameterisable(
+              { type: 'boolean' },
+              false,
+              'Whether each connector is labelled with the field the relationship is declared in.',
+            ),
           },
         },
       },

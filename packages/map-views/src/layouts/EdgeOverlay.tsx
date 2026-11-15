@@ -6,7 +6,15 @@ import type { Orientation } from '../core/definition';
  * `id` tells apart several links between the same occurrences; straight links between the same
  * pair are drawn side by side, `lane` apart (0: on the line between centres).
  */
-export type Link = { from: string; to: string; kind?: 'tree' | 'cross'; id?: string; lane?: number };
+export type Link = {
+  from: string;
+  to: string;
+  kind?: 'tree' | 'cross';
+  id?: string;
+  lane?: number;
+  /** Text drawn at the middle of the connector. */
+  label?: string;
+};
 
 type Props = {
   links: readonly Link[];
@@ -22,7 +30,7 @@ type Props = {
   routing: Orientation | 'straight';
 };
 
-type Drawn = { key: string; d: string; cross: boolean };
+type Drawn = { key: string; d: string; cross: boolean; label?: string; at: readonly [number, number] };
 
 /**
  * SVG layer drawing connectors between rendered occurrences.
@@ -41,15 +49,12 @@ export function EdgeOverlay({ links, elements, container, routing }: Props) {
     const measure = () => {
       const origin = container.getBoundingClientRect();
       const paths: Drawn[] = [];
-      for (const { from, to, kind, id, lane = 0 } of links) {
+      for (const { from, to, kind, id, lane = 0, label } of links) {
         const a = elements.get(from)?.getBoundingClientRect();
         const b = elements.get(to)?.getBoundingClientRect();
         if (!a || !b) continue;
-        paths.push({
-          key: `${from}→${to}${id ?? ''}`,
-          d: routing === 'straight' ? line(a, b, origin, lane) : connector(a, b, origin, routing),
-          cross: kind === 'cross',
-        });
+        const [d, at] = routing === 'straight' ? line(a, b, origin, lane) : connector(a, b, origin, routing);
+        paths.push({ key: `${from}→${to}${id ?? ''}`, d, cross: kind === 'cross', label, at });
       }
       setPaths(paths);
     };
@@ -75,26 +80,43 @@ export function EdgeOverlay({ links, elements, container, routing }: Props) {
           strokeDasharray={cross ? '4 3' : undefined}
         />
       ))}
+      {paths.map(({ key, label, at }) =>
+        label ? (
+          <text
+            key={`${key}:label`}
+            x={at[0]}
+            y={at[1]}
+            textAnchor="middle"
+            dominantBaseline="central"
+            // The surface-coloured outline keeps the text legible over the line it labels.
+            paintOrder="stroke"
+            strokeWidth={4}
+            className="mv:fill-muted mv:stroke-surface mv:text-[10px]"
+          >
+            {label}
+          </text>
+        ) : null,
+      )}
     </svg>
   );
 }
 
-/** Cubic curve from the parent's trailing edge to the child's leading edge. */
-function connector(a: DOMRect, b: DOMRect, origin: DOMRect, orientation: Orientation): string {
+/** Cubic curve from the parent's trailing edge to the child's leading edge, and its midpoint. */
+function connector(a: DOMRect, b: DOMRect, origin: DOMRect, orientation: Orientation): [string, [number, number]] {
   if (orientation === 'vertical') {
     const x1 = a.left + a.width / 2 - origin.left;
     const y1 = a.bottom - origin.top;
     const x2 = b.left + b.width / 2 - origin.left;
     const y2 = b.top - origin.top;
     const my = (y1 + y2) / 2;
-    return `M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`;
+    return [`M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`, [(x1 + x2) / 2, my]];
   }
   const x1 = a.right - origin.left;
   const y1 = a.top + a.height / 2 - origin.top;
   const x2 = b.left - origin.left;
   const y2 = b.top + b.height / 2 - origin.top;
   const mx = (x1 + x2) / 2;
-  return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+  return [`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`, [mx, (y1 + y2) / 2]];
 }
 
 /** Pixels between parallel straight links. */
@@ -105,7 +127,7 @@ const LANE_GAP = 6;
  * overlay to hide the ends. The shift is relative to a fixed orientation of the pair, so links in
  * opposite directions between the same nodes still separate.
  */
-function line(a: DOMRect, b: DOMRect, origin: DOMRect, lane: number): string {
+function line(a: DOMRect, b: DOMRect, origin: DOMRect, lane: number): [string, [number, number]] {
   const x1 = a.left + a.width / 2 - origin.left;
   const y1 = a.top + a.height / 2 - origin.top;
   const x2 = b.left + b.width / 2 - origin.left;
@@ -114,5 +136,5 @@ function line(a: DOMRect, b: DOMRect, origin: DOMRect, lane: number): string {
   const length = Math.hypot(x2 - x1, y2 - y1) || 1;
   const dx = (-(y2 - y1) / length) * lane * LANE_GAP * flip;
   const dy = ((x2 - x1) / length) * lane * LANE_GAP * flip;
-  return `M${x1 + dx},${y1 + dy} L${x2 + dx},${y2 + dy}`;
+  return [`M${x1 + dx},${y1 + dy} L${x2 + dx},${y2 + dy}`, [(x1 + x2) / 2 + dx, (y1 + y2) / 2 + dy]];
 }
