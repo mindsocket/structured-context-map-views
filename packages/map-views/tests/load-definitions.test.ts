@@ -24,7 +24,7 @@ const ids = (config: Config, configDir = join(root, 'config')) =>
 describe('loadMapViewDefinitions', () => {
   test('finds bundled, plugin and config folder definitions', () => {
     write('config/.sctx/plugins/sctx-conventional/map-views/a.json5', definition('sctx-map-view://conventional/a'));
-    write('config/.sctx/plugins/sctx-declared/package.json', JSON.stringify({ sctx: { mapViews: 'views' } }));
+    write('config/.sctx/plugins/sctx-declared/package.json', JSON.stringify({ sctx: { 'map-views': 'views' } }));
     write('config/.sctx/plugins/sctx-declared/views/b.json5', definition('sctx-map-view://declared/b'));
     write('config/.sctx/map-views/c.json5', definition('sctx-map-view://c'));
     expect(ids(noSpaces)).toEqual([
