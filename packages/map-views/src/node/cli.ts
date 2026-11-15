@@ -1,5 +1,4 @@
 #!/usr/bin/env bun
-import { dirname, resolve } from 'node:path';
 import { Command } from 'commander';
 import { loadConfig, resolveConfigPath, SctxError, setConfigPath } from 'structured-context/api';
 import packageJson from '../../package.json' with { type: 'json' };
@@ -29,7 +28,7 @@ program
     setConfigPath(program.opts().config);
     try {
       const config = loadConfig();
-      const configDir = dirname(resolve(resolveConfigPath().path));
+      const configDir = resolveConfigPath().root;
       const result = await exportSnapshot(spaceName, config, configDir, options);
       process.stdout.write(`${JSON.stringify(result)}\n`);
     } catch (err) {
