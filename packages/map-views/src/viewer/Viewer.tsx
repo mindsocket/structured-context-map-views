@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { type SpaceGraph, type SpaceNode, spaceGraphFrom } from 'structured-context/browser';
 import { annotationsFrom } from '../core/annotations';
 import type { MapViewDefinition, ParameterValues } from '../core/definition';
-import type { SpaceSnapshot } from '../core/snapshot';
+import type { SpaceSnapshot } from '../core/space-snapshot';
 import { MapView } from '../layouts/MapView';
 import { ParameterControls } from '../layouts/ParameterControls';
 

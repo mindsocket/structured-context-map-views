@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { SpaceGraph, SpaceNode } from 'structured-context/browser';
 import type { MapViewDefinition } from '../core/definition';
-import type { SpaceSnapshot } from '../core/snapshot';
+import type { SpaceSnapshot } from '../core/space-snapshot';
 import { Viewer } from '../viewer/Viewer';
 import { loadSpaces } from './load';
 
