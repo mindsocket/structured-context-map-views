@@ -1,6 +1,10 @@
 import { VALIDATION_ISSUE_KINDS } from 'structured-context/types';
+import { layoutSchemas } from '../layouts/schemas';
 import { parameterisable } from './param-ref';
 import { SCHEMA_URL } from './schema-url';
+
+// `map` loses the tuple the definition types are derived from, so it is restated.
+type Refs<T extends readonly { $id: string }[]> = { readonly [K in keyof T]: { readonly $ref: T[K]['$id'] } };
 
 /**
  * The map view definition format: shared parameters, and the regions a map view is composed of.
@@ -95,13 +99,7 @@ export const definitionSchema = {
           required: ['type'],
           // Ajv validates only the branch `type` selects, so errors name that layout's settings.
           discriminator: { propertyName: 'type' },
-          oneOf: [
-            { $ref: `${SCHEMA_URL}/layouts/tree.json` },
-            { $ref: `${SCHEMA_URL}/layouts/landscape.json` },
-            { $ref: `${SCHEMA_URL}/layouts/xy.json` },
-            { $ref: `${SCHEMA_URL}/layouts/neighbourhood.json` },
-            { $ref: `${SCHEMA_URL}/layouts/graph.json` },
-          ],
+          oneOf: layoutSchemas.map((schema) => ({ $ref: schema.$id })) as unknown as Refs<typeof layoutSchemas>,
         },
         nodes: {
           type: 'object',

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { SpaceNode } from 'structured-context/api';
-import type { LandscapeLayoutConfig, Orientation } from '../core/definition';
+import type { LayoutConfig, Orientation } from '../core/definition';
 import { buildLandscape, type LandscapeOccurrence } from '../core/layouts/landscape/projection';
 import type { LayoutProps } from './layout';
 import { NodeCard } from './NodeCard';
@@ -10,7 +10,7 @@ import { NodeCard } from './NodeCard';
  * Flexbox does the nesting and wrapping. Containment shows the grouping edges, so no connectors
  * are drawn. PROTOTYPE: `edges.show` has no effect here; other edges aren't drawn yet.
  */
-export function LandscapeLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<LandscapeLayoutConfig>) {
+export function LandscapeLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<LayoutConfig<'landscape'>>) {
   const { layout } = region;
   const landscape = useMemo(() => buildLandscape(graph, region.id, layout), [graph, region.id, layout]);
   const last = layout.group.length - 1;

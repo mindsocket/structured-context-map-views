@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { SpaceNode } from 'structured-context/api';
-import type { NeighbourhoodLayoutConfig } from '../core/definition';
+import type { LayoutConfig } from '../core/definition';
 import { buildNeighbourhood, type Neighbour } from '../core/layouts/neighbourhood/projection';
 import { ConnectorOverlay } from './ConnectorOverlay';
 import { type LayoutProps, useOccurrenceElements } from './layout';
@@ -21,7 +21,7 @@ export function NeighbourhoodLayout({
   onNodeSelect,
   focus,
   onFocusChange,
-}: LayoutProps<NeighbourhoodLayoutConfig>) {
+}: LayoutProps<LayoutConfig<'neighbourhood'>>) {
   const [picked, setPicked] = useState<{ from: SpaceNode['id'] | undefined; id: SpaceNode['id'] }>();
   // A focus the host sets later wins over the reader's earlier pick.
   const focusId = picked && picked.from === focus ? picked.id : focus;

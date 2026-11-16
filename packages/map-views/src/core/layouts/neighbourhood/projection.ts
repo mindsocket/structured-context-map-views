@@ -1,5 +1,5 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
-import type { NeighbourhoodLayoutConfig } from '../../definition';
+import type { LayoutConfig } from '../../definition';
 import {
   assignLanes,
   type Connector,
@@ -36,7 +36,7 @@ const ORDER: readonly NeighbourhoodRole[] = ['above', 'below', 'left', 'right'];
 export function buildNeighbourhood(
   graph: SpaceGraph,
   regionId: string,
-  layout: NeighbourhoodLayoutConfig,
+  layout: LayoutConfig<'neighbourhood'>,
   focusId?: SpaceNode['id'],
 ): Neighbourhood {
   const roles: Neighbourhood['roles'] = { above: [], below: [], left: [], right: [] };

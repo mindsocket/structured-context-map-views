@@ -1,3 +1,4 @@
+import type { AuthoredLayout } from '../../definition';
 import { PARAM_REF, parameterisable } from '../../schema/param-ref';
 import { SCHEMA_URL } from '../../schema/schema-url';
 
@@ -57,3 +58,10 @@ export const xyLayoutSchema = {
     },
   },
 } as const;
+
+export function checkXYLayout(layout: AuthoredLayout<'xy'>) {
+  for (const axis of ['x', 'y'] as const) {
+    const { domain } = layout[axis];
+    if (Array.isArray(domain) && !(domain[0]! < domain[1]!)) return `${axis} domain must be [min, max] with min < max`;
+  }
+}

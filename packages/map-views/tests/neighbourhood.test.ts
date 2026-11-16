@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { buildSpaceGraph } from 'structured-context/api';
-import type { NeighbourhoodLayoutConfig } from '../src/core/definition';
+import type { LayoutConfig } from '../src/core/definition';
 import { buildNeighbourhood } from '../src/core/layouts/neighbourhood/projection';
 import { makeHierarchy, makeLevel, makeParentRef, makeSpaceNode } from './builders';
 
@@ -20,7 +20,7 @@ const graph = buildSpaceGraph(
   ],
   undefined,
 );
-const layout = (overrides: Partial<NeighbourhoodLayoutConfig> = {}): NeighbourhoodLayoutConfig => ({
+const layout = (overrides: Partial<LayoutConfig<'neighbourhood'>> = {}): LayoutConfig<'neighbourhood'> => ({
   type: 'neighbourhood',
   above: [],
   below: [],

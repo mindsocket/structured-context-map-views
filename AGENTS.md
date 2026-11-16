@@ -30,7 +30,7 @@ Work and open questions are tracked as GitHub issues on this repo.
 
 ## Adding a layout
 
-A layout is a folder in `packages/map-views/src/core/layouts/<name>/` (`schema.ts`, and `projection.ts` only when deciding what is shown takes logic of its own) and a component in `src/components/`. It is registered in `core/definition.ts` (the schema list and the settings type), `core/schema/definition-schema.ts` (the `layout` branch) and `components/MapView.tsx`. It is documented in `docs/layouts.md` only. A projection decides what is shown; positions, sizes and anything a layout library computes belong in the component.
+A layout is a folder in `packages/map-views/src/core/layouts/<name>/` (`schema.ts`, and `projection.ts` only when deciding what is shown takes logic of its own) and a component in `src/components/`. It is registered in two lists: `core/layouts/schemas.ts` (its schema, and a check for any rule the schema can't express) and `LAYOUTS` in `components/MapView.tsx`. The definition format and the `LayoutConfig<'name'>` type follow from the first. It is documented in `docs/layouts.md` only. A projection decides what is shown; positions, sizes and anything a layout library computes belong in the component.
 
 ## Generated files
 

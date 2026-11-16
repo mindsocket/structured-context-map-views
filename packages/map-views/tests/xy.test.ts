@@ -1,11 +1,11 @@
 import { describe, expect, test } from 'bun:test';
-import type { XYLayoutConfig } from '../src/core/definition';
+import type { LayoutConfig } from '../src/core/definition';
 import { buildXYPlot } from '../src/core/layouts/xy/projection';
 import { fixtureGraph } from './fixture-graph';
 import teaShop from './fixtures/tea-shop.json';
 
 const graph = fixtureGraph(teaShop);
-const layout = (overrides: Partial<XYLayoutConfig> = {}): XYLayoutConfig => ({
+const layout = (overrides: Partial<LayoutConfig<'xy'>> = {}): LayoutConfig<'xy'> => ({
   type: 'xy',
   x: { field: 'evolution', domain: [0, 1], direction: 'ascending' },
   y: { field: 'visibility', domain: [0, 1], direction: 'ascending' },

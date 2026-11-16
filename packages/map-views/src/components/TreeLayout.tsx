@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { Orientation, TreeLayoutConfig } from '../core/definition';
+import type { LayoutConfig, Orientation } from '../core/definition';
 import { buildTree, type TreeOccurrence, treeConnectors } from '../core/layouts/tree/projection';
 import { ConnectorOverlay } from './ConnectorOverlay';
 import { type LayoutProps, useOccurrenceElements } from './layout';
@@ -8,7 +8,7 @@ import { NodeCard } from './NodeCard';
 /**
  * Tree over the schema's hierarchy. Flexbox does the branching; the SVG overlay draws connectors.
  */
-export function TreeLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<TreeLayoutConfig>) {
+export function TreeLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<LayoutConfig<'tree'>>) {
   const { orientation, dag } = region.layout;
   const tree = useMemo(() => buildTree(graph, region.id, dag), [graph, region.id, dag]);
   const connectors = useMemo(() => treeConnectors(tree), [tree]);

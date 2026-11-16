@@ -1,5 +1,5 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
-import type { GroupLevel, LandscapeLayoutConfig } from '../../definition';
+import type { LayoutConfig } from '../../definition';
 import { childEdges, occurrenceKey, type PathSegment, parentEdges } from '../helpers';
 
 /** One rendered container or node in a landscape. */
@@ -39,7 +39,7 @@ type FieldFilter = { field: string; value: string | null };
  * splits the next node level by that field's values. A node reached from several containers
  * appears in each, in full: the levels are finite, so repeating contents can't recurse.
  */
-export function buildLandscape(graph: SpaceGraph, regionId: string, layout: LandscapeLayoutConfig): Landscape {
+export function buildLandscape(graph: SpaceGraph, regionId: string, layout: LayoutConfig<'landscape'>): Landscape {
   const levels = layout.group;
   const order = new Map([...graph.nodes.keys()].map((title, i) => [title, i]));
   const first = new Map<string, string>();
@@ -160,6 +160,7 @@ export function buildLandscape(graph: SpaceGraph, regionId: string, layout: Land
   return { groups, ungrouped };
 }
 
+type GroupLevel = LayoutConfig<'landscape'>['group'][number];
 type TypeLevel = Extract<GroupLevel, { type: string }>;
 
 function isTypeLevel(level: GroupLevel): level is TypeLevel {

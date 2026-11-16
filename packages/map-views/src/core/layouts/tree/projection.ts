@@ -1,5 +1,5 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
-import type { DagMode } from '../../definition';
+import type { LayoutConfig } from '../../definition';
 import { type Connector, childEdges, isHierarchyEdge, occurrenceKey, parentEdges } from '../helpers';
 
 /** One rendered appearance of a node in a tree. */
@@ -41,7 +41,7 @@ export type Tree = {
  * node is either repeated without its subtree (`repeat`), or left out and linked by a cross-edge
  * (`cross-edge`). Either way traversal stops there, which also keeps cycles from recursing.
  */
-export function buildTree(graph: SpaceGraph, regionId: string, dag: DagMode = 'repeat'): Tree {
+export function buildTree(graph: SpaceGraph, regionId: string, dag: LayoutConfig<'tree'>['dag'] = 'repeat'): Tree {
   const { hierarchy } = graph;
   const levelTypes = new Set(hierarchy?.levels.map((level) => level.type));
   const rootType = hierarchy?.levels[0]?.type;

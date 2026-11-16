@@ -1,7 +1,7 @@
 import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY } from 'd3-force';
 import { useMemo } from 'react';
 import type { SpaceGraph } from 'structured-context/api';
-import type { GraphLayoutConfig } from '../core/definition';
+import type { LayoutConfig } from '../core/definition';
 import { assignLanes, type Connector, edgesWithin, isHierarchyEdge, occurrenceKey } from '../core/layouts/helpers';
 import { ConnectorOverlay } from './ConnectorOverlay';
 import { type LayoutProps, useOccurrenceElements } from './layout';
@@ -23,7 +23,7 @@ const LOOSE_PER_ROW = 4;
  * hierarchy edges hold their nodes close and each level settles below the one above, while
  * relationship edges pull weakly and are drawn dashed.
  */
-export function GraphLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<GraphLayoutConfig>) {
+export function GraphLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<LayoutConfig<'graph'>>) {
   const shape = region.nodes.style === 'shape';
   const plot = useMemo(
     () => settle(graph, region.id, region.layout.edgeFields, shape ? SHAPE_ROOM : CARD_ROOM),

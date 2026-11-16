@@ -27,7 +27,7 @@ type Props = {
 
 const EMPTY: AnnotationIndex = new Map();
 
-const LAYOUTS: { [T in LayoutConfig['type']]: ComponentType<LayoutProps<Extract<LayoutConfig, { type: T }>>> } = {
+const LAYOUTS: { [T in LayoutConfig['type']]: ComponentType<LayoutProps<LayoutConfig<T>>> } = {
   tree: TreeLayout,
   landscape: LandscapeLayout,
   xy: XYLayout,
