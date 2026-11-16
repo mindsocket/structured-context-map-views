@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { buildSpaceGraph } from 'structured-context/api';
 import type { NeighbourhoodLayoutConfig } from '../src/core/definition';
-import { buildNeighbourhood } from '../src/core/neighbourhood';
+import { buildNeighbourhood } from '../src/core/layouts/neighbourhood/projection';
 import { makeParentRef, makeSpaceNode } from './builders';
 
 const rel = (id: string, field: string) => makeParentRef(id, { kind: 'relationship', field });

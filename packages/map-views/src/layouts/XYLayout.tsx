@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { AxisConfig, XYLayoutConfig } from '../core/definition';
-import { buildXYPlot } from '../core/xy';
+import { buildXYPlot } from '../core/layouts/xy/projection';
 import { EdgeOverlay } from './EdgeOverlay';
 import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';

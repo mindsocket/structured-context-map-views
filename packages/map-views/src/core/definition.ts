@@ -1,19 +1,25 @@
 import Ajv2020, { type AnySchemaObject, type ErrorObject } from 'ajv/dist/2020';
 import type { FromSchema } from 'json-schema-to-ts';
 import JSON5 from 'json5';
-import {
-  definitionSchema,
-  type graphLayoutSchema,
-  type landscapeLayoutSchema,
-  MAP_VIEW_SCHEMAS,
-  type neighbourhoodLayoutSchema,
-  type settingsSchema,
-  type treeLayoutSchema,
-  type xyLayoutSchema,
-} from './format';
-import { SCHEMA_URL } from './format/schema-url';
+import { graphLayoutSchema } from './layouts/graph/schema';
+import { landscapeLayoutSchema } from './layouts/landscape/schema';
+import { neighbourhoodLayoutSchema } from './layouts/neighbourhood/schema';
+import { treeLayoutSchema } from './layouts/tree/schema';
+import { xyLayoutSchema } from './layouts/xy/schema';
+import { definitionSchema } from './schema/definition-schema';
+import { SCHEMA_URL } from './schema/schema-url';
+import { settingsSchema } from './schema/settings';
 
-export { MAP_VIEW_SCHEMAS };
+/** The bundled schemas describing the map view definition format. */
+export const MAP_VIEW_SCHEMAS = [
+  definitionSchema,
+  settingsSchema,
+  treeLayoutSchema,
+  landscapeLayoutSchema,
+  xyLayoutSchema,
+  neighbourhoodLayoutSchema,
+  graphLayoutSchema,
+] as const;
 
 type References = {
   references: [

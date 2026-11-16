@@ -25,7 +25,7 @@ export {
   selectionFilter,
   viewValidationLevel,
 } from './core/definition';
-export { buildTree, type Tree, type TreeOccurrence } from './core/tree';
+export { buildTree, type Tree, type TreeOccurrence } from './core/layouts/tree/projection';
 export { MapView } from './layouts/MapView';
 export { ParameterControls } from './layouts/ParameterControls';
 export {

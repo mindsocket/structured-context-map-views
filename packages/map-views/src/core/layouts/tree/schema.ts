@@ -1,5 +1,5 @@
-import { parameterisable } from './param-ref';
-import { SCHEMA_URL } from './schema-url';
+import { parameterisable } from '../../schema/param-ref';
+import { SCHEMA_URL } from '../../schema/schema-url';
 
 /** Settings of the tree layout: a tree over the schema's hierarchy. */
 export const treeLayoutSchema = {

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import type { LandscapeLayoutConfig } from '../src/core/definition';
-import { buildLandscape, type LandscapeOccurrence } from '../src/core/landscape';
+import { buildLandscape, type LandscapeOccurrence } from '../src/core/layouts/landscape/projection';
 import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
 
