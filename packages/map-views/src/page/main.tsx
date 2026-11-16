@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import type { SpaceSnapshot } from '../core/snapshot';
+import type { SpaceSnapshot } from '../core/space-snapshot';
 import { Viewer } from '../viewer/Viewer';
 
 /** The host for a self-contained page: shows the snapshots the page carries. */

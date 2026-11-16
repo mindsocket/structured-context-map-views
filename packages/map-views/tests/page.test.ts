@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import type { SpaceSnapshot } from '../src/core/snapshot';
+import type { SpaceSnapshot } from '../src/core/space-snapshot';
 import { fillPage, PAGE_SLOTS } from '../src/node/page';
 
 const template = `<title>${PAGE_SLOTS.title}</title><script type="application/json" id="s">${PAGE_SLOTS.snapshots}</script>`;

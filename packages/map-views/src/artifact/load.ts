@@ -1,4 +1,4 @@
-import type { SpaceSnapshot } from '../core/snapshot';
+import type { SpaceSnapshot } from '../core/space-snapshot';
 
 const SPACES = 'spaces';
 const TIMEOUT_MS = 10_000;

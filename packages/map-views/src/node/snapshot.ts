@@ -6,7 +6,7 @@ import {
   validateSpace,
 } from 'structured-context/api';
 import { mapViewsForSchema } from '../core/definition';
-import type { SpaceSnapshot } from '../core/snapshot';
+import type { SpaceSnapshot } from '../core/space-snapshot';
 import { loadMapViewDefinitions } from './index';
 
 /** The `validateSpace` options `export` passes through unchanged. */

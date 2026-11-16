@@ -1,4 +1,4 @@
-import type { SpaceSnapshot } from '../core/snapshot';
+import type { SpaceSnapshot } from '../core/space-snapshot';
 
 export const PAGE_SLOTS = { title: '<!--sctx-title-->', snapshots: '<!--sctx-snapshots-->' } as const;
 
