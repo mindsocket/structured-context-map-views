@@ -16,7 +16,8 @@ Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `package
    jq --arg v "$v" '.version = $v' packages/sctx-map-views/package.json >package.tmp && mv package.tmp packages/sctx-map-views/package.json
    git add -A && git commit -m "v$v" && git tag -a "v$v" -m "v$v" && git push --follow-tags
    ```
-   If any check fails, stop and report the errors.
+   `preversion` builds the library first (as CI does), because the plugin's tests import the built `structured-context-map-views/html`; without it, `bun test` fails on a missing module. If any check fails, stop and report the errors.
+   Shell state doesn't persist between calls, so `v` must be re-derived (`v=$(jq -r .version packages/map-views/package.json)`) in each call that uses it, including steps 3 and 4.
 
 3. The tag push starts the Release workflow (`.github/workflows/release.yml`). It reruns the CI checks, publishes both packages to npm with provenance, attests the tarballs and creates a GitHub release. Watch it:
    ```
