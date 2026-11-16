@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { AxisConfig, XYLayoutConfig } from '../core/definition';
+import type { LayoutConfig } from '../core/definition';
 import { buildXYPlot } from '../core/layouts/xy/projection';
 import { ConnectorOverlay } from './ConnectorOverlay';
 import { type LayoutProps, useOccurrenceElements } from './layout';
@@ -11,7 +11,7 @@ import { NodeCard } from './NodeCard';
  * placed are listed under the plot with the reason.
  * PROTOTYPE: labels may overlap where nodes sit close together; no collision handling.
  */
-export function XYLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<XYLayoutConfig>) {
+export function XYLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<LayoutConfig<'xy'>>) {
   const { layout } = region;
   const plot = useMemo(() => buildXYPlot(graph, region.id, layout), [graph, region.id, layout]);
   const shape = region.nodes.style === 'shape';
@@ -82,7 +82,7 @@ function AxisTitle({
   domain: [min, max],
   vertical = false,
 }: {
-  axis: AxisConfig;
+  axis: LayoutConfig<'xy'>['x'];
   domain: readonly [number, number];
   vertical?: boolean;
 }) {

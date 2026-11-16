@@ -1,3 +1,4 @@
+import type { AuthoredLayout } from '../../definition';
 import { PARAM_REF, parameterisable } from '../../schema/param-ref';
 import { SCHEMA_URL } from '../../schema/schema-url';
 
@@ -79,3 +80,8 @@ export const landscapeLayoutSchema = {
     },
   },
 } as const;
+
+export function checkLandscapeLayout(layout: AuthoredLayout<'landscape'>) {
+  // A field level labels the nodes of a later level, so a node level must come last.
+  if (!('type' in layout.group.at(-1)!)) return 'the last grouping level must be a node type, not a field';
+}

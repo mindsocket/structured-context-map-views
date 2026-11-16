@@ -40,7 +40,10 @@ export default defineConfig({
         // ajv/json5 (definition parsing), so a host bundling only those (a Claude Code mod) pulls in neither.
         codeSplitting: {
           groups: [
-            { name: 'projection', test: /src[\\/]core[\\/](?!definition|schema[\\/]|layouts[\\/][^\\/]+[\\/]schema)/ },
+            {
+              name: 'projection',
+              test: /src[\\/]core[\\/](?!definition|schema[\\/]|layouts[\\/]([^\\/]+[\\/])?schema)/,
+            },
           ],
         },
       },

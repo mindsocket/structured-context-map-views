@@ -1,5 +1,5 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
-import type { AxisConfig, XYLayoutConfig } from '../../definition';
+import type { LayoutConfig } from '../../definition';
 import { assignLanes, type Connector, edgesWithin, isHierarchyEdge, occurrenceKey } from '../helpers';
 
 type XYPlot = {
@@ -18,7 +18,7 @@ type XYPlot = {
  * when both its values are numbers inside the axes' domains, otherwise in `unplaced` with the
  * reason. Positions are normalised; layouts decide the plot's size.
  */
-export function buildXYPlot(graph: SpaceGraph, regionId: string, layout: XYLayoutConfig): XYPlot {
+export function buildXYPlot(graph: SpaceGraph, regionId: string, layout: LayoutConfig<'xy'>): XYPlot {
   const { x, y } = layout;
   const nodes = [...graph.nodes.values()];
   const types = new Set(
@@ -65,7 +65,7 @@ function isNumber(value: unknown): value is number {
 }
 
 /** The axis's fixed domain, or the range of plotted values (widened when they're all equal). */
-function domainOf(axis: AxisConfig, nodes: readonly SpaceNode[]): readonly [number, number] {
+function domainOf(axis: LayoutConfig<'xy'>['x'], nodes: readonly SpaceNode[]): readonly [number, number] {
   if (Array.isArray(axis.domain)) return [axis.domain[0]!, axis.domain[1]!];
   const values = nodes.map((n) => n.schemaData[axis.field]).filter(isNumber);
   if (values.length === 0) return [0, 1];
@@ -75,7 +75,11 @@ function domainOf(axis: AxisConfig, nodes: readonly SpaceNode[]): readonly [numb
 }
 
 /** The node's normalised position on the axis, or why it has none. */
-function position(node: SpaceNode, axis: AxisConfig, [min, max]: readonly [number, number]): number | string {
+function position(
+  node: SpaceNode,
+  axis: LayoutConfig<'xy'>['x'],
+  [min, max]: readonly [number, number],
+): number | string {
   const value = node.schemaData[axis.field];
   if (value === undefined || value === null) return `no ${axis.field}`;
   if (!isNumber(value)) return `${axis.field} is not a number`;

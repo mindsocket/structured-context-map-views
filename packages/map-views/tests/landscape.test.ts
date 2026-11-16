@@ -1,11 +1,11 @@
 import { describe, expect, test } from 'bun:test';
-import type { LandscapeLayoutConfig } from '../src/core/definition';
+import type { LayoutConfig } from '../src/core/definition';
 import { buildLandscape, type LandscapeOccurrence } from '../src/core/layouts/landscape/projection';
 import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
 
 const graph = fixtureGraph(sample);
-const layout = (group: LandscapeLayoutConfig['group']): LandscapeLayoutConfig => ({
+const layout = (group: LayoutConfig<'landscape'>['group']): LayoutConfig<'landscape'> => ({
   type: 'landscape',
   orientation: 'horizontal',
   group,

@@ -1,36 +1,16 @@
 import Ajv2020, { type AnySchemaObject, type ErrorObject } from 'ajv/dist/2020';
 import type { FromSchema } from 'json-schema-to-ts';
 import JSON5 from 'json5';
-import { graphLayoutSchema } from './layouts/graph/schema';
-import { landscapeLayoutSchema } from './layouts/landscape/schema';
-import { neighbourhoodLayoutSchema } from './layouts/neighbourhood/schema';
-import { treeLayoutSchema } from './layouts/tree/schema';
-import { xyLayoutSchema } from './layouts/xy/schema';
+import { layoutChecks, layoutSchemas } from './layouts/schemas';
 import { definitionSchema } from './schema/definition-schema';
 import { SCHEMA_URL } from './schema/schema-url';
 import { settingsSchema } from './schema/settings';
 
 /** The bundled schemas describing the map view definition format. */
-export const MAP_VIEW_SCHEMAS = [
-  definitionSchema,
-  settingsSchema,
-  treeLayoutSchema,
-  landscapeLayoutSchema,
-  xyLayoutSchema,
-  neighbourhoodLayoutSchema,
-  graphLayoutSchema,
-] as const;
+export const MAP_VIEW_SCHEMAS = [definitionSchema, settingsSchema, ...layoutSchemas] as const;
 
 type References = {
-  references: [
-    typeof settingsSchema,
-    typeof treeLayoutSchema,
-    typeof landscapeLayoutSchema,
-    typeof xyLayoutSchema,
-    typeof neighbourhoodLayoutSchema,
-    typeof graphLayoutSchema,
-    typeof definitionSchema,
-  ];
+  references: [typeof settingsSchema, ...typeof layoutSchemas, typeof definitionSchema];
   // Grouping levels dispatch with if/then/else (see the landscape layout schema).
   parseIfThenElseKeywords: true;
 };
@@ -50,21 +30,20 @@ export type AuthoredDefinition = FromSchema<
   References & { keepDefaultedPropertiesOptional: true }
 >;
 type FilledDefinition = FromSchema<typeof definitionSchema, References>;
+type LayoutOf<L extends { type: string }, T extends L['type']> = Extract<L, { type: T }>;
+/** One layout's settings as authored. */
+export type AuthoredLayout<
+  T extends
+    AuthoredDefinition['regions'][number]['layout']['type'] = AuthoredDefinition['regions'][number]['layout']['type'],
+> = LayoutOf<AuthoredDefinition['regions'][number]['layout'], T>;
 
 /** A region with parameters applied and defaults filled in: what layouts receive. */
 export type Region = Resolved<FilledDefinition['regions'][number]>;
-export type LayoutConfig = Region['layout'];
-export type TreeLayoutConfig = Extract<LayoutConfig, { type: 'tree' }>;
-export type LandscapeLayoutConfig = Extract<LayoutConfig, { type: 'landscape' }>;
-export type XYLayoutConfig = Extract<LayoutConfig, { type: 'xy' }>;
-export type NeighbourhoodLayoutConfig = Extract<LayoutConfig, { type: 'neighbourhood' }>;
-export type GraphLayoutConfig = Extract<LayoutConfig, { type: 'graph' }>;
-export type AxisConfig = XYLayoutConfig['x'];
-export type GroupLevel = LandscapeLayoutConfig['group'][number];
+/** A layout's settings, resolved: every layout's, or those of the layout `T` names. */
+export type LayoutConfig<T extends Region['layout']['type'] = Region['layout']['type']> = LayoutOf<Region['layout'], T>;
 export type NodesConfig = Region['nodes'];
 export type EdgesConfig = Region['edges'];
-export type Orientation = TreeLayoutConfig['orientation'];
-export type DagMode = TreeLayoutConfig['dag'];
+export type Orientation = LayoutConfig<'tree'>['orientation'];
 
 /**
  * A validated map view definition. Plain data, so hosts can pass it across a server/browser
@@ -162,18 +141,9 @@ export function parseMapViewDefinition(name: string, text: string): MapViewDefin
   for (const region of source.regions) {
     if (regionIds.has(region.id)) fail(`duplicate region id "${region.id}"`);
     regionIds.add(region.id);
-    // A field level labels the nodes of a later level, so a node level must come last.
-    if (region.layout.type === 'landscape' && !('type' in region.layout.group.at(-1)!)) {
-      fail(`region "${region.id}": the last grouping level must be a node type, not a field`);
-    }
-    if (region.layout.type === 'xy') {
-      for (const axis of ['x', 'y'] as const) {
-        const { domain } = region.layout[axis];
-        if (Array.isArray(domain) && !(domain[0]! < domain[1]!)) {
-          fail(`region "${region.id}": ${axis} domain must be [min, max] with min < max`);
-        }
-      }
-    }
+    // The check is the one for this layout's type, which TypeScript can't relate to the settings.
+    const broken = layoutChecks[region.layout.type]?.(region.layout as never);
+    if (broken) fail(`region "${region.id}": ${broken}`);
   }
 
   return {
