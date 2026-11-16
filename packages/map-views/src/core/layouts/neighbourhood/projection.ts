@@ -1,7 +1,6 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { NeighbourhoodLayoutConfig } from '../../definition';
-import { assignLanes, childEdges, parentEdges } from '../../graph';
-import { occurrenceKey } from '../../occurrence';
+import { assignLanes, childEdges, occurrenceKey, parentEdges } from '../helpers';
 
 export type NeighbourhoodRole = 'left' | 'right' | 'above' | 'below' | 'around';
 

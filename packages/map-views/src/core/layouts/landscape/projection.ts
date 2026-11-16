@@ -1,7 +1,6 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { GroupLevel, LandscapeLayoutConfig } from '../../definition';
-import { childEdges, parentEdges } from '../../graph';
-import { occurrenceKey, type PathSegment } from '../../occurrence';
+import { childEdges, occurrenceKey, type PathSegment, parentEdges } from '../helpers';
 
 /** One rendered container or node in a landscape. */
 export type LandscapeOccurrence = {

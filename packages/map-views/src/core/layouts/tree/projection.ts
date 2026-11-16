@@ -1,7 +1,6 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { DagMode } from '../../definition';
-import { childEdges, isHierarchyEdge, parentEdges } from '../../graph';
-import { occurrenceKey } from '../../occurrence';
+import { childEdges, isHierarchyEdge, occurrenceKey, parentEdges } from '../helpers';
 
 /** One rendered appearance of a node in a tree. */
 export type TreeOccurrence = {
