@@ -1,12 +1,13 @@
-import { useId, useMemo } from 'react';
+import { type ComponentType, useId, useMemo } from 'react';
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import { type AnnotationIndex, filterAnnotations } from '../core/annotations';
-import { type MapViewDefinition, type ParameterValues, type Region, resolveRegions } from '../core/definition';
+import { type LayoutConfig, type MapViewDefinition, type ParameterValues, resolveRegions } from '../core/definition';
 import { AnnotationsContext } from './annotations-context';
 import { GraphLayout } from './GraphLayout';
 import { LandscapeLayout } from './LandscapeLayout';
+import type { LayoutProps } from './layout';
 import { NeighbourhoodLayout } from './NeighbourhoodLayout';
-import { type LayoutProps, TreeLayout } from './TreeLayout';
+import { TreeLayout } from './TreeLayout';
 import { XYLayout } from './XYLayout';
 
 type Props = {
@@ -20,12 +21,19 @@ type Props = {
    */
   annotations?: AnnotationIndex;
   onNodeSelect?: (node: SpaceNode) => void;
-  /** The node a neighbourhood layout centres on (see {@link NeighbourhoodLayout}). */
-  focus?: SpaceNode['id'];
-  onFocusChange?: (id: SpaceNode['id']) => void;
+  focus?: LayoutProps['focus'];
+  onFocusChange?: LayoutProps['onFocusChange'];
 };
 
 const EMPTY: AnnotationIndex = new Map();
+
+const LAYOUTS: { [T in LayoutConfig['type']]: ComponentType<LayoutProps<Extract<LayoutConfig, { type: T }>>> } = {
+  tree: TreeLayout,
+  landscape: LandscapeLayout,
+  xy: XYLayout,
+  neighbourhood: NeighbourhoodLayout,
+  graph: GraphLayout,
+};
 
 /** Renders a map view definition against a space. Sizes to its container and scrolls within it. */
 export function MapView({ definition, graph, values, annotations, onNodeSelect, focus, onFocusChange }: Props) {
@@ -33,7 +41,9 @@ export function MapView({ definition, graph, values, annotations, onNodeSelect, 
   const regions = useMemo(() => resolveRegions(definition, values), [definition, values]);
   // PROTOTYPE: only the first region is rendered. Arranging several regions is undesigned (#8).
   const region = regions[0]!;
-  const props = { graph, instanceId, onNodeSelect };
+  // TypeScript can't relate the region's layout type to the component it indexes.
+  const Layout = LAYOUTS[region.layout.type] as ComponentType<LayoutProps>;
+
   const { validation, validationSources } = region.nodes;
   const visibleAnnotations = useMemo(
     () => (annotations ? filterAnnotations(annotations, validation, validationSources) : EMPTY),
@@ -43,28 +53,15 @@ export function MapView({ definition, graph, values, annotations, onNodeSelect, 
   return (
     <AnnotationsContext.Provider value={visibleAnnotations}>
       <div className="mv:h-full mv:w-full mv:overflow-auto mv:bg-surface mv:text-ink">
-        {layoutFor(region, props, { focus, onFocusChange })}
+        <Layout
+          graph={graph}
+          region={region}
+          instanceId={instanceId}
+          onNodeSelect={onNodeSelect}
+          focus={focus}
+          onFocusChange={onFocusChange}
+        />
       </div>
     </AnnotationsContext.Provider>
   );
-}
-
-function layoutFor(
-  region: Region,
-  props: Omit<LayoutProps, 'region'>,
-  neighbourhood: Pick<Props, 'focus' | 'onFocusChange'>,
-) {
-  const { layout } = region;
-  switch (layout.type) {
-    case 'tree':
-      return <TreeLayout {...props} region={{ ...region, layout }} />;
-    case 'landscape':
-      return <LandscapeLayout {...props} region={{ ...region, layout }} />;
-    case 'xy':
-      return <XYLayout {...props} region={{ ...region, layout }} />;
-    case 'graph':
-      return <GraphLayout {...props} region={{ ...region, layout }} />;
-    case 'neighbourhood':
-      return <NeighbourhoodLayout {...props} {...neighbourhood} region={{ ...region, layout }} />;
-  }
 }

@@ -1,18 +1,9 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
-import type { SpaceGraph, SpaceNode } from 'structured-context/api';
-import type { LayoutConfig, Orientation, Region, TreeLayoutConfig } from '../core/definition';
+import { useMemo } from 'react';
+import type { Orientation, TreeLayoutConfig } from '../core/definition';
 import { buildTree, type TreeOccurrence, treeLinks } from '../core/tree';
 import { EdgeOverlay } from './EdgeOverlay';
+import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';
-
-export type LayoutProps<L extends LayoutConfig = LayoutConfig> = {
-  graph: SpaceGraph;
-  /** The region with parameter values applied, narrowed to the layout's own settings. */
-  region: Region & { layout: L };
-  /** Scopes occurrence ids when several map views render in one document. */
-  instanceId: string;
-  onNodeSelect?: (node: SpaceNode) => void;
-};
 
 /**
  * Tree over the schema's hierarchy. Flexbox does the branching; the SVG overlay draws connectors.
@@ -20,22 +11,9 @@ export type LayoutProps<L extends LayoutConfig = LayoutConfig> = {
 export function TreeLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<TreeLayoutConfig>) {
   const { orientation, dag } = region.layout;
   const tree = useMemo(() => buildTree(graph, region.id, dag), [graph, region.id, dag]);
-  const { show, labels } = region.edges;
-  const links = useMemo(
-    () => (show ? treeLinks(tree).map(({ field, ...link }) => ({ ...link, label: labels ? field : undefined })) : []),
-    [tree, show, labels],
-  );
+  const links = useMemo(() => overlayLinks(treeLinks(tree), region.edges), [tree, region.edges]);
 
-  const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  // Filled by ref callbacks during commit, read by the overlay's layout effect afterwards.
-  const elements = useRef(new Map<string, HTMLElement>()).current;
-  const register = useCallback(
-    (key: string) => (el: HTMLElement | null) => {
-      if (el) elements.set(key, el);
-      else elements.delete(key);
-    },
-    [elements],
-  );
+  const { container, setContainer, elements, register } = useOccurrenceElements();
 
   const branch = (occurrence: TreeOccurrence) => (
     <li

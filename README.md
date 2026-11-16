@@ -26,6 +26,7 @@ Pre-1.0. Docs:
 
 - [Concepts](docs/concepts.md): map views, regions, layouts, occurrences, parameters
 - [Definitions](docs/definitions.md): writing a map view definition
+- [Layouts](docs/layouts.md): the layouts and their settings
 - [Architecture](docs/architecture.md): how the library is put together
 - [API](docs/api.md): embedding map views in a host
 

@@ -41,7 +41,7 @@ Review and update with any change:
 
 | Change | Check |
 |---|---|
-| Definition format (`core/format`) | `docs/definitions.md`; regenerated `schemas/generated/`; definitions in `map-views/` |
+| Definition format (`core/format`) | `docs/definitions.md`, `docs/layouts.md` for layout settings; regenerated `schemas/generated/`; definitions in `map-views/` |
 | New or renamed term | `docs/concepts.md` |
 | Exports or component props | `docs/api.md` |
 | Module structure, rendering, styling | `docs/architecture.md`, this file |

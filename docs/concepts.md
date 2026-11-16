@@ -8,7 +8,7 @@ A declarative way to visualise spaces of one schema, and the rendering it produc
 
 ## Definition
 
-The JSON5 file that declares a map view: the schema it applies to, its parameters and its regions. A definition applies to every space whose schema `$id` equals its `schema`. Its own `$id` (`sctx-map-view://…`) identifies it, namespaced by where it's found: bundled, a plugin, or a config folder. See [Definitions](definitions.md).
+The JSON5 file that declares a map view: the schema it applies to, its parameters and its regions. A definition applies to every space whose schema `$id` equals its `schema`, or to every space when it names none. Its own `$id` (`sctx-map-view://…`) identifies it, namespaced by where it's found: bundled, a plugin, or a config folder. See [Definitions](definitions.md).
 
 ## Region
 
@@ -16,15 +16,7 @@ A part of a map view with its own node selection, layout, node style and edge se
 
 ## Layout
 
-The arrangement a region uses, chosen from a fixed catalogue:
-
-- **tree**: a tree over the schema's hierarchy.
-- **landscape**: nested containers following an authored grouping.
-- **xy**: nodes positioned by two numeric fields.
-- **neighbourhood**: one node with its neighbours placed around it by role.
-- **graph**: every node and edge as a network.
-
-Each layout carries its own opinions (spacing, card sizes, colours). Definitions choose and configure a layout; they don't compose one.
+The arrangement a region uses, chosen from a fixed catalogue ([Layouts](layouts.md)). Each layout carries its own opinions (spacing, card sizes, colours). Definitions choose and configure a layout; they don't compose one.
 
 ## Occurrence
 
@@ -39,7 +31,7 @@ The two ways a tree shows a node with several parents:
 
 ## Focus
 
-The node a neighbourhood layout centres on. Hosts can set it; otherwise the reader's picks move it.
+The node a layout centres on. Hosts can set it; otherwise the reader's picks move it.
 
 ## Grouping level
 

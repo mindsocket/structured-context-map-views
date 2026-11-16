@@ -1,22 +1,23 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { SpaceNode } from 'structured-context/api';
 import type { NeighbourhoodLayoutConfig } from '../core/definition';
 import { buildNeighbourhood, type Neighbour } from '../core/neighbourhood';
 import { EdgeOverlay } from './EdgeOverlay';
+import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';
-import type { LayoutProps } from './TreeLayout';
-
-type Props = LayoutProps<NeighbourhoodLayoutConfig> & {
-  /** The focus node; the layout keeps its own once the reader picks another. */
-  focus?: SpaceNode['id'];
-  onFocusChange?: (id: SpaceNode['id']) => void;
-};
 
 /**
  * One node with its neighbours around it. Selecting a neighbour moves the focus to it; selecting
  * the focus is a regular node selection.
  */
-export function NeighbourhoodLayout({ graph, region, instanceId, onNodeSelect, focus, onFocusChange }: Props) {
+export function NeighbourhoodLayout({
+  graph,
+  region,
+  instanceId,
+  onNodeSelect,
+  focus,
+  onFocusChange,
+}: LayoutProps<NeighbourhoodLayoutConfig>) {
   const [picked, setPicked] = useState<{ from: SpaceNode['id'] | undefined; id: SpaceNode['id'] }>();
   // A focus the host sets later wins over the reader's earlier pick.
   const focusId = picked && picked.from === focus ? picked.id : focus;
@@ -24,24 +25,9 @@ export function NeighbourhoodLayout({ graph, region, instanceId, onNodeSelect, f
     () => buildNeighbourhood(graph, region.id, region.layout, focusId),
     [graph, region.id, region.layout, focusId],
   );
-  const { labels, show } = region.edges;
-  const links = useMemo(
-    () =>
-      show
-        ? neighbourhood.links.map((link) => ({ ...link, id: link.field, label: labels ? link.field : undefined }))
-        : [],
-    [neighbourhood, show, labels],
-  );
+  const links = useMemo(() => overlayLinks(neighbourhood.links, region.edges), [neighbourhood, region.edges]);
 
-  const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  const elements = useRef(new Map<string, HTMLElement>()).current;
-  const register = useCallback(
-    (key: string) => (el: HTMLElement | null) => {
-      if (el) elements.set(key, el);
-      else elements.delete(key);
-    },
-    [elements],
-  );
+  const { container, setContainer, elements, register } = useOccurrenceElements();
 
   if (!neighbourhood.focus) return null;
   const current = neighbourhood.focus.node;

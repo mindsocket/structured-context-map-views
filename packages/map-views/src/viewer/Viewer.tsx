@@ -7,9 +7,8 @@ import { MapView } from '../layouts/MapView';
 import { ParameterControls } from '../layouts/ParameterControls';
 
 /**
- * A page-filling viewer for one or more space snapshots: a space and map view switcher, the parameter
- * controls, the map view, and a side panel with the selected node's fields and validation results. Hosts
- * supply the snapshots and anything specific to where the page is shown. See docs/architecture.md.
+ * A page-filling viewer for one or more space snapshots. Hosts supply the snapshots and anything
+ * specific to where the page is shown. See docs/architecture.md.
  */
 
 export type ViewerProps = {

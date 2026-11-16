@@ -6,7 +6,7 @@ A space graph and a definition go in; a DOM layout with an SVG overlay comes out
 flowchart LR
   space[structured-context space] -->|host assembles| graph[SpaceGraph]
   def[definition .json5] -->|parseMapViewDefinition| mvd[MapViewDefinition]
-  graph --> proj[projection<br>tree · landscape · xy · neighbourhood · graph]
+  graph --> proj[projection]
   mvd --> proj
   proj --> dom[layout component<br>DOM + SVG overlay]
 ```
@@ -15,7 +15,7 @@ flowchart LR
 
 | Module | Holds | May import |
 |---|---|---|
-| `packages/map-views/src/core` | Definition parsing and validation, parameter resolution, graph helpers, and the projections (`buildTree`, `buildLandscape`, `buildXYPlot`, `buildNeighbourhood`, `buildForceGraph`) | Types from structured-context only. No React, DOM or Node |
+| `packages/map-views/src/core` | Definition parsing and validation, parameter resolution, graph helpers, and the projections | Types from structured-context only. No React, DOM or Node |
 | `packages/map-views/src/layouts` | `MapView`, the layout components, `NodeCard`, `EdgeOverlay`, the parameter controls (`useParameterControls`, the typed inputs and the default `ParameterControls` layout), styles | core, React |
 | `packages/map-views/src/viewer` | `Viewer`, the page-filling UI that hosts share. What is specific to a host comes in as an option | core, layouts, React, `structured-context/browser` |
 | `packages/map-views/src/node` | `loadMapViewDefinitions`: finding definitions in the library (embedded at build time from `packages/map-views/map-views/`), plugins and config folders; `exportSnapshot` and the `export` bin, which snapshot a space for browser-only hosts; `fillPage`, which writes snapshots into the self-contained page. `fillPage` and `readDefinitionFolders` are also the `/html` entry, which imports nothing from structured-context's API | core, Node, structured-context |
@@ -32,13 +32,7 @@ Hosts can also pass validation results as an `AnnotationIndex` (`core/annotation
 
 ## Projections
 
-Each layout has a pure projection in core that turns the graph and the region's resolved settings into occurrences and links:
-
-- **Tree**: walks the hierarchy from the root type. A node with several parents is repeated (subtree once) or placed once with cross-links. Cycles end in a repeat.
-- **Landscape**: walks the grouping levels, joining node levels by edges in either direction, through `via` chains or by field values.
-- **XY**: normalises two numeric fields to percentages within each axis's domain and lists the nodes it can't place.
-- **Neighbourhood**: places the focus's neighbours by the role of the field joining them.
-- **Graph**: positions every node with a force simulation (`d3-force`), seeded so the same graph gives the same positions.
+Each layout has a pure projection in core that turns the graph and the region's resolved settings into occurrences and links, ready for a layout component to draw. [Layouts](layouts.md) describes each one.
 
 Occurrence keys are paths (region, ancestors, node), so a node appearing several times gets distinct keys.
 
@@ -58,7 +52,7 @@ Hosts theme map views through nine variables: `--mv-color-surface`, `--mv-color-
 
 ## Hosts
 
-- **Navigator** (`apps/navigator`): dev-server middleware serves spaces (from the structured-context config), the definitions `loadMapViewDefinitions` finds, and, when a map view asks for them, validation results (`validateSpace`, expression rules only), as JSON. The chosen space, map view, focus node and parameter values live in the query string, so a reload restores them. Selecting a node opens a side panel with its fields, content and validation results.
+- **Navigator** (`apps/navigator`): dev-server middleware serves spaces (from the structured-context config), the definitions `loadMapViewDefinitions` finds, and, when a map view asks for them, validation results (`validateSpace`, expression rules only), as JSON. What the reader chose lives in the query string, so a reload restores it. Selecting a node opens a side panel with its fields, content and validation results.
 - **Claude artifact** (`packages/map-views/src/artifact`, shipped as `dist/artifact.js` with its page `dist/artifact.html`): a host with no server. The publishing agent runs the `export` command and writes each space to the artifact's database (`spaces/<space>`: `schemaId`, and `graph`, `validation` and `definitions` as JSON strings). The page lists that collection and shows it in the `Viewer`. It declares only the `db` capability and shows a message when the database is unavailable, empty or slow (10 s). Claude's artifact viewer allows scripts only from a few CDNs and blocks external stylesheets, so `scripts/build-artifact-page.ts` writes a page that carries the CSS inline and loads `dist/artifact.js` (pinned to this package's version) and its dependencies from jsDelivr through an import map; `react` and `react-dom` are pinned to one version so the page runs one React. The host names cards `[<index>] <title> · <view>` through the `Viewer`'s `cardLabel` option, where the index is the node's position in the stored graph's `nodes` array, because the artifact viewer's comment mode reads a comment's location from it (cut at about 45 characters, too short for a node id), so a comment tells an agent which node it concerns. Refreshing the data is writing the documents again; the page doesn't change.
 - **Self-contained page** (`packages/map-views/src/page`): a host that needs no server or network. The build inlines it, React and the CSS into the template `dist/page.html`, and `fillPage` writes snapshots into it. The `sctx-map-views` plugin bundles that template.
 - **Obsidian plugin** ([obsidian-structured-context](https://github.com/mindsocket/obsidian-structured-context)): renders map views in a pane, builds the data in-process, opens the source note on selection and keeps parameter values in the view state.

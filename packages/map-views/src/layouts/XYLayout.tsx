@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import type { AxisConfig, XYLayoutConfig } from '../core/definition';
 import { buildXYPlot } from '../core/xy';
 import { EdgeOverlay } from './EdgeOverlay';
+import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';
-import type { LayoutProps } from './TreeLayout';
 
 /**
  * Nodes positioned by two numeric fields, with straight connectors between them. Positions are
@@ -17,29 +17,15 @@ export function XYLayout({ graph, region, instanceId, onNodeSelect }: LayoutProp
   // Relationship edges (flows, pipelines) are dashed, to tell them from the value chain.
   const links = useMemo(
     () =>
-      region.edges.show
-        ? plot.links.map(({ from, to, field, hierarchy, lane }) => ({
-            from,
-            to,
-            id: field,
-            lane,
-            kind: hierarchy ? ('tree' as const) : ('cross' as const),
-            label: region.edges.labels ? field : undefined,
-          }))
-        : [],
-    [plot, region.edges.show, region.edges.labels],
+      overlayLinks(
+        plot.links.map((link) => ({ ...link, kind: link.hierarchy ? ('tree' as const) : ('cross' as const) })),
+        region.edges,
+      ),
+    [plot, region.edges],
   );
   const shape = region.nodes.style === 'shape';
 
-  const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  const elements = useRef(new Map<string, HTMLElement>()).current;
-  const register = useCallback(
-    (key: string) => (el: HTMLElement | null) => {
-      if (el) elements.set(key, el);
-      else elements.delete(key);
-    },
-    [elements],
-  );
+  const { container, setContainer, elements, register } = useOccurrenceElements();
 
   return (
     <div className="mv:box-border mv:flex mv:h-full mv:min-h-[28rem] mv:min-w-[36rem] mv:flex-col mv:gap-4 mv:p-4">

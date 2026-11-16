@@ -17,13 +17,9 @@ function write(path: string, text: string) {
 }
 const definition = (id: string) =>
   `{ $id: '${id}', schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`;
-const BUNDLED = [
-  'sctx-map-view://core/graph',
-  'sctx-map-view://core/neighbourhood',
-  'sctx-map-view://core/strategy-tree',
-  'sctx-map-view://core/tree',
-];
 const noSpaces: Config = { spaces: [] };
+// A config folder with nothing in it, so only the library's definitions are found.
+const bundled = () => loadMapViewDefinitions(noSpaces, { configDir: join(root, 'empty') }).map((d) => d.id);
 const ids = (config: Config, configDir = join(root, 'config')) =>
   loadMapViewDefinitions(config, { configDir }).map((d) => d.id);
 
@@ -34,7 +30,7 @@ describe('loadMapViewDefinitions', () => {
     write('config/.sctx/plugins/sctx-declared/views/b.json5', definition('sctx-map-view://declared/b'));
     write('config/.sctx/map-views/c.json5', definition('sctx-map-view://c'));
     expect(ids(noSpaces)).toEqual([
-      ...BUNDLED,
+      ...bundled(),
       'sctx-map-view://conventional/a',
       'sctx-map-view://declared/b',
       'sctx-map-view://c',
@@ -54,7 +50,7 @@ describe('loadMapViewDefinitions', () => {
         },
       ],
     };
-    expect(ids(config)).toEqual([...BUNDLED, 'sctx-map-view://named/a', 'sctx-map-view://b']);
+    expect(ids(config)).toEqual([...bundled(), 'sctx-map-view://named/a', 'sctx-map-view://b']);
   });
 
   test.each([
