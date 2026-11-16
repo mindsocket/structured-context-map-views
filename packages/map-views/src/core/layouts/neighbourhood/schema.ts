@@ -10,15 +10,15 @@ export const neighbourhoodLayoutSchema = {
   $id: `${SCHEMA_URL}/layouts/neighbourhood.json`,
   title: 'Neighbourhood layout',
   description:
-    'The neighbourhood of one focus node, with related nodes placed around it by role. Each role lists the fields that put a node there. A node is placed by the first role that matches, in the order left, right, above, below, around.',
+    'The neighbourhood of one focus node, with related nodes placed around it by role. By default the hierarchy runs down the page (parents above, children below), relationships in either direction sit to the left and the siblings of the focus to the right; with no hierarchy, every edge runs down the page. A role that lists a field takes the nodes that field joins to the focus, in either direction. A node joined by several fields is placed once, by the first of above, below, left, right.',
   type: 'object',
   required: ['type'],
   additionalProperties: false,
   properties: {
     type: { const: 'neighbourhood' },
-    above: roleFields('Fields through which the focus has a parent, shown above it. Empty: every field.'),
-    below: roleFields('Fields through which the focus has a child, shown below it. Empty: every field.'),
-    left: roleFields('Fields, in either direction, shown to the left. Empty: none.'),
-    right: roleFields('Fields, in either direction, shown to the right. Empty: none.'),
+    above: roleFields('Fields whose nodes are shown above the focus, in addition to the default.'),
+    below: roleFields('Fields whose nodes are shown below the focus, in addition to the default.'),
+    left: roleFields('Fields whose nodes are shown to the left of the focus, in addition to the default.'),
+    right: roleFields('Fields whose nodes are shown to the right of the focus, in addition to the default.'),
   },
 } as const;

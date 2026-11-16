@@ -2,7 +2,7 @@ import type { Hierarchy, SpaceGraph } from 'structured-context/api';
 import type { NodeId } from 'structured-context/types';
 
 /** A directed parent → child edge of a space graph, carrying the metadata of the reference it came from. */
-type Edge = SpaceGraph['parentEdges'] extends ReadonlyMap<string, readonly (infer E)[]> ? E : never;
+export type Edge = SpaceGraph['parentEdges'] extends ReadonlyMap<string, readonly (infer E)[]> ? E : never;
 
 const NONE: readonly Edge[] = [];
 
