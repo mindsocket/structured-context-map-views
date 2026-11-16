@@ -57,18 +57,20 @@ describe('neighbourhood', () => {
     expect(connectors.map((l) => l.field).sort()).toEqual(['concepts', 'sources', 'sources']);
   });
 
-  test('a hierarchy root shows the other roots of its type, and a node with a parent shows none', () => {
+  test('siblings share a hierarchy parent with the focus or, for a root, are the other roots of its type', () => {
     const tree = buildSpaceGraph(
       [
         makeSpaceNode('p1', 'phase'),
         makeSpaceNode('p2', 'phase'),
         makeSpaceNode('a1', 'activity', {}, undefined, [makeParentRef('p1')]),
-        makeSpaceNode('a2', 'activity'),
+        makeSpaceNode('a2', 'activity', {}, undefined, [makeParentRef('p1')]),
+        makeSpaceNode('a3', 'activity', {}, undefined, [makeParentRef('p2')]),
+        makeSpaceNode('a4', 'activity'),
       ],
       makeHierarchy([makeLevel('phase'), makeLevel('activity')]),
     );
-    expect(ids(buildNeighbourhood(tree, 'main', layout(), 'p1' as never).siblingRoots)).toEqual(['p2']);
-    expect(ids(buildNeighbourhood(tree, 'main', layout(), 'a1' as never).siblingRoots)).toEqual([]);
+    expect(ids(buildNeighbourhood(tree, 'main', layout(), 'p1' as never).siblings)).toEqual(['p2']);
+    expect(ids(buildNeighbourhood(tree, 'main', layout(), 'a1' as never).siblings)).toEqual(['a2']);
   });
 
   test('an unknown focus falls back to the first node', () => {

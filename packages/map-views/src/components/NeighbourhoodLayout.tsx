@@ -56,7 +56,7 @@ export function NeighbourhoodLayout({
       ref={setContainer}
       className="mv:relative mv:flex mv:w-max mv:min-w-full mv:flex-col mv:items-center mv:gap-16 mv:p-6"
     >
-      {group(neighbourhood.siblingRoots, 'mv:opacity-80')}
+      {group(neighbourhood.siblings, 'mv:max-w-5xl mv:opacity-80')}
       {group(above, '')}
       <div className="mv:flex mv:items-center mv:gap-24">
         {group(left, 'mv:flex-col')}

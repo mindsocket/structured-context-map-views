@@ -1,6 +1,6 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { NeighbourhoodLayoutConfig } from '../../definition';
-import { assignLanes, type Connector, childEdges, occurrenceKey, parentEdges } from '../helpers';
+import { assignLanes, type Connector, childEdges, isHierarchyEdge, occurrenceKey, parentEdges } from '../helpers';
 
 type NeighbourhoodRole = 'left' | 'right' | 'above' | 'below' | 'around';
 
@@ -11,8 +11,11 @@ export type Neighbourhood = {
   /** `undefined` when the graph has no nodes. */
   focus: Neighbour | undefined;
   roles: Record<NeighbourhoodRole, Neighbour[]>;
-  /** When the focus is a hierarchy root: the other roots of its type, which no edge would reach. */
-  siblingRoots: Neighbour[];
+  /**
+   * The nodes that share a hierarchy parent with the focus or, for a hierarchy root, the other
+   * roots of its type. No edge joins them to the focus, so they have no connector.
+   */
+  siblings: Neighbour[];
   connectors: Connector[];
 };
 
@@ -30,7 +33,7 @@ export function buildNeighbourhood(
 ): Neighbourhood {
   const roles: Neighbourhood['roles'] = { left: [], right: [], above: [], below: [], around: [] };
   const node = (focusId && graph.nodes.get(focusId)) || graph.hierarchyRoots[0] || graph.nodes.values().next().value;
-  if (!node) return { focus: undefined, roles, siblingRoots: [], connectors: [] };
+  if (!node) return { focus: undefined, roles, siblings: [], connectors: [] };
   const focus = { key: occurrenceKey(regionId, [node.id]), node };
 
   const roleOf = (direction: 'parent' | 'child', field: string): NeighbourhoodRole => {
@@ -58,11 +61,14 @@ export function buildNeighbourhood(
 
   const occurrence = (other: SpaceNode) => ({ key: occurrenceKey(regionId, [node.id, other.id]), node: other });
   for (const [id, role] of best) roles[role].push(occurrence(graph.nodes.get(id)!));
-  const siblingRoots = graph.hierarchyRoots.includes(node)
-    ? graph.hierarchyRoots
-        .filter((root) => root !== node && root.resolvedType === node.resolvedType && !best.has(root.id))
-        .map(occurrence)
-    : [];
+  const hierarchyParents = parentEdges(graph, node.id).filter((edge) => isHierarchyEdge(edge, graph.hierarchy));
+  const sameLevel = graph.hierarchyRoots.includes(node)
+    ? graph.hierarchyRoots.filter((root) => root.resolvedType === node.resolvedType)
+    : hierarchyParents
+        .flatMap((edge) => childEdges(graph, edge.parent))
+        .filter((edge) => isHierarchyEdge(edge, graph.hierarchy))
+        .map((edge) => graph.nodes.get(edge.child)!);
+  const siblings = [...new Set(sameLevel)].filter((other) => other !== node && !best.has(other.id)).map(occurrence);
   assignLanes(connectors);
-  return { focus, roles, siblingRoots, connectors };
+  return { focus, roles, siblings, connectors };
 }
