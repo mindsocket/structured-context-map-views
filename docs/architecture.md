@@ -15,7 +15,7 @@ flowchart LR
 
 | Module | Holds | May import |
 |---|---|---|
-| `packages/map-views/src/core` | Definition parsing and validation, parameter resolution, graph helpers, and the projections | Types from structured-context only. No React, DOM or Node |
+| `packages/map-views/src/core` | Definition parsing and validation, parameter resolution, validation annotations, and each layout's settings schema and projection (`core/layouts/<name>/`) | Types from structured-context only. No React, DOM or Node |
 | `packages/map-views/src/layouts` | `MapView`, the layout components, `NodeCard`, `EdgeOverlay`, the parameter controls (`useParameterControls`, the typed inputs and the default `ParameterControls` layout), styles | core, React |
 | `packages/map-views/src/viewer` | `Viewer`, the page-filling UI that hosts share. What is specific to a host comes in as an option | core, layouts, React, `structured-context/browser` |
 | `packages/map-views/src/node` | `loadMapViewDefinitions`: finding definitions in the library (embedded at build time from `packages/map-views/map-views/`), plugins and config folders; `exportSnapshot` and the `export` bin, which snapshot a space for browser-only hosts; `fillPage`, which writes snapshots into the self-contained page. `fillPage` and `readDefinitionFolders` are also the `/html` entry, which imports nothing from structured-context's API | core, Node, structured-context |
