@@ -54,12 +54,18 @@ Every node and edge as a network: connected nodes sit close together. It needs n
 
 ## neighbourhood
 
-One focus node with its neighbours around it. Selecting a neighbour makes it the focus; selecting the focus is a normal node selection. A node is placed by the first role that matches, in the order `left`, `right`, `above`, `below`, then `around` for the rest. The focus's siblings are shown in a row at the top, without connectors, so the reader can move between them: the nodes that share its hierarchy parent or, for a hierarchy root, the other roots of its type.
+One focus node with its neighbours around it. Selecting a neighbour makes it the focus; selecting the focus is a normal node selection.
 
-| Setting | Meaning |
+By default the hierarchy runs down the page, with relationships to one side and siblings to the other:
+
+| Where | Default |
 |---|---|
-| `above` | Fields through which the focus has a parent. Empty: every field |
-| `below` | Fields through which the focus has a child. Empty: every field |
-| `left`, `right` | Fields, in either direction. Empty: none |
+| `above` | Hierarchy parents |
+| `below` | Hierarchy children |
+| `left` | Relationship edges, in either direction |
+| `right` | Nothing |
+| Far right | Siblings: the nodes that share the focus's hierarchy parent or, for a hierarchy root, the other roots of its type. They have no connectors; they let the reader move along a level |
+
+In a space with no hierarchy, every edge runs down the page. Each role is also a setting: a list of fields whose nodes go there in either direction, whatever the default. A node joined to the focus by several fields is placed once, by the first of `above`, `below`, `left`, `right`.
 
 The focus is the host's to set (`focus` on `MapView`); by default it is the first hierarchy root, else the first node.

@@ -39,15 +39,28 @@ describe('neighbourhood', () => {
     expect(ids(x1.roles.above)).toEqual(['s1', 's2', 'c1']);
   });
 
-  test('a listed field moves its neighbours to that role, before above and below', () => {
+  test('a listed field moves its neighbours to that role', () => {
     const neighbourhood = buildNeighbourhood(graph, 'main', layout({ left: ['concepts'] }), 'x1' as never);
     expect(ids(neighbourhood.roles.left)).toEqual(['c1']);
     expect(ids(neighbourhood.roles.above)).toEqual(['s1', 's2']);
   });
 
-  test('edges outside the listed above and below fields go around', () => {
-    const neighbourhood = buildNeighbourhood(graph, 'main', layout({ above: ['sources'] }), 'x1' as never);
-    expect(ids(neighbourhood.roles.around)).toEqual(['c1']);
+  test('with a hierarchy, hierarchy edges run down and relationship edges sit to the left', () => {
+    const tree = buildSpaceGraph(
+      [
+        makeSpaceNode('p1', 'phase'),
+        makeSpaceNode('o1', 'outcome'),
+        makeSpaceNode('a1', 'activity', {}, undefined, [makeParentRef('p1'), rel('o1', 'outcomes')]),
+        makeSpaceNode('c1', 'capability', {}, undefined, [makeParentRef('a1')]),
+        makeSpaceNode('t1', 'tool', {}, undefined, [rel('a1', 'usedBy')]),
+      ],
+      makeHierarchy([makeLevel('phase'), makeLevel('activity'), makeLevel('capability')]),
+    );
+    const { roles } = buildNeighbourhood(tree, 'main', layout(), 'a1' as never);
+    expect(ids(roles.above)).toEqual(['p1']);
+    expect(ids(roles.below)).toEqual(['c1']);
+    expect(ids(roles.left)).toEqual(['o1', 't1']);
+    expect(ids(roles.right)).toEqual([]);
   });
 
   test('connectors keep the edge direction and carry the field', () => {
