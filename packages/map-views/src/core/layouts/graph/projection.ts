@@ -1,8 +1,7 @@
 import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY } from 'd3-force';
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { GraphLayoutConfig } from '../../definition';
-import { assignLanes, edgesWithin } from '../../graph';
-import { occurrenceKey } from '../../occurrence';
+import { assignLanes, edgesWithin, occurrenceKey } from '../helpers';
 
 /** A positioned node; `x` and `y` are pixels from the top left of the plot. */
 export type ForcePoint = { key: string; node: SpaceNode; x: number; y: number };
