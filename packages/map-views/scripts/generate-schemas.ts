@@ -1,6 +1,6 @@
 /**
  * Write the map view definition schemas as JSON, for `$schema` references and editors.
- * The TypeScript sources in src/core/format are the source of truth.
+ * The TypeScript sources under src/core (schema/ and each layout's schema.ts) are the source of truth.
  *
  *   bun run generate:schemas              writes generated/latest/
  *   bun run generate:schemas --release    also freezes generated/<version>/ when the format changed
@@ -11,8 +11,8 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import pkg from '../package.json';
-import { MAP_VIEW_SCHEMAS } from '../src/core/format';
-import { SCHEMA_BASE_URL, SCHEMA_URL } from '../src/core/format/schema-url';
+import { MAP_VIEW_SCHEMAS } from '../src/core/definition';
+import { SCHEMA_BASE_URL, SCHEMA_URL } from '../src/core/schema/schema-url';
 
 export const GENERATED_DIR = join(import.meta.dir, '../../../schemas/generated');
 const VERSION_FOLDER = /^\d+\.\d+\.\d+$/;

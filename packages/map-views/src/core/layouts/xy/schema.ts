@@ -1,5 +1,5 @@
-import { PARAM_REF, parameterisable } from './param-ref';
-import { SCHEMA_URL } from './schema-url';
+import { PARAM_REF, parameterisable } from '../../schema/param-ref';
+import { SCHEMA_URL } from '../../schema/schema-url';
 
 /** Settings of the XY layout: nodes positioned by two numeric fields. */
 export const xyLayoutSchema = {

@@ -7,7 +7,7 @@ import {
   resolveRegions,
   selectionFilter,
 } from '../src/core/definition';
-import { SCHEMA_URL } from '../src/core/format/schema-url';
+import { SCHEMA_URL } from '../src/core/schema/schema-url';
 
 const minimal = `{ $id: 'sctx-map-view://t', schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`;
 

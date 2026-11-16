@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import type { GraphLayoutConfig } from '../src/core/definition';
-import { buildForceGraph } from '../src/core/force';
+import { buildForceGraph } from '../src/core/layouts/graph/projection';
 import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
 

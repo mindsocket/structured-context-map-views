@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { Orientation, TreeLayoutConfig } from '../core/definition';
-import { buildTree, type TreeOccurrence, treeLinks } from '../core/tree';
+import { buildTree, type TreeOccurrence, treeLinks } from '../core/layouts/tree/projection';
 import { EdgeOverlay } from './EdgeOverlay';
 import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';

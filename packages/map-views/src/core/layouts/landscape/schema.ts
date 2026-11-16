@@ -1,5 +1,5 @@
-import { PARAM_REF, parameterisable } from './param-ref';
-import { SCHEMA_URL } from './schema-url';
+import { PARAM_REF, parameterisable } from '../../schema/param-ref';
+import { SCHEMA_URL } from '../../schema/schema-url';
 
 /** Settings of the landscape layout: nested containers following an authored grouping. */
 export const landscapeLayoutSchema = {

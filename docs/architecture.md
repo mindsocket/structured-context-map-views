@@ -32,7 +32,7 @@ Hosts can also pass validation results as an `AnnotationIndex` (`core/annotation
 
 ## Projections
 
-Each layout has a pure projection in core that turns the graph and the region's resolved settings into occurrences and links, ready for a layout component to draw. [Layouts](layouts.md) describes each one.
+Each layout has a folder in `core/layouts/` holding its settings schema and a pure projection. The projection turns the graph and the region's resolved settings into occurrences and links, ready for a layout component to draw. [Layouts](layouts.md) describes each one.
 
 Occurrence keys are paths (region, ancestors, node), so a node appearing several times gets distinct keys.
 

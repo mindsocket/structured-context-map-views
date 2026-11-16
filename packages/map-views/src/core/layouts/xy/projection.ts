@@ -1,8 +1,8 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
-import type { AxisConfig, XYLayoutConfig } from './definition';
-import { edgesWithin, isHierarchyEdge } from './graph';
-import { assignLanes } from './lanes';
-import { occurrenceKey } from './occurrence';
+import type { AxisConfig, XYLayoutConfig } from '../../definition';
+import { edgesWithin, isHierarchyEdge } from '../../graph';
+import { occurrenceKey } from '../../occurrence';
+import { assignLanes } from '../lanes';
 
 /** A plotted node. `x` and `y` run from 0 to 1 across the plot, left to right and bottom to top. */
 export type XYPoint = { key: string; node: SpaceNode; x: number; y: number };

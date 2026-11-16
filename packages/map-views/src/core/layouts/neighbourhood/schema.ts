@@ -1,5 +1,5 @@
-import { parameterisable } from './param-ref';
-import { SCHEMA_URL } from './schema-url';
+import { parameterisable } from '../../schema/param-ref';
+import { SCHEMA_URL } from '../../schema/schema-url';
 
 const roleFields = (description: string) =>
   parameterisable({ $ref: `${SCHEMA_URL}/settings.json#/$defs/fieldList` }, [], description);

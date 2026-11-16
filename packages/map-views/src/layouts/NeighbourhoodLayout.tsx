@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { SpaceNode } from 'structured-context/api';
 import type { NeighbourhoodLayoutConfig } from '../core/definition';
-import { buildNeighbourhood, type Neighbour } from '../core/neighbourhood';
+import { buildNeighbourhood, type Neighbour } from '../core/layouts/neighbourhood/projection';
 import { EdgeOverlay } from './EdgeOverlay';
 import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { GraphLayoutConfig } from '../core/definition';
-import { buildForceGraph } from '../core/force';
+import { buildForceGraph } from '../core/layouts/graph/projection';
 import { EdgeOverlay } from './EdgeOverlay';
 import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';

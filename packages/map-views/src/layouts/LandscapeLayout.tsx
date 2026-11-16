@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { SpaceNode } from 'structured-context/api';
 import type { LandscapeLayoutConfig, Orientation } from '../core/definition';
-import { buildLandscape, type LandscapeOccurrence } from '../core/landscape';
+import { buildLandscape, type LandscapeOccurrence } from '../core/layouts/landscape/projection';
 import type { LayoutProps } from './layout';
 import { NodeCard } from './NodeCard';
 
