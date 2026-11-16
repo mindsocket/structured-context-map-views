@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import type { SpaceNode } from 'structured-context/api';
 import type { LandscapeLayoutConfig, Orientation } from '../core/definition';
 import { buildLandscape, type LandscapeOccurrence } from '../core/landscape';
+import type { LayoutProps } from './layout';
 import { NodeCard } from './NodeCard';
-import type { LayoutProps } from './TreeLayout';
 
 /**
  * Nested containers following the layout's grouping levels; the last level is drawn as nodes.

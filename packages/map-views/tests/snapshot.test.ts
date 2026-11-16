@@ -10,7 +10,7 @@ describe('exportSnapshot', () => {
     const config = loadConfig({ startDir: sample });
     const result = await exportSnapshot('launch-playbook', config, sample);
     expect(result.space).toBe('launch-playbook');
-    expect(result.graph.formatVersion).toBe(1);
+    expect(result.graph.nodes.length).toBeGreaterThan(0);
     expect(result.validation).toHaveProperty('issues');
     expect(result.definitions.every((d) => d.schema === undefined || d.schema === result.schemaId)).toBe(true);
     expect(JSON.parse(JSON.stringify(result))).toEqual(result);

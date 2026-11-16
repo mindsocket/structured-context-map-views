@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import type { GraphLayoutConfig } from '../core/definition';
 import { buildForceGraph } from '../core/force';
 import { EdgeOverlay } from './EdgeOverlay';
+import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';
-import type { LayoutProps } from './TreeLayout';
 
 // Room each node needs: a card is about this wide, a shape is a marker with a label.
 const CARD_SIZE = 220;
@@ -16,21 +16,9 @@ export function GraphLayout({ graph, region, instanceId, onNodeSelect }: LayoutP
     () => buildForceGraph(graph, region.id, region.layout, shape ? SHAPE_SIZE : CARD_SIZE),
     [graph, region.id, region.layout, shape],
   );
-  const { show, labels } = region.edges;
-  const links = useMemo(
-    () => (show ? plot.links.map((link) => ({ ...link, id: link.field, label: labels ? link.field : undefined })) : []),
-    [plot, show, labels],
-  );
+  const links = useMemo(() => overlayLinks(plot.links, region.edges), [plot, region.edges]);
 
-  const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  const elements = useRef(new Map<string, HTMLElement>()).current;
-  const register = useCallback(
-    (key: string) => (el: HTMLElement | null) => {
-      if (el) elements.set(key, el);
-      else elements.delete(key);
-    },
-    [elements],
-  );
+  const { container, setContainer, elements, register } = useOccurrenceElements();
 
   return (
     <div

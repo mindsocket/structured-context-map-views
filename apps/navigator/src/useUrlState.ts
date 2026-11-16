@@ -36,9 +36,9 @@ function writeUrl({ spaceName, mapViewId, focus, values }: UrlState) {
 }
 
 /**
- * The chosen space, map view, focus node and parameter values, mirrored in the query string so a reload (or a
- * shared link) restores them. Values are remembered per map view for the session; only the current
- * view's values are in the URL. `mapViewId` is '' until the host settles on a map view (see `setMapViewId`).
+ * Mirrors the reader's choices in the query string, so a reload or a shared link restores them. Parameter
+ * values are remembered per map view for the session; only the current view's are in the URL. `mapViewId`
+ * is '' until the host settles on a map view (see `setMapViewId`).
  */
 export function useUrlState() {
   const [initial] = useState(readUrl);
