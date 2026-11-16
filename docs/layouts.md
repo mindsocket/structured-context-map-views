@@ -54,7 +54,7 @@ Every node and edge as a network: connected nodes sit close together. It needs n
 
 ## neighbourhood
 
-One focus node with its neighbours around it. Selecting a neighbour makes it the focus; selecting the focus is a normal node selection. A node is placed by the first role that matches, in the order `left`, `right`, `above`, `below`, then `around` for the rest. When the focus is a hierarchy root, the other roots of its type are shown above it, so the reader can move between them.
+One focus node with its neighbours around it. Selecting a neighbour makes it the focus; selecting the focus is a normal node selection. A node is placed by the first role that matches, in the order `left`, `right`, `above`, `below`, then `around` for the rest. The focus's siblings are shown in a row at the top, without connectors, so the reader can move between them: the nodes that share its hierarchy parent or, for a hierarchy root, the other roots of its type.
 
 | Setting | Meaning |
 |---|---|
