@@ -13,25 +13,19 @@ import { type DefinitionSource, readDefinitionFolders } from './read-definitions
 const DEFINITIONS_DIR = 'map-views';
 const CONFIG_PLUGINS_DIR = 'plugins';
 
-export type LoadMapViewDefinitionsOptions = {
-  /** Root of the main config file (`resolveConfigPath().root`). Defaults to where structured-context finds it. */
-  configDir?: string;
-};
-
 /**
  * Every map view definition available with `config`, from:
- * - this package's embedded definitions (`sctx-map-view://core/<name>`), for structured-context's bundled schemas;
+ * - this package's embedded definitions (`sctx-map-view://core/<name>`);
  * - each plugin found from a config folder or named by a space (`sctx-map-view://<plugin>/<name>`): the
  *   folder named by `"sctx": { "map-views": "…" }` in its package.json, else its `map-views/` folder;
  * - the `map-views` resources folder of each config root (`sctx-map-view://<name>`).
  *
  * Each definition's `$id` must be in the namespace of where it was found, and ids must be unique.
  * Throws on the first invalid definition.
+ *
+ * `configDir` is the root of the main config file; it defaults to where structured-context finds it.
  */
-export function loadMapViewDefinitions(
-  config: Config,
-  options: LoadMapViewDefinitionsOptions = {},
-): MapViewDefinition[] {
+export function loadMapViewDefinitions(config: Config, options: { configDir?: string } = {}): MapViewDefinition[] {
   const configDir = options.configDir ?? resolveConfigPath().root;
   const configDirs = [...new Set([configDir, ...config.spaces.flatMap((s) => (s.sourceDir ? [s.sourceDir] : []))])];
 

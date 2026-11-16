@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import type { Orientation, TreeLayoutConfig } from '../core/definition';
-import { buildTree, type TreeOccurrence, treeLinks } from '../core/layouts/tree/projection';
-import { EdgeOverlay } from './EdgeOverlay';
-import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
+import { buildTree, type TreeOccurrence, treeConnectors } from '../core/layouts/tree/projection';
+import { ConnectorOverlay } from './ConnectorOverlay';
+import { type LayoutProps, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';
 
 /**
@@ -11,7 +11,7 @@ import { NodeCard } from './NodeCard';
 export function TreeLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<TreeLayoutConfig>) {
   const { orientation, dag } = region.layout;
   const tree = useMemo(() => buildTree(graph, region.id, dag), [graph, region.id, dag]);
-  const links = useMemo(() => overlayLinks(treeLinks(tree), region.edges), [tree, region.edges]);
+  const connectors = useMemo(() => treeConnectors(tree), [tree]);
 
   const { container, setContainer, elements, register } = useOccurrenceElements();
 
@@ -41,7 +41,13 @@ export function TreeLayout({ graph, region, instanceId, onNodeSelect }: LayoutPr
   return (
     <div ref={setContainer} className="mv:relative mv:w-max mv:min-w-full mv:p-4">
       <Branches orientation={orientation}>{[...tree.roots, ...tree.orphans].map(branch)}</Branches>
-      <EdgeOverlay links={links} elements={elements} container={container} routing={orientation} />
+      <ConnectorOverlay
+        connectors={connectors}
+        edges={region.edges}
+        elements={elements}
+        container={container}
+        routing={orientation}
+      />
     </div>
   );
 }

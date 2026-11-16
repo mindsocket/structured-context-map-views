@@ -1,7 +1,7 @@
 import { parameterisable } from '../../schema/param-ref';
 import { SCHEMA_URL } from '../../schema/schema-url';
 
-/** Settings of the graph layout: every node and edge, positioned by a force simulation. */
+/** Settings of the graph layout: every node and edge as a network. */
 export const graphLayoutSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
   $id: `${SCHEMA_URL}/layouts/graph.json`,

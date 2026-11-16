@@ -1,6 +1,6 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { DagMode } from '../../definition';
-import { childEdges, isHierarchyEdge, occurrenceKey, parentEdges } from '../helpers';
+import { type Connector, childEdges, isHierarchyEdge, occurrenceKey, parentEdges } from '../helpers';
 
 /** One rendered appearance of a node in a tree. */
 export type TreeOccurrence = {
@@ -27,13 +27,11 @@ export type Tree = {
   /** Key of each node's primary (first, fully rendered) occurrence. */
   primary: ReadonlyMap<string, string>;
   /**
-   * In cross-edge mode, links from a node's other parents to its primary occurrence, which
+   * In cross-edge mode, connectors from a node's other parents to its primary occurrence, which
    * replace repeat occurrences. Empty in repeat mode.
    */
-  crossLinks: TreeLink[];
+  crossConnectors: Connector[];
 };
-
-export type TreeLink = { from: string; to: string; kind: 'tree' | 'cross'; field?: string };
 
 /**
  * Lay a space out as a tree over its hierarchy.
@@ -91,24 +89,24 @@ export function buildTree(graph: SpaceGraph, regionId: string, dag: DagMode = 'r
     if (!primary.has(node.id)) orphans.push(visit(node, []));
   }
 
-  const crossLinks = pendingCross.map(({ from, child, field }) => ({
+  const crossConnectors = pendingCross.map(({ from, child, field }) => ({
     from,
     to: primary.get(child)!,
-    kind: 'cross' as const,
     field,
+    dashed: true,
   }));
-  return { roots, orphans, primary, crossLinks };
+  return { roots, orphans, primary, crossConnectors };
 }
 
-/** Parent → child pairs of occurrence keys: one per rendered parent-child link, then cross-links. */
-export function treeLinks(tree: Tree): TreeLink[] {
-  const links: TreeLink[] = [];
+/** Parent → child pairs of occurrence keys: one per rendered parent-child connector, then cross-edge connectors. */
+export function treeConnectors(tree: Tree): Connector[] {
+  const connectors: Connector[] = [];
   const walk = (occurrence: TreeOccurrence) => {
     for (const child of occurrence.children) {
-      links.push({ from: occurrence.key, to: child.key, kind: 'tree', field: child.field });
+      connectors.push({ from: occurrence.key, to: child.key, field: child.field });
       walk(child);
     }
   };
   for (const root of [...tree.roots, ...tree.orphans]) walk(root);
-  return [...links, ...tree.crossLinks];
+  return [...connectors, ...tree.crossConnectors];
 }

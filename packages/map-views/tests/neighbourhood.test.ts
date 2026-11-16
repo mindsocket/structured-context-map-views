@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { buildSpaceGraph } from 'structured-context/api';
 import type { NeighbourhoodLayoutConfig } from '../src/core/definition';
 import { buildNeighbourhood } from '../src/core/layouts/neighbourhood/projection';
-import { makeParentRef, makeSpaceNode } from './builders';
+import { makeHierarchy, makeLevel, makeParentRef, makeSpaceNode } from './builders';
 
 const rel = (id: string, field: string) => makeParentRef(id, { kind: 'relationship', field });
 // A synthesis cites two sources and a concept; a second synthesis cites the first source.
@@ -50,11 +50,25 @@ describe('neighbourhood', () => {
     expect(ids(neighbourhood.roles.around)).toEqual(['c1']);
   });
 
-  test('links keep the edge direction and carry the field', () => {
-    const { focus, links } = buildNeighbourhood(graph, 'main', layout(), 'x1' as never);
-    expect(links).toHaveLength(3);
-    expect(links.every((l) => l.to === focus!.key)).toBe(true);
-    expect(links.map((l) => l.field).sort()).toEqual(['concepts', 'sources', 'sources']);
+  test('connectors keep the edge direction and carry the field', () => {
+    const { focus, connectors } = buildNeighbourhood(graph, 'main', layout(), 'x1' as never);
+    expect(connectors).toHaveLength(3);
+    expect(connectors.every((l) => l.to === focus!.key)).toBe(true);
+    expect(connectors.map((l) => l.field).sort()).toEqual(['concepts', 'sources', 'sources']);
+  });
+
+  test('a hierarchy root shows the other roots of its type, and a node with a parent shows none', () => {
+    const tree = buildSpaceGraph(
+      [
+        makeSpaceNode('p1', 'phase'),
+        makeSpaceNode('p2', 'phase'),
+        makeSpaceNode('a1', 'activity', {}, undefined, [makeParentRef('p1')]),
+        makeSpaceNode('a2', 'activity'),
+      ],
+      makeHierarchy([makeLevel('phase'), makeLevel('activity')]),
+    );
+    expect(ids(buildNeighbourhood(tree, 'main', layout(), 'p1' as never).siblingRoots)).toEqual(['p2']);
+    expect(ids(buildNeighbourhood(tree, 'main', layout(), 'a1' as never).siblingRoots)).toEqual([]);
   });
 
   test('an unknown focus falls back to the first node', () => {

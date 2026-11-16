@@ -3,7 +3,7 @@ import { messageOf } from './api';
 
 type Settled<T> = { key: string; data?: T; error?: string };
 
-export type Fetched<T> = { data?: T; error?: string; loading: boolean };
+type Fetched<T> = { data?: T; error?: string; loading: boolean };
 
 /**
  * Loads `load(key)` whenever `key` changes; `undefined` means nothing to load. Results are kept with

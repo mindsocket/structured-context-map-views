@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import type { SpaceNode } from 'structured-context/api';
 import type { NeighbourhoodLayoutConfig } from '../core/definition';
 import { buildNeighbourhood, type Neighbour } from '../core/layouts/neighbourhood/projection';
-import { EdgeOverlay } from './EdgeOverlay';
-import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
+import { ConnectorOverlay } from './ConnectorOverlay';
+import { type LayoutProps, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';
 
 /**
@@ -25,7 +25,6 @@ export function NeighbourhoodLayout({
     () => buildNeighbourhood(graph, region.id, region.layout, focusId),
     [graph, region.id, region.layout, focusId],
   );
-  const links = useMemo(() => overlayLinks(neighbourhood.links, region.edges), [neighbourhood, region.edges]);
 
   const { container, setContainer, elements, register } = useOccurrenceElements();
 
@@ -57,6 +56,7 @@ export function NeighbourhoodLayout({
       ref={setContainer}
       className="mv:relative mv:flex mv:w-max mv:min-w-full mv:flex-col mv:items-center mv:gap-16 mv:p-6"
     >
+      {group(neighbourhood.siblingRoots, 'mv:opacity-80')}
       {group(above, '')}
       <div className="mv:flex mv:items-center mv:gap-24">
         {group(left, 'mv:flex-col')}
@@ -65,7 +65,13 @@ export function NeighbourhoodLayout({
       </div>
       {group(below, '')}
       {group(around, 'mv:opacity-80')}
-      <EdgeOverlay links={links} elements={elements} container={container} routing="straight" />
+      <ConnectorOverlay
+        connectors={neighbourhood.connectors}
+        edges={region.edges}
+        elements={elements}
+        container={container}
+        routing="straight"
+      />
     </div>
   );
 }

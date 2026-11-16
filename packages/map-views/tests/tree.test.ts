@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { buildSpaceGraph } from 'structured-context/api';
-import { buildTree, type TreeOccurrence, treeLinks } from '../src/core/layouts/tree/projection';
+import { buildTree, type TreeOccurrence, treeConnectors } from '../src/core/layouts/tree/projection';
 import { makeHierarchy, makeLevel, makeParentRef, makeSpaceNode } from './builders';
 import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
@@ -35,27 +35,29 @@ describe('sample tree', () => {
     expect(all.some((o) => o.node.resolvedType === 'Outcomes')).toBe(false);
   });
 
-  test('every link carries the field the parent declares the child through', () => {
-    const links = treeLinks(tree);
-    expect(links.every((link) => typeof link.field === 'string' && link.field.length > 0)).toBe(true);
+  test('every connector carries the field the parent declares the child through', () => {
+    const connectors = treeConnectors(tree);
+    expect(connectors.every((connector) => typeof connector.field === 'string' && connector.field.length > 0)).toBe(
+      true,
+    );
   });
 
-  test('links pair each rendered child with its parent occurrence', () => {
-    const links = treeLinks(tree);
-    expect(links.length).toBe(all.length - tree.roots.length - tree.orphans.length);
-    expect(tree.crossLinks).toEqual([]);
+  test('connectors pair each rendered child with its parent occurrence', () => {
+    const connectors = treeConnectors(tree);
+    expect(connectors.length).toBe(all.length - tree.roots.length - tree.orphans.length);
+    expect(tree.crossConnectors).toEqual([]);
   });
 
-  test('cross-edge mode replaces repeats with cross-links to the primary occurrence', () => {
+  test('cross-edge mode replaces repeats with cross-edge connectors to the primary occurrence', () => {
     const cross = buildTree(fixtureGraph(sample), 'main', 'cross-edge');
     const crossAll = occurrences([...cross.roots, ...cross.orphans]);
     const repeats = all.filter((o) => o.repeatOf !== undefined);
     expect(crossAll.some((o) => o.repeatOf !== undefined)).toBe(false);
     expect(crossAll.length).toBe(all.length - repeats.length);
-    expect(cross.crossLinks.length).toBe(repeats.length);
+    expect(cross.crossConnectors.length).toBe(repeats.length);
     const keys = new Set(crossAll.map((o) => o.key));
-    expect(cross.crossLinks.every((l) => keys.has(l.from) && keys.has(l.to) && l.kind === 'cross')).toBe(true);
-    expect(cross.crossLinks.map((l) => l.to)).toContain(cross.primary.get('Project Website.md')!);
+    expect(cross.crossConnectors.every((l) => keys.has(l.from) && keys.has(l.to) && l.dashed)).toBe(true);
+    expect(cross.crossConnectors.map((l) => l.to)).toContain(cross.primary.get('Project Website.md')!);
   });
 });
 

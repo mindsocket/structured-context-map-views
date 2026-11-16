@@ -1,9 +1,8 @@
-import type { Hierarchy, SpaceGraph, SpaceNode } from 'structured-context/api';
-
-type NodeId = SpaceNode['id'];
+import type { Hierarchy, SpaceGraph } from 'structured-context/api';
+import type { NodeId } from 'structured-context/types';
 
 /** A directed parent → child edge of a space graph, carrying the metadata of the reference it came from. */
-export type Edge = SpaceGraph['parentEdges'] extends ReadonlyMap<string, readonly (infer E)[]> ? E : never;
+type Edge = SpaceGraph['parentEdges'] extends ReadonlyMap<string, readonly (infer E)[]> ? E : never;
 
 const NONE: readonly Edge[] = [];
 
@@ -30,16 +29,24 @@ export function isHierarchyEdge(edge: Edge, hierarchy: Hierarchy | undefined): b
   return hierarchy !== undefined && edge.kind === 'hierarchy' && edge.hierarchy === hierarchy.name;
 }
 
-/** Spread links joining the same pair of nodes (in either direction) into lanes around 0. */
-export function assignLanes(links: { from: string; to: string; lane: number }[]) {
-  const byPair = new Map<string, typeof links>();
-  for (const link of links) {
-    const pair = [link.from, link.to].sort().join('\n');
-    byPair.set(pair, [...(byPair.get(pair) ?? []), link]);
+/**
+ * A connector between two occurrences, by key, in the direction of the edge it draws.
+ * `field` is the field the edge is declared in. `lane` separates connectors joining the same two
+ * occurrences: 0 when there's one, otherwise centred around 0 (e.g. -0.5 and 0.5).
+ * `dashed` marks a connector that is secondary to the layout's structure.
+ */
+export type Connector = { from: string; to: string; field?: string; lane?: number; dashed?: boolean };
+
+/** Spread connectors joining the same pair of occurrences (in either direction) into lanes around 0. */
+export function assignLanes(connectors: Connector[]) {
+  const byPair = new Map<string, Connector[]>();
+  for (const connector of connectors) {
+    const pair = [connector.from, connector.to].sort().join('\n');
+    byPair.set(pair, [...(byPair.get(pair) ?? []), connector]);
   }
   for (const group of byPair.values()) {
-    group.forEach((link, i) => {
-      link.lane = i - (group.length - 1) / 2;
+    group.forEach((connector, i) => {
+      connector.lane = i - (group.length - 1) / 2;
     });
   }
 }

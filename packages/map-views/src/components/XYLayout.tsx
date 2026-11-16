@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import type { AxisConfig, XYLayoutConfig } from '../core/definition';
 import { buildXYPlot } from '../core/layouts/xy/projection';
-import { EdgeOverlay } from './EdgeOverlay';
-import { type LayoutProps, overlayLinks, useOccurrenceElements } from './layout';
+import { ConnectorOverlay } from './ConnectorOverlay';
+import { type LayoutProps, useOccurrenceElements } from './layout';
 import { NodeCard } from './NodeCard';
 
 /**
@@ -14,15 +14,6 @@ import { NodeCard } from './NodeCard';
 export function XYLayout({ graph, region, instanceId, onNodeSelect }: LayoutProps<XYLayoutConfig>) {
   const { layout } = region;
   const plot = useMemo(() => buildXYPlot(graph, region.id, layout), [graph, region.id, layout]);
-  // Relationship edges (flows, pipelines) are dashed, to tell them from the value chain.
-  const links = useMemo(
-    () =>
-      overlayLinks(
-        plot.links.map((link) => ({ ...link, kind: link.hierarchy ? ('tree' as const) : ('cross' as const) })),
-        region.edges,
-      ),
-    [plot, region.edges],
-  );
   const shape = region.nodes.style === 'shape';
 
   const { container, setContainer, elements, register } = useOccurrenceElements();
@@ -33,7 +24,13 @@ export function XYLayout({ graph, region, instanceId, onNodeSelect }: LayoutProp
         <AxisTitle axis={layout.y} domain={plot.domains.y} vertical />
         <div ref={setContainer} className="mv:relative mv:border-b mv:border-l mv:border-edge">
           {/* Before the nodes, so the opaque nodes cover the ends of the lines. */}
-          <EdgeOverlay links={links} elements={elements} container={container} routing="straight" />
+          <ConnectorOverlay
+            connectors={plot.connectors}
+            edges={region.edges}
+            elements={elements}
+            container={container}
+            routing="straight"
+          />
           {/* Inset, so nodes at the ends of a domain stay inside the plot. */}
           <div className="mv:absolute mv:inset-8">
             {plot.points.map((point) => (

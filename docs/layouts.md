@@ -11,6 +11,8 @@ A tree over the schema's hierarchy: nodes of the root type at the top, children 
 | `orientation` | `vertical`, `horizontal` | `vertical` |
 | `dag` | `repeat`, `cross-edge` | `repeat` |
 
+`dag` chooses how a node with several parents is shown. With `repeat` it appears under each parent, and its subtree is shown once. With `cross-edge` it appears under its first parent, with extra connectors from the others.
+
 ## landscape
 
 Nested containers. `group` lists grouping levels, outermost first. The last level is drawn as nodes and the others as containers.
@@ -44,7 +46,7 @@ An axis has a `field` (required), a `domain` (`[min, max]`, or `'data'` for the 
 
 ## graph
 
-Every node and edge as a network: connected nodes sit close together. It needs no hierarchy, so it suits any schema.
+Every node and edge as a network: connected nodes sit close together. It needs no hierarchy, so it suits any schema. Where there is one, it shapes the network: each level settles in a band below the one above, hierarchy nodes gather in the middle while other nodes drift to the sides, and relationship edges are drawn dashed. Nodes with no edge shown sit in a grid underneath.
 
 | Setting | Values | Default |
 |---|---|---|
@@ -52,7 +54,7 @@ Every node and edge as a network: connected nodes sit close together. It needs n
 
 ## neighbourhood
 
-One focus node with its neighbours around it. Selecting a neighbour makes it the focus; selecting the focus is a normal node selection. A node is placed by the first role that matches, in the order `left`, `right`, `above`, `below`, then `around` for the rest.
+One focus node with its neighbours around it. Selecting a neighbour makes it the focus; selecting the focus is a normal node selection. A node is placed by the first role that matches, in the order `left`, `right`, `above`, `below`, then `around` for the rest. When the focus is a hierarchy root, the other roots of its type are shown above it, so the reader can move between them.
 
 | Setting | Meaning |
 |---|---|

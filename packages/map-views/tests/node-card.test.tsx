@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { SpaceNode } from 'structured-context/api';
-import { MapView } from '../src/layouts/MapView';
+import { MapView } from '../src/components/MapView';
 import { loadMapViewDefinitions } from '../src/node';
 import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';

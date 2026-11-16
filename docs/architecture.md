@@ -13,34 +13,45 @@ flowchart LR
 
 ## Modules
 
+All but the last two rows are folders of `packages/map-views/src`.
+
 | Module | Holds | May import |
 |---|---|---|
-| `packages/map-views/src/core` | Definition parsing and validation, parameter resolution, validation annotations, and each layout's settings schema and projection (`core/layouts/<name>/`) | Types from structured-context only. No React, DOM or Node |
-| `packages/map-views/src/layouts` | `MapView`, the layout components, `NodeCard`, `EdgeOverlay`, the parameter controls (`useParameterControls`, the typed inputs and the default `ParameterControls` layout), styles | core, React |
-| `packages/map-views/src/viewer` | `Viewer`, the page-filling UI that hosts share. What is specific to a host comes in as an option | core, layouts, React, `structured-context/browser` |
-| `packages/map-views/src/node` | `loadMapViewDefinitions`: finding definitions in the library (embedded at build time from `packages/map-views/map-views/`), plugins and config folders; `exportSnapshot` and the `export` bin, which snapshot a space for browser-only hosts; `fillPage`, which writes snapshots into the self-contained page. `fillPage` and `readDefinitionFolders` are also the `/html` entry, which imports nothing from structured-context's API | core, Node, structured-context |
-| `packages/sctx-map-views` | The structured-context render plugin: format `map-views.html`. Takes the graph, validation issues and definition folders from the render callbacks, and writes them into the page template | `structured-context-map-views` and its `/html` entry, structured-context API types |
-| `apps/navigator` | The standalone host: a Vite app plus dev-server middleware calling the structured-context API | Anything |
+| `core` | Definitions and parameters, annotations, and each layout's settings schema and projection, if it has one (`core/layouts/<name>/`). Runs in a browser, Node or a worker | Types from structured-context. No React, DOM or Node |
+| `components` | `MapView` and what it draws with: a component per layout, node cards, the connector overlay, parameter controls | core, React |
+| `viewer` | The page-filling UI that hosts share. What is specific to a host comes in as an option | core, components, React, `structured-context/browser` |
+| `node` | What needs a filesystem: finding definitions, snapshotting a space, filling the self-contained page | core, Node, structured-context |
+| `artifact`, `page` | The two hosts the library ships. Nothing imports them | Anything above |
+| `packages/sctx-map-views` | The structured-context render plugin. It works through the render callbacks, so its bundle imports nothing from structured-context | The library and its `/html` entry |
+| `apps/navigator` | The standalone host: a Vite app plus dev-server middleware | Anything |
 
-`packages/map-views/src/index.ts` is the published entry point and re-exports the few things hosts need (modules import each other directly, with no barrel files); `src/node` is the second entry point, and `src/node/cli.ts` is the bin. The library build puts the projections and annotations in a chunk of their own, so bundling just those from the package root leaves out React and ajv. `packages/map-views/tests/module-boundaries.test.ts` enforces the core, layouts and viewer rules, including that none imports the Node module or a host. Core runs anywhere (browser, Node, worker) and is tested without a DOM, against fixtures captured from spaces (`packages/map-views/tests/fixtures/`, written by `packages/map-views/scripts/capture-fixtures.ts`). The public sample space in `samples/launch-playbook/` is the source of `launch-playbook.json`.
+Modules import each other directly, with no barrel files. The entry points are `src/index.ts` (the package root), `src/node/index.ts` (`/node`), `src/node/html.ts` (`/html`, which imports nothing from structured-context's API) and `src/node/cli.ts` (the bin). `tests/module-boundaries.test.ts` enforces the import rules.
+
+The library build puts core, apart from definition parsing, in a chunk of its own. A host that bundles only a projection from the package root gets neither React nor ajv.
+
+Core is tested without a DOM, against fixtures captured from spaces (`tests/fixtures/`).
 
 ## Data in
 
-Hosts pass the library structured-context's `SpaceGraph`: nodes keyed by id, the main hierarchy, and every hierarchy and relationship edge with its metadata, readable in both directions (`parentEdges`, `childEdges`). The Obsidian plugin assembles it in-process; the navigator's server sends the wire format (`exportSpaceGraph`) and its browser rebuilds the graph (`spaceGraphFrom`). The graph keeps edges to nodes outside it; the helpers in `core/graph.ts` drop them, so a filtered space stays consistent.
+Hosts pass the library structured-context's `SpaceGraph`: nodes keyed by id, the main hierarchy, and every hierarchy and relationship edge with its metadata, readable in both directions (`parentEdges`, `childEdges`). The Obsidian plugin assembles it in-process; the navigator's server sends the wire format (`exportSpaceGraph`) and its browser rebuilds the graph (`spaceGraphFrom`). The graph keeps edges to nodes outside it; the helpers in `core/layouts/helpers.ts` drop them, so a filtered space stays consistent.
 
 Hosts can also pass validation results as an `AnnotationIndex` (`core/annotations.ts`): results by node id, built by `annotationsFrom` from structured-context's validation issues. `MapView` narrows it by the region's `nodes.validation` and `nodes.validationSources` and provides the result to node cards through React context, so layouts don't thread it through. Every layout draws nodes with `NodeCard`, which draws the badge.
 
 ## Projections
 
-Each layout has a folder in `core/layouts/` holding its settings schema and a pure projection. The projection turns the graph and the region's resolved settings into occurrences and links, ready for a layout component to draw. [Layouts](layouts.md) describes each one.
+A layout has up to three parts:
 
-Occurrence keys are paths (region, ancestors, node), so a node appearing several times gets distinct keys.
+1. Its settings schema (`core/layouts/<name>/schema.ts`) validates the region's `layout` when the definition is parsed.
+2. Its projection (`core/layouts/<name>/projection.ts`), where working out what is shown takes logic of its own: a pure function from the graph and the resolved settings to occurrences and connectors. A layout that shows the space graph as it is, like the graph layout, has none.
+3. Its component (`components/`) arranges and draws: with the browser's layout engine, or for the graph layout a d3-force simulation. A projection returns a position only where the data gives one, as the XY layout's field values do.
+
+[Layouts](layouts.md) describes each layout.
 
 ## Rendering
 
 Layout components render occurrences as DOM, sizing to their container rather than the viewport. Data-driven positions (XY coordinates) are inline styles; everything else is Tailwind utilities.
 
-Connectors are drawn by `EdgeOverlay`: a single `<svg>` over the layout container. Each layout keeps a map from occurrence key to element (marked with a `data-occurrence` attribute), measures source and target with `getBoundingClientRect`, and redraws when the container resizes (`ResizeObserver`). DOM `id`s aren't used, so several map views can render side by side.
+Connectors are drawn by `ConnectorOverlay`: a single `<svg>` over the layout container. Each layout keeps a map from occurrence key to element (marked with a `data-occurrence` attribute), measures source and target with `getBoundingClientRect`, and redraws when the container resizes (`ResizeObserver`). DOM `id`s aren't used, so several map views can render side by side.
 
 Node cards and shapes carry `data-node-id` (the node's id, repeat occurrences included), so a host can find the node behind an element. It is markup for hosts, not API.
 
@@ -48,11 +59,11 @@ Node cards and shapes carry `data-node-id` (the node's id, repeat occurrences in
 
 Utilities use Tailwind with the `mv` prefix and no preflight, so nothing global leaks into the host. They are deliberately unlayered: host CSS outside a cascade layer beats anything inside one, and an Obsidian `button { … }` rule would otherwise override them. For the same reason, components avoid native elements that hosts style globally (cards are `div role="button"`, not `<button>`).
 
-Hosts theme map views through nine variables: `--mv-color-surface`, `--mv-color-card`, `--mv-color-ink`, `--mv-color-muted`, `--mv-color-edge` and `--mv-color-accent`, plus `--mv-color-error`, `--mv-color-warning` and `--mv-color-info` for validation badges.
+Hosts theme map views through the `--mv-color-*` variables ([API](api.md#theming)).
 
 ## Hosts
 
 - **Navigator** (`apps/navigator`): dev-server middleware serves spaces (from the structured-context config), the definitions `loadMapViewDefinitions` finds, and, when a map view asks for them, validation results (`validateSpace`, expression rules only), as JSON. What the reader chose lives in the query string, so a reload restores it. Selecting a node opens a side panel with its fields, content and validation results.
-- **Claude artifact** (`packages/map-views/src/artifact`, shipped as `dist/artifact.js` with its page `dist/artifact.html`): a host with no server. The publishing agent runs the `export` command and writes each space to the artifact's database (`spaces/<space>`: `schemaId`, and `graph`, `validation` and `definitions` as JSON strings). The page lists that collection and shows it in the `Viewer`. It declares only the `db` capability and shows a message when the database is unavailable, empty or slow (10 s). Claude's artifact viewer allows scripts only from a few CDNs and blocks external stylesheets, so `scripts/build-artifact-page.ts` writes a page that carries the CSS inline and loads `dist/artifact.js` (pinned to this package's version) and its dependencies from jsDelivr through an import map; `react` and `react-dom` are pinned to one version so the page runs one React. The host names cards `[<index>] <title> · <view>` through the `Viewer`'s `cardLabel` option, where the index is the node's position in the stored graph's `nodes` array, because the artifact viewer's comment mode reads a comment's location from it (cut at about 45 characters, too short for a node id), so a comment tells an agent which node it concerns. Refreshing the data is writing the documents again; the page doesn't change.
+- **Claude artifact** (`packages/map-views/src/artifact`): a host with no server. The publishing agent runs the `export` command and writes each space to the artifact's database; the page reads that collection and shows it in the `Viewer` ([API](api.md#publishing-as-a-claude-artifact)). Claude's artifact viewer allows scripts only from a few CDNs and blocks external stylesheets, so the page carries its CSS inline and loads `dist/artifact.js` and its dependencies from jsDelivr through an import map. The host names each card so that a comment left in the artifact viewer identifies its node (`commentLabel`).
 - **Self-contained page** (`packages/map-views/src/page`): a host that needs no server or network. The build inlines it, React and the CSS into the template `dist/page.html`, and `fillPage` writes snapshots into it. The `sctx-map-views` plugin bundles that template.
 - **Obsidian plugin** ([obsidian-structured-context](https://github.com/mindsocket/obsidian-structured-context)): renders map views in a pane, builds the data in-process, opens the source note on selection and keeps parameter values in the view state.

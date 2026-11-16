@@ -61,12 +61,10 @@ export type NeighbourhoodLayoutConfig = Extract<LayoutConfig, { type: 'neighbour
 export type GraphLayoutConfig = Extract<LayoutConfig, { type: 'graph' }>;
 export type AxisConfig = XYLayoutConfig['x'];
 export type GroupLevel = LandscapeLayoutConfig['group'][number];
-export type IntermediateDisplay = Extract<GroupLevel, { type: string }>['intermediate'];
 export type NodesConfig = Region['nodes'];
 export type EdgesConfig = Region['edges'];
 export type Orientation = TreeLayoutConfig['orientation'];
 export type DagMode = TreeLayoutConfig['dag'];
-export type NodeStyle = NodesConfig['style'];
 
 /**
  * A validated map view definition. Plain data, so hosts can pass it across a server/browser

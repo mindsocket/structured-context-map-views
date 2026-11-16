@@ -70,7 +70,7 @@ describe('tea-shop XY plot', () => {
     const all = buildXYPlot(graph, 'main', layout());
     // Occurrence keys end in a node id, `<file>#<name>` for nodes parsed from a map file.
     const name = (key: string) => (JSON.parse(key).at(-1) as string).split('#').at(-1);
-    const named = (plot: typeof all) => plot.links.map(({ from, to }) => `${name(from)}→${name(to)}`).sort();
+    const named = (plot: typeof all) => plot.connectors.map(({ from, to }) => `${name(from)}→${name(to)}`).sort();
     // Anchors' edges to the map node are left out: the map node isn't plotted.
     expect(named(all)).toContain('Kettle→Campfire Kettle');
     const flows = buildXYPlot(graph, 'main', layout({ edgeFields: ['flowsTo'] }));
@@ -83,11 +83,11 @@ describe('tea-shop XY plot', () => {
 
   test('edges joining the same nodes get separate lanes and say what they are', () => {
     const plot = buildXYPlot(graph, 'main', layout({ edgeFields: ['dependsOn', 'flowsTo'] }));
-    const ordering = plot.links.filter((l) => l.from.includes('Online Ordering') && l.to.includes('Payments'));
-    expect(ordering.map(({ field, hierarchy, lane }) => ({ field, hierarchy, lane }))).toEqual([
-      { field: 'dependsOn', hierarchy: true, lane: -0.5 },
-      { field: 'flowsTo', hierarchy: false, lane: 0.5 },
+    const ordering = plot.connectors.filter((l) => l.from.includes('Online Ordering') && l.to.includes('Payments'));
+    expect(ordering.map(({ field, dashed, lane }) => ({ field, dashed, lane }))).toEqual([
+      { field: 'dependsOn', dashed: false, lane: -0.5 },
+      { field: 'flowsTo', dashed: true, lane: 0.5 },
     ]);
-    expect(plot.links.filter((l) => l.lane === 0)).toHaveLength(12 - 1);
+    expect(plot.connectors.filter((l) => l.lane === 0)).toHaveLength(12 - 1);
   });
 });
