@@ -89,7 +89,7 @@
         "id": {
           "type": "string",
           "minLength": 1,
-          "description": "Unique within the map view; part of every occurrence id in the region."
+          "description": "Unique within the map view; part of every occurrence key in the region."
         },
         "select": {
           "type": "object",

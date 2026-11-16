@@ -1,6 +1,6 @@
 # structured-context-map-views
 
-Declarative map views of [structured-context](https://github.com/mindsocket/structured-context) spaces: a short JSON5 definition projects a space into a tree, nested containers or an XY plot, rendered by React components.
+Declarative map views of [structured-context](https://github.com/mindsocket/structured-context) spaces: a short JSON5 definition projects a space into a visual form such as a tree, rendered by React components.
 
 ```bash
 npm install structured-context-map-views react react-dom structured-context

@@ -1,24 +1,14 @@
 import type { SpaceGraph, SpaceNode } from 'structured-context/api';
 import type { AxisConfig, XYLayoutConfig } from '../../definition';
-import { assignLanes, edgesWithin, isHierarchyEdge, occurrenceKey } from '../helpers';
+import { assignLanes, type Connector, edgesWithin, isHierarchyEdge, occurrenceKey } from '../helpers';
 
-/** A plotted node. `x` and `y` run from 0 to 1 across the plot, left to right and bottom to top. */
-export type XYPoint = { key: string; node: SpaceNode; x: number; y: number };
-
-/** Why a node of a plotted type couldn't be placed, per axis. */
-export type Unplaced = { key: string; node: SpaceNode; reasons: string[] };
-
-/**
- * An edge between plotted nodes. `lane` separates edges joining the same two nodes: 0 when
- * there's one, otherwise centred around 0 (e.g. -0.5 and 0.5), for layouts to draw side by side.
- */
-export type XYLink = { from: string; to: string; field: string; hierarchy: boolean; lane: number };
-
-export type XYPlot = {
-  points: XYPoint[];
-  unplaced: Unplaced[];
-  /** Edges between plotted nodes. */
-  links: XYLink[];
+type XYPlot = {
+  /** `x` and `y` run from 0 to 1 across the plot, left to right and bottom to top. */
+  points: { key: string; node: SpaceNode; x: number; y: number }[];
+  /** Nodes of a plotted type that couldn't be placed, with the reason per axis. */
+  unplaced: { key: string; node: SpaceNode; reasons: string[] }[];
+  /** Relationship edges are dashed, to tell them from the hierarchy. */
+  connectors: Connector[];
   /** Each axis's [min, max]; `direction` says which end is drawn where. */
   domains: { x: readonly [number, number]; y: readonly [number, number] };
 };
@@ -45,8 +35,8 @@ export function buildXYPlot(graph: SpaceGraph, regionId: string, layout: XYLayou
     y: domainOf(y, plotted),
   };
 
-  const points: XYPoint[] = [];
-  const unplaced: Unplaced[] = [];
+  const points: XYPlot['points'] = [];
+  const unplaced: XYPlot['unplaced'] = [];
   for (const node of plotted) {
     const key = occurrenceKey(regionId, [node.id]);
     const px = position(node, x, domains.x);
@@ -57,18 +47,17 @@ export function buildXYPlot(graph: SpaceGraph, regionId: string, layout: XYLayou
 
   const keys = new Map<string, string>(points.map((p) => [p.node.id, p.key]));
   const fields = new Set(layout.edgeFields);
-  const links = edgesWithin(graph)
+  const connectors: Connector[] = edgesWithin(graph)
     .filter((e) => keys.has(e.parent) && keys.has(e.child) && (fields.size === 0 || fields.has(e.field)))
     .map((e) => ({
       from: keys.get(e.parent)!,
       to: keys.get(e.child)!,
       field: e.field,
-      hierarchy: isHierarchyEdge(e, graph.hierarchy),
-      lane: 0,
+      dashed: !isHierarchyEdge(e, graph.hierarchy),
     }));
-  assignLanes(links);
+  assignLanes(connectors);
 
-  return { points, unplaced, links, domains };
+  return { points, unplaced, connectors, domains };
 }
 
 function isNumber(value: unknown): value is number {

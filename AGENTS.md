@@ -1,19 +1,8 @@
 # structured-context-map-views
 
-Declarative map views of structured-context spaces: the definition format, the rendering library and the navigator app. Review [docs/concepts.md](docs/concepts.md) before new work and use its terms in code, tests, comments and docs.
+Declarative map views of structured-context spaces: the definition format, the rendering library and the navigator app.
 
-## Layout
-
-- `packages/map-views`: the published library, `structured-context-map-views`. Its `src/index.ts` is the public surface; add an export only when a host needs it.
-- `packages/map-views/src/core`: framework-agnostic. Definitions, parameters, graph helpers and the projections. No React, DOM, Node or runtime structured-context imports (type-only is fine, and `structured-context/types` is browser-safe); `tests/module-boundaries.test.ts` enforces this.
-- `packages/map-views/src/layouts`: React components and the SVG edge overlay. Don't import host code from here.
-- `packages/map-views/src/viewer`: the page-filling viewer that hosts share. It knows nothing about any one host: anything host-specific (such as card labels) is an option the host passes. Hosts (`src/artifact`, `src/page`) are imported by nothing else.
-- `packages/map-views/src/node`: Node-only definition discovery (`loadMapViewDefinitions`), shipped as its own entry point (`structured-context-map-views/node`). Core and layouts must not import it.
-- `packages/sctx-map-views`: the structured-context render plugin (format `map-views.html`), bundling the library's page template and `/html` entry. It reads everything through the render callbacks and has no structured-context dependency at runtime: its bundle imports nothing from it, and `test:package` checks that.
-- `apps/navigator`: the standalone host (private package: a Vite app plus dev-server middleware calling the structured-context API). It consumes the library like any other host.
-- `packages/map-views/map-views/*.json5`: definitions bundled with the library (`$id` `sctx-map-view://core/<name>`): ones that suit any schema (no `schema`), and ones for structured-context's bundled schemas. `bun run generate:definitions` embeds them as `src/node/bundled-definitions.ts`; a test fails if that is stale. Plugins ship their own; personal ones go in the config root's `.sctx/map-views/` (structured-context's `resourceDir`).
-- `packages/map-views/src/core/schema/` and each layout's `schema.ts` in `src/core/layouts/<name>/`: the definition format's JSON Schemas (`as const`), the source of truth. Types derive from them (`FromSchema`); `bun run generate:schemas` writes `schemas/generated/latest/` at the repo root (so the published URLs stay stable), and a test fails if those are stale; `--release` (run when cutting a release) also freezes `schemas/generated/<version>/` if the format changed. `$id`s are the published https URLs (`schema-url.ts`). Use absolute `${SCHEMA_URL}/…` refs: `FromSchema` doesn't resolve relative refs inside referenced schemas.
-- `samples/launch-playbook/`: a public sample space. `packages/map-views/tests/fixtures/launch-playbook.json` is captured from it with `bun run capture-fixtures launch-playbook=../../samples/launch-playbook/.sctx.json` in `packages/map-views`.
+Before new work, read [docs/concepts.md](docs/concepts.md) for the terms and [docs/architecture.md](docs/architecture.md#modules) for the modules and what each may import. Use the terms in code, tests, comments and docs.
 
 ## Checks
 
@@ -23,17 +12,37 @@ bun run test:package      # packs the library and the plugin, installs each in a
 bun run build             # the library, then the navigator
 ```
 
+## Principles
+
+- **Simple, not sloppy.** Prefer the smallest design that does the job. Don't add structures, grammars, limits or presets until a concrete need forces them.
+- **One word per concept.** A thing has the same name in the definition format, the docs and the code. Add or rename a term in `docs/concepts.md` first, then use it. Don't rename another package's term: use structured-context's own word and type.
+- **One home per fact.** Decide which doc owns a fact, state it there once, and link from elsewhere. Docs don't list what the code already lists (layouts, exports, props, files, variables): a list like that goes stale with the next change.
+- **Export only what another module imports.** A type used in one place is written inline. A type used in one file isn't exported. Derive types (from the schemas, `Parameters`, `ReturnType`, `Pick`) instead of restating a shape. When two modules need the same shape, they share one type.
+- **The public surface is `src/index.ts`, `src/node/index.ts` and `src/node/html.ts`.** Add an export there only when a host needs it, and say which host.
+- **Comments say what the code can't.** A reason, a constraint, a trap. Never the signature, the parameter list or the next line.
+- **No barrel files.** Modules import each other directly. A small helper joins the file it serves; it gets its own file when it has several users and a concept of its own.
+- **Tests assert the behaviour they name.** Derive expected values from the fixture or the code under test. Don't hard-code a list that grows with the code, and don't assert things that only happen to be true.
+- **Mark the loose parts.** Where careful review is traded for speed, say so in place with a `PROTOTYPE:` comment giving the shortcut and what a proper treatment needs. `grep -rn PROTOTYPE: packages apps` is the register. Untagged code is at production standard for its scope.
+- **Fix the pattern, not the line.** When a review comment names a habit, search for every instance before replying, and check the result before saying it's fixed.
+- **No private data.** This repo is public. Fixtures, samples and definitions come from public or synthetic spaces.
+
+Work and open questions are tracked as GitHub issues on this repo.
+
+## Adding a layout
+
+A layout is a folder in `packages/map-views/src/core/layouts/<name>/` (`schema.ts`, and `projection.ts` only when deciding what is shown takes logic of its own) and a component in `src/components/`. It is registered in `core/definition.ts` (the schema list and the settings type), `core/schema/definition-schema.ts` (the `layout` branch) and `components/MapView.tsx`. It is documented in `docs/layouts.md` only. A projection decides what is shown; positions, sizes and anything a layout library computes belong in the component.
+
+## Generated files
+
+- `schemas/generated/latest/` comes from the schemas in `core/schema/` and each layout's `schema.ts` (`bun run generate:schemas`). Use absolute `${SCHEMA_URL}/…` refs there: `FromSchema` doesn't resolve relative refs inside referenced schemas. Never edit the frozen `schemas/generated/<version>/` folders or run `generate:schemas --release` by hand.
+- `packages/map-views/src/node/bundled-definitions.ts` comes from `packages/map-views/map-views/*.json5` (`bun run generate:definitions`).
+- `packages/map-views/tests/fixtures/` is captured from spaces; see its README.
+
+Tests fail when the first two are stale.
+
 ## Releases
 
-Releases go through the `/release <major|minor|patch>` skill, which runs `bun pm version --no-git-tag-version` in `packages/map-views` (its `preversion` and `version` scripts run the checks and freeze the definition format's schemas in `schemas/generated/<version>/` when the format changed), sets the same version in `packages/sctx-map-views`, then commits, tags and pushes. The tag push runs `.github/workflows/release.yml`, which publishes both packages to npm with provenance. Don't run `generate:schemas --release` by hand.
-
-## Ways of working
-
-- **Simple, not sloppy.** Prefer the smallest design that does the job over speculative generality. Untagged code is expected to be at production standard for its scope.
-- **Mark the loose parts.** Where careful review is traded for speed, say so in place with a `PROTOTYPE:` comment explaining the shortcut and what a proper treatment needs. `grep -rn PROTOTYPE: src` is the register.
-- **Last responsible moment.** Don't add intermediate structures, grammars, limits or presets until a concrete need forces them.
-- **No private data.** This repo will be public. Fixtures, samples and definitions must come from public or synthetic spaces.
-- Work and open questions are tracked as GitHub issues on this repo.
+Releases go through the `/release <major|minor|patch>` skill. Its tag push runs `.github/workflows/release.yml`, which publishes both packages to npm.
 
 ## Definition of done
 
@@ -41,10 +50,10 @@ Review and update with any change:
 
 | Change | Check |
 |---|---|
-| Definition format (`core/schema`, `core/layouts/*/schema.ts`) | `docs/definitions.md`, `docs/layouts.md` for layout settings; regenerated `schemas/generated/`; definitions in `map-views/` |
+| Definition format (`core/schema`, `core/layouts/*/schema.ts`) | `docs/definitions.md`, or `docs/layouts.md` for layout settings; regenerated `schemas/generated/latest/`; definitions in `map-views/` |
 | New or renamed term | `docs/concepts.md` |
 | Exports or component props | `docs/api.md` |
-| Module structure, rendering, styling | `docs/architecture.md`, this file |
+| Module structure, rendering, styling | `docs/architecture.md` |
 | Anything user-visible | `README.md` (kept short; detail goes in `docs/`) |
 
 Docs describe what the code does now. Decision history and plans don't go in docs.
@@ -53,9 +62,9 @@ Docs describe what the code does now. Decision history and plans don't go in doc
 
 - `bun run dev --port <port>` runs Vite under Bun. That's intentional: structured-context targets Bun or a bundler.
 - Spaces come from the structured-context config. A relative `SCTX_CONFIG` inherited from another repo fails here; run with `env -u SCTX_CONFIG` to use the global config, or pass an absolute path.
-- In a Chrome tab driven by an agent, the tab is usually hidden (`document.visibilityState === "hidden"`). Hidden tabs run no `ResizeObserver` or `requestAnimationFrame` callbacks, so edge redraws on resize can't be checked there. Taking a screenshot forces a frame, and DOM measurements remain reliable.
+- In a Chrome tab driven by an agent, the tab is usually hidden (`document.visibilityState === "hidden"`). Hidden tabs run no `ResizeObserver` or `requestAnimationFrame` callbacks, so connector redraws on resize can't be checked there. Taking a screenshot forces a frame, and DOM measurements remain reliable.
 - React-controlled `<select>`s need the native value setter plus a bubbling `change` event when driven from script.
-- Check edge alignment by comparing each `svg path`'s endpoint with the centre of its target card.
+- Check connector alignment by comparing each `svg path`'s endpoint with the centre of its target card.
 
 ## Styling
 

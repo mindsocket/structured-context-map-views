@@ -4,7 +4,7 @@ The library is pre-1.0: its exports may change between minor versions.
 
 | Entry point | Contents |
 |---|---|
-| `structured-context-map-views` | `MapView`, the parameter controls, definition parsing, parameter and validation-result helpers, and their types |
+| `structured-context-map-views` | Rendering a map view, its parameter controls, and parsing definitions |
 | `structured-context-map-views/node` | Finding definitions on disk. Node only |
 | `structured-context-map-views/html` | Writing a self-contained page: `fillPage` and `readDefinitionFolders`. Node only |
 | `structured-context-map-views/styles.css` | Prebuilt styles, required by the components |

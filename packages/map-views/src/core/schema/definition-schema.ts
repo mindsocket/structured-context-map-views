@@ -1,5 +1,5 @@
 import { VALIDATION_ISSUE_KINDS } from 'structured-context/types';
-import { PARAM_REF, parameterisable } from './param-ref';
+import { parameterisable } from './param-ref';
 import { SCHEMA_URL } from './schema-url';
 
 /**
@@ -74,7 +74,7 @@ export const definitionSchema = {
         id: {
           type: 'string',
           minLength: 1,
-          description: 'Unique within the map view; part of every occurrence id in the region.',
+          description: 'Unique within the map view; part of every occurrence key in the region.',
         },
         select: {
           type: 'object',
@@ -147,5 +147,3 @@ export const definitionSchema = {
     },
   },
 } as const;
-
-export { PARAM_REF };

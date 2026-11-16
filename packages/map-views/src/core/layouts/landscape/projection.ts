@@ -17,7 +17,7 @@ export type LandscapeOccurrence = {
   children: LandscapeOccurrence[];
 };
 
-export type ViaStep = { type: string; nodes: SpaceNode[] };
+type ViaStep = { type: string; nodes: SpaceNode[] };
 
 export type Landscape = {
   groups: LandscapeOccurrence[];

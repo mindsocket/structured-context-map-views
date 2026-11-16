@@ -38,7 +38,7 @@ export default defineConfig({
       output: {
         // The projections and annotations get a chunk of their own, apart from React (layouts) and
         // ajv/json5 (definition parsing), so a host bundling only those (a Claude Code mod) pulls in neither.
-        codeSplitting: { groups: [{ name: 'projection', test: /src[\\/]core[\\/](?!definition|format)/ }] },
+        codeSplitting: { groups: [{ name: 'projection', test: /src[\\/]core[\\/](?!definition)/ }] },
       },
     },
   },

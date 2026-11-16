@@ -1,8 +1,5 @@
-import type { RuleSeverity, SpaceGraph, SpaceNode, ValidationResult } from 'structured-context/api';
-import type { SourceLocation, ValidationIssueKind } from 'structured-context/types';
-
-// core doesn't export NodeId from `structured-context/api` yet; this derives it.
-type NodeId = SpaceNode['id'];
+import type { RuleSeverity, SpaceGraph, ValidationResult } from 'structured-context/api';
+import type { NodeId, SourceLocation, ValidationIssueKind } from 'structured-context/types';
 
 /** structured-context's severity. */
 export type Severity = RuleSeverity;

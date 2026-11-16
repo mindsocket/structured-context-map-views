@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type SpaceGraph, type SpaceNode, spaceGraphFrom } from 'structured-context/browser';
+import { MapView } from '../components/MapView';
+import { ParameterControls } from '../components/ParameterControls';
 import { annotationsFrom } from '../core/annotations';
 import type { MapViewDefinition, ParameterValues } from '../core/definition';
 import type { SpaceSnapshot } from '../core/space-snapshot';
-import { MapView } from '../layouts/MapView';
-import { ParameterControls } from '../layouts/ParameterControls';
 
 /**
  * A page-filling viewer for one or more space snapshots. Hosts supply the snapshots and anything
  * specific to where the page is shown. See docs/architecture.md.
  */
 
-export type ViewerProps = {
+type ViewerProps = {
   spaces: SpaceSnapshot[];
   /** Accessible name for each card, for hosts whose surroundings read it. Cards keep their default name without it. */
   cardLabel?: (node: SpaceNode, graph: SpaceGraph, definition: MapViewDefinition) => string;
@@ -23,15 +23,15 @@ export function Viewer({ spaces, cardLabel }: ViewerProps) {
   const [viewId, setViewId] = useState(space.definitions[0]?.id);
   const definition = space.definitions.find((d) => d.id === viewId) ?? space.definitions[0];
   const [values, setValues] = useState<ParameterValues>({});
-  const [selectedId, setSelectedId] = useState<string>();
+  const [selectedId, setSelectedId] = useState<SpaceNode['id']>();
 
   const graph = useMemo(() => spaceGraphFrom(space.graph), [space]);
   const annotated = useMemo(() => annotationsFrom(space.validation, graph), [space, graph]);
   const mapRef = useCardLabels(graph, definition, cardLabel);
 
   if (!definition) return <p className="viewer-message">No map views apply to the schema of "{space.space}".</p>;
-  const selected = selectedId ? graph.nodes.get(selectedId as never) : undefined;
-  const results = selected ? (annotated.annotations.get(selected.id as never) ?? []) : [];
+  const selected = selectedId ? graph.nodes.get(selectedId) : undefined;
+  const results = selected ? (annotated.annotations.get(selected.id) ?? []) : [];
 
   return (
     <div className="viewer-root">
@@ -186,7 +186,7 @@ function useCardLabels(
     if (!root || !definition || !cardLabel) return;
     const stamp = () => {
       for (const card of root.querySelectorAll<HTMLElement>('[data-node-id]')) {
-        const node = graph.nodes.get(card.dataset.nodeId as never);
+        const node = graph.nodes.get(card.dataset.nodeId as SpaceNode['id']);
         if (node) card.setAttribute('aria-label', cardLabel(node, graph, definition));
       }
     };

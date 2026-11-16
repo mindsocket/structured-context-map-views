@@ -16,26 +16,23 @@ A part of a map view with its own node selection, layout, node style and edge se
 
 ## Layout
 
-The arrangement a region uses, chosen from a fixed catalogue ([Layouts](layouts.md)). Each layout carries its own opinions (spacing, card sizes, colours). Definitions choose and configure a layout; they don't compose one.
+The arrangement a region uses, chosen from a fixed catalogue. Each layout carries its own opinions (spacing, card sizes, colours). Definitions choose and configure a layout; they don't compose one. [Layouts](layouts.md) describes each one, with the terms that belong to it alone.
+
+## Projection
+
+The step some layouts need to decide what is shown: it turns a space graph and the region's settings into occurrences and connectors, for example placing a node with several parents in a tree. Arranging and drawing is the layout component's work.
 
 ## Occurrence
 
-One rendered appearance of a space node. A node can occur more than once, for example under each of its parents in a tree. Every occurrence has a key built from its path (region, then ancestors, then the node), so repeated nodes stay distinct. Connectors are drawn between occurrences.
+One rendered appearance of a space node. A node can occur more than once, for example under each of its parents in a tree; the later occurrences are repeats. Every occurrence has a key built from its path (region, then ancestors, then the node), so repeats stay distinct.
 
-## Repeat and cross-edge
+## Connector
 
-The two ways a tree shows a node with several parents:
-
-- **repeat**: the node appears under each parent, and its subtree is shown once.
-- **cross-edge**: the node appears under its first parent, with extra connectors from the others.
+The line drawn for an edge of the space graph, between two occurrences. "Edge" is the hierarchy or relationship reference in the data; "link" is left for structured-context's links between notes.
 
 ## Focus
 
 The node a layout centres on. Hosts can set it; otherwise the reader's picks move it.
-
-## Grouping level
-
-One step of a landscape's grouping: a node type, or a field whose values become containers. Levels can follow edges in either direction, and a `via` chain can skip types between two levels.
 
 ## Parameter
 
@@ -47,4 +44,8 @@ A validation result attached to a node: a severity, a source (the kind of check,
 
 ## Host
 
-An app that embeds the library: it loads space data and definitions, owns parameter values and decides what selecting a node does. The navigator and the Obsidian plugin are hosts.
+An app that embeds the library: it loads space data and definitions, owns parameter values and decides what selecting a node does. [Architecture](architecture.md#hosts) lists the hosts.
+
+## Snapshot
+
+A space as plain JSON: its graph, validation results and the definitions for its schema. It is what a host that can't run structured-context renders from.

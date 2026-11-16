@@ -19,7 +19,7 @@ function importsIn(dir: string): { file: string; specifier: string }[] {
 describe('module boundaries', () => {
   // `structured-context/types` is the one runtime import allowed: it has no imports of its own, so it is browser-safe
   test('core has no React, DOM-host, Node or runtime structured-context dependencies and no upward imports', () => {
-    const forbidden = /^(react|react-dom)(\/|$)|^node:|^structured-context(\/|$)|^(\.\.\/)+(layouts|node)(\/|$)/;
+    const forbidden = /^(react|react-dom)(\/|$)|^node:|^structured-context(\/|$)|^(\.\.\/)+(components|node)(\/|$)/;
     const violations = importsIn('core').filter(
       ({ file, specifier }) =>
         forbidden.test(specifier) &&
@@ -29,18 +29,18 @@ describe('module boundaries', () => {
     expect(violations).toEqual([]);
   });
 
-  test('layouts does not import from host code or Node-only modules', () => {
-    expect(importsIn('layouts').filter(({ specifier }) => /\/node(\/|$)|^node:/.test(specifier))).toEqual([]);
+  test('components does not import from host code or Node-only modules', () => {
+    expect(importsIn('components').filter(({ specifier }) => /\/node(\/|$)|^node:/.test(specifier))).toEqual([]);
   });
 
   // The viewer is shared by hosts, so it knows nothing about any one of them
-  test('viewer imports only core, layouts, React and structured-context/browser', () => {
-    const allowed = /^\.\.\/(core|layouts)\/|^\.\/|^(react|react-dom)(\/|$)|^structured-context\/browser$/;
+  test('viewer imports only core, components, React and structured-context/browser', () => {
+    const allowed = /^\.\.\/(core|components)\/|^\.\/|^(react|react-dom)(\/|$)|^structured-context\/browser$/;
     expect(importsIn('viewer').filter(({ specifier }) => !allowed.test(specifier))).toEqual([]);
   });
 
   test('no module imports a host', () => {
-    const imports = ['core', 'layouts', 'node', 'viewer'].flatMap(importsIn);
+    const imports = ['core', 'components', 'node', 'viewer'].flatMap(importsIn);
     expect(imports.filter(({ specifier }) => /^(\.\.\/)+(artifact|page)(\/|$)/.test(specifier))).toEqual([]);
   });
 });

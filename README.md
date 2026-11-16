@@ -2,7 +2,7 @@
 
 Declarative visualisations of [structured-context](https://github.com/mindsocket/structured-context) spaces.
 
-A **map view** is a short JSON5 definition that projects every space of one schema into a visual form: a tree, nested containers, or an XY plot. The same space can be shown several ways, and readers can switch settings such as orientation or grouping through parameters the definition declares. Definitions are found the way structured-context finds plugin schemas: bundled here, in plugins, or in the `.sctx/map-views/` folder beside your content.
+A **map view** is a short JSON5 definition that projects a space into a visual form, such as a tree, nested containers or a network ([layouts](docs/layouts.md)). The same space can be shown several ways, and readers can switch settings such as orientation or grouping through parameters the definition declares. Definitions are found the way structured-context finds plugin schemas: bundled here, in plugins, or in the `.sctx/map-views/` folder beside your content.
 
 ```json5
 {
@@ -24,7 +24,7 @@ This repo holds:
 
 Pre-1.0. Docs:
 
-- [Concepts](docs/concepts.md): map views, regions, layouts, occurrences, parameters
+- [Concepts](docs/concepts.md): the terms
 - [Definitions](docs/definitions.md): writing a map view definition
 - [Layouts](docs/layouts.md): the layouts and their settings
 - [Architecture](docs/architecture.md): how the library is put together

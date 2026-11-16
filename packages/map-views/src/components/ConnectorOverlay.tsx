@@ -1,23 +1,11 @@
 import { useLayoutEffect, useState } from 'react';
-import type { Orientation } from '../core/definition';
-
-/**
- * A connector between two occurrences. `cross` links (e.g. extra parents) are drawn dashed.
- * `id` tells apart several links between the same occurrences; straight links between the same
- * pair are drawn side by side, `lane` apart (0: on the line between centres).
- */
-export type Link = {
-  from: string;
-  to: string;
-  kind?: 'tree' | 'cross';
-  id?: string;
-  lane?: number;
-  /** Text drawn at the middle of the connector. */
-  label?: string;
-};
+import type { EdgesConfig, Orientation } from '../core/definition';
+import type { Connector } from '../core/layouts/helpers';
 
 type Props = {
-  links: readonly Link[];
+  connectors: readonly Connector[];
+  /** The region's `edges` settings: whether connectors are drawn, and whether each shows its field. */
+  edges: EdgesConfig;
   /** Rendered element of each occurrence, by occurrence key. */
   elements: ReadonlyMap<string, HTMLElement>;
   /**
@@ -30,7 +18,7 @@ type Props = {
   routing: Orientation | 'straight';
 };
 
-type Drawn = { key: string; d: string; cross: boolean; label?: string; at: readonly [number, number] };
+type Drawn = { key: string; d: string; dashed: boolean; label?: string; at: readonly [number, number] };
 
 /**
  * SVG layer drawing connectors between rendered occurrences.
@@ -40,21 +28,21 @@ type Drawn = { key: string; d: string; cross: boolean; label?: string; at: reado
  * such as late font loads. The SVG fills the container instead of being sized from it, so it
  * never holds the container open after the layout shrinks.
  */
-export function EdgeOverlay({ links, elements, container, routing }: Props) {
+export function ConnectorOverlay({ connectors, edges, elements, container, routing }: Props) {
   const [paths, setPaths] = useState<Drawn[]>([]);
 
   useLayoutEffect(() => {
-    if (!container) return;
+    if (!container || !edges.show) return;
 
     const measure = () => {
       const origin = container.getBoundingClientRect();
       const paths: Drawn[] = [];
-      for (const { from, to, kind, id, lane = 0, label } of links) {
+      for (const { from, to, field, lane = 0, dashed = false } of connectors) {
         const a = elements.get(from)?.getBoundingClientRect();
         const b = elements.get(to)?.getBoundingClientRect();
         if (!a || !b) continue;
         const [d, at] = routing === 'straight' ? line(a, b, origin, lane) : connector(a, b, origin, routing);
-        paths.push({ key: `${from}→${to}${id ?? ''}`, d, cross: kind === 'cross', label, at });
+        paths.push({ key: `${from}→${to}${field ?? ''}`, d, dashed, label: edges.labels ? field : undefined, at });
       }
       setPaths(paths);
     };
@@ -64,20 +52,22 @@ export function EdgeOverlay({ links, elements, container, routing }: Props) {
     observer.observe(container);
     for (const element of elements.values()) observer.observe(element);
     return () => observer.disconnect();
-  }, [links, elements, container, routing]);
+  }, [connectors, edges.show, edges.labels, elements, container, routing]);
+
+  if (!edges.show) return null;
 
   return (
     <svg
       aria-hidden="true"
       className="mv:pointer-events-none mv:absolute mv:inset-0 mv:h-full mv:w-full mv:overflow-visible"
     >
-      {paths.map(({ key, d, cross }) => (
+      {paths.map(({ key, d, dashed }) => (
         <path
           key={key}
           d={d}
-          className={`mv:fill-none ${cross ? 'mv:stroke-accent/60' : 'mv:stroke-muted/50'}`}
+          className={`mv:fill-none ${dashed ? 'mv:stroke-accent/60' : 'mv:stroke-muted/50'}`}
           strokeWidth={1.5}
-          strokeDasharray={cross ? '4 3' : undefined}
+          strokeDasharray={dashed ? '4 3' : undefined}
         />
       ))}
       {paths.map(({ key, label, at }) =>
@@ -119,12 +109,12 @@ function connector(a: DOMRect, b: DOMRect, origin: DOMRect, orientation: Orienta
   return [`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`, [mx, (y1 + y2) / 2]];
 }
 
-/** Pixels between parallel straight links. */
+/** Pixels between parallel straight connectors. */
 const LANE_GAP = 6;
 
 /**
  * Straight line between centres, shifted sideways by its lane; the layout draws nodes over the
- * overlay to hide the ends. The shift is relative to a fixed orientation of the pair, so links in
+ * overlay to hide the ends. The shift is relative to a fixed orientation of the pair, so connectors in
  * opposite directions between the same nodes still separate.
  */
 function line(a: DOMRect, b: DOMRect, origin: DOMRect, lane: number): [string, [number, number]] {
