@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/mindsocket/structured-context/main/schemas/generated/latest/_structured_context_schema_meta.json",
+  "$id": "sctx://sdlc",
+  "title": "Software delivery lifecycle",
+  "description": "Synthetic schema: the stages of delivering software, the actors (people and agents) in them, the steps they take and the tools the steps use.",
+  "$metadata": {
+    "hierarchy": {
+      "levels": ["Stage", { "type": "Step", "field": "stage" }]
+    },
+    "relationships": [
+      { "parent": "Step", "type": "Actor", "field": "actors", "fieldOn": "parent", "multiple": true },
+      { "parent": "Step", "type": "Tool", "field": "tools", "fieldOn": "parent", "multiple": true }
+    ]
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": { "type": { "const": "Stage" }, "title": { "type": "string" }, "order": { "type": "integer" } },
+      "required": ["type", "title"]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": { "const": "Step" },
+        "title": { "type": "string" },
+        "stage": { "type": "string" },
+        "actors": { "type": "array", "items": { "type": "string" } },
+        "tools": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["type", "title"]
+    },
+    {
+      "type": "object",
+      "properties": { "type": { "const": "Actor" }, "title": { "type": "string" } },
+      "required": ["type", "title"]
+    },
+    {
+      "type": "object",
+      "properties": { "type": { "const": "Tool" }, "title": { "type": "string" } },
+      "required": ["type", "title"]
+    }
+  ]
+}
