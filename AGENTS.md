@@ -22,6 +22,7 @@ bun run build             # the library, then the navigator
 - **Comments say what the code can't.** A reason, a constraint, a trap. Never the signature, the parameter list or the next line.
 - **No barrel files.** Modules import each other directly. A small helper joins the file it serves; it gets its own file when it has several users and a concept of its own.
 - **Tests assert the behaviour they name.** Derive expected values from the fixture or the code under test. Don't hard-code a list that grows with the code, and don't assert things that only happen to be true.
+- **A test earns its place by proving something no other test does.** Before adding one, look for a test that already covers the behaviour. Don't re-test what a JSON Schema enforces; test the checks the schema can't express. Once an input covers a code path, another input down the same path adds nothing. Don't assert what the test's own config makes true.
 - **Mark the loose parts.** Where careful review is traded for speed, say so in place with a `PROTOTYPE:` comment giving the shortcut and what a proper treatment needs. `grep -rn PROTOTYPE: packages apps` is the register. Untagged code is at production standard for its scope.
 - **Fix the pattern, not the line.** When a review comment names a habit, search for every instance before replying, and check the result before saying it's fixed.
 - **No private data.** This repo is public. Fixtures, samples and definitions come from public or synthetic spaces.
@@ -55,6 +56,7 @@ Review and update with any change:
 | Exports or component props | `docs/api.md` |
 | Module structure, rendering, styling | `docs/architecture.md` |
 | Anything user-visible | `README.md` (kept short; detail goes in `docs/`) |
+| New or changed tests | Each one proves a behaviour no other test proves; remove the ones a change makes redundant |
 
 Docs describe what the code does now. Decision history and plans don't go in docs.
 
