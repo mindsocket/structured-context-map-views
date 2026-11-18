@@ -15,14 +15,25 @@ A tree over the schema's hierarchy: nodes of the root type at the top, children 
 
 ## landscape
 
-Nested containers. `group` lists grouping levels, outermost first. The last level is drawn as nodes and the others as containers.
+Strips of nested containers. A **strip** is a list of grouping levels, outermost first: the last level is drawn as nodes and the others as containers. A plain landscape is one strip. Several strips are drawn one after the other, each with its own levels.
+
+A **dimension** divides strips into **cells**, one for each of its groups. The layout's dimension divides every strip alike, so the strips line up; a strip's own dimension divides that strip further. With both, a strip has a cell for every pair of groups.
 
 | Setting | Values | Default |
 |---|---|---|
-| `orientation` | `horizontal` (top-level containers as columns), `vertical` (as rows) | `horizontal` |
-| `group` | Grouping levels (below) | required |
+| `orientation` | `horizontal`: top-level containers, or the layout dimension's groups, side by side, and strips stacked. `vertical`: the reverse | `horizontal` |
+| `dimension` | A dimension (below) dividing every strip | none |
+| `strips` | One or more strips | required |
 
-A grouping level is one of:
+A strip has:
+
+| Setting | Values | Default |
+|---|---|---|
+| `group` | Grouping levels, outermost first | required |
+| `dimension` | A dimension dividing this strip | none |
+| `showUngrouped` | `true` draws the strip's ungrouped nodes in a box of their own, `false` leaves them out | `true` |
+
+A level is one of:
 
 - `{ type: 'Activities' }`: a level of nodes of one type. Adjacent node levels are joined by any edge between their types, in either direction, so `Outcomes` can group `Activities` even when the edge is declared from `Activities`.
   - `edge: { field: 'phase' }` restricts the join to edges from that field.
@@ -30,7 +41,14 @@ A grouping level is one of:
   - `intermediate`: how the skipped nodes of a `via` chain are shown. `hidden` (default) or `breadcrumb` (listed on each node reached through them).
 - `{ field: 'status' }`: containers labelled by the values of a field on the next node level. A node with several values appears under each.
 
-A node that occurs in several containers is repeated in each. Nodes of a grouped type that no container reaches are shown as ungrouped, not dropped.
+A dimension is one of:
+
+- `{ type: 'Stages' }`: a group for every node of the type, in space order, so a cell exists even when it holds nothing. `edge: { field: 'stage' }` restricts the join to edges from that field, and takes the place of the first level's own `edge`.
+- `{ field: 'stage' }`: a group for every value the strip's first node level has in that field. A value no node has is not a group.
+
+A strip's first level is joined to a dimension's nodes the way a level is joined to the node level above, so `via` applies there: a strip of `{ type: 'Capabilities', via: ['Activities'] }` under a `Stages` dimension holds each stage's capabilities once, beside a strip of its activities. Under two dimensions, a node must be joined to both.
+
+A node that occurs in several containers or cells is repeated in each. Nodes of a strip's levels that no container or cell reaches are ungrouped. Each strip is named by its first level.
 
 ## xy
 

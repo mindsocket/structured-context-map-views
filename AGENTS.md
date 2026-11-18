@@ -2,7 +2,7 @@
 
 Declarative map views of structured-context spaces: the definition format, the rendering library and the navigator app.
 
-Before new work, read [docs/concepts.md](docs/concepts.md) for the terms and [docs/architecture.md](docs/architecture.md#modules) for the modules and what each may import. Use the terms in code, tests, comments and docs.
+Before new work, read [docs/concepts.md](docs/concepts.md) for the terms (and the layout's section of [docs/layouts.md](docs/layouts.md) when working on one layout) and [docs/architecture.md](docs/architecture.md#modules) for the modules and what each may import.
 
 ## Checks
 
@@ -15,8 +15,9 @@ bun run build             # the library, then the navigator
 ## Principles
 
 - **Simple, not sloppy.** Prefer the smallest design that does the job. Don't add structures, grammars, limits or presets until a concrete need forces them.
-- **One word per concept.** A thing has the same name in the definition format, the docs and the code. Add or rename a term in `docs/concepts.md` first, then use it. Don't rename another package's term: use structured-context's own word and type.
+- **One term per concept.** A thing has the same name in the definition format, the docs, comments and code. Add, rename or refine common terms (when they're unclear or new requirements go beyond existing definitions) in `docs/concepts.md`, and do the same in `docs/layouts.md` for a term only one layout uses. Don't rename another package's term: use structured-context's own word and type.
 - **One home per fact.** Decide which doc owns a fact, state it there once, and link from elsewhere. Docs don't list what the code already lists (layouts, exports, props, files, variables): a list like that goes stale with the next change.
+- **A setting's type says how many behaviours it has.** A boolean for on or off, when no third option is expected. An enum when there are two or more behaviours, each value naming one (`dag: 'repeat' | 'cross-edge'`).
 - **Export only what another module imports.** A type used in one place is written inline. A type used in one file isn't exported. Derive types (from the schemas, `Parameters`, `ReturnType`, `Pick`) instead of restating a shape. When two modules need the same shape, they share one type.
 - **The public surface is `src/index.ts`, `src/node/index.ts` and `src/node/html.ts`.** Add an export there only when a host needs it, and say which host.
 - **Comments say what the code can't.** A reason, a constraint, a trap. Never the signature, the parameter list or the next line.
@@ -51,7 +52,7 @@ Review and update with any change:
 | Change | Check |
 |---|---|
 | Definition format (`core/schema`, `core/layouts/*/schema.ts`) | `docs/definitions.md`, or `docs/layouts.md` for layout settings; regenerated `schemas/generated/latest/`; definitions in `map-views/` |
-| New or renamed term | `docs/concepts.md` |
+| New or renamed term | `docs/concepts.md`; and `docs/layouts.md` for a term of one layout |
 | Exports or component props | `docs/api.md` |
 | Module structure, rendering, styling | `docs/architecture.md` |
 | Anything user-visible | `README.md` (kept short; detail goes in `docs/`) |
