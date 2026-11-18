@@ -3,7 +3,7 @@ import type { LayoutConfig } from '../core/definition';
 import { buildXYPlot } from '../core/layouts/xy/projection';
 import { ConnectorOverlay } from './ConnectorOverlay';
 import { type LayoutProps, useOccurrenceElements } from './layout';
-import { NodeCard } from './NodeCard';
+import { NodeComponent } from './NodeComponent';
 
 /**
  * Nodes positioned by two numeric fields, with straight connectors between them. Positions are
@@ -41,7 +41,7 @@ export function XYLayout({ graph, region, instanceId, onNodeSelect }: LayoutProp
                 style={{ left: `${point.x * 100}%`, bottom: `${point.y * 100}%` }}
               >
                 <div ref={register(point.key)}>
-                  <NodeCard node={point.node} repeat={false} nodes={region.nodes} onSelect={onNodeSelect} />
+                  <NodeComponent node={point.node} repeat={false} nodes={region.nodes} onSelect={onNodeSelect} />
                 </div>
                 {shape && (
                   <span className="mv:whitespace-nowrap mv:rounded mv:bg-surface/80 mv:px-0.5 mv:text-xs">
@@ -62,7 +62,7 @@ export function XYLayout({ graph, region, instanceId, onNodeSelect }: LayoutProp
           <ul className="mv:m-0 mv:flex mv:list-none mv:flex-wrap mv:gap-3 mv:p-0">
             {plot.unplaced.map(({ key, node, reasons }) => (
               <li key={key} data-occurrence={`${instanceId}${key}`} className="mv:flex mv:items-center mv:gap-1">
-                <NodeCard node={node} repeat={false} nodes={region.nodes} onSelect={onNodeSelect} />
+                <NodeComponent node={node} repeat={false} nodes={region.nodes} onSelect={onNodeSelect} />
                 <span className="mv:text-xs">
                   {shape && `${node.title} `}
                   <span className="mv:text-muted">({reasons.join('; ')})</span>

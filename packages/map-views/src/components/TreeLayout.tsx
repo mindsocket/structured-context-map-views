@@ -3,7 +3,7 @@ import type { LayoutConfig, Orientation } from '../core/definition';
 import { buildTree, type TreeOccurrence, treeConnectors } from '../core/layouts/tree/projection';
 import { ConnectorOverlay } from './ConnectorOverlay';
 import { type LayoutProps, useOccurrenceElements } from './layout';
-import { NodeCard } from './NodeCard';
+import { NodeComponent } from './NodeComponent';
 
 /**
  * Tree over the schema's hierarchy. Flexbox does the branching; the SVG overlay draws connectors.
@@ -21,7 +21,7 @@ export function TreeLayout({ graph, region, instanceId, onNodeSelect }: LayoutPr
       className={`mv:flex mv:items-center ${orientation === 'vertical' ? 'mv:flex-col' : 'mv:flex-row'}`}
     >
       <div ref={register(occurrence.key)} data-occurrence={`${instanceId}${occurrence.key}`}>
-        <NodeCard
+        <NodeComponent
           node={occurrence.node}
           repeat={occurrence.repeatOf !== undefined}
           nodes={region.nodes}
