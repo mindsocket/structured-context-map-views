@@ -1,2 +1,5 @@
 # Generated files: collapsed in GitHub diffs and left out of the sctx-dev review check.
 packages/map-views/src/node/bundled-definitions.ts linguist-generated
+schemas/generated/** linguist-generated
+packages/map-views/tests/fixtures/*.json linguist-generated
+bun.lock linguist-generated
