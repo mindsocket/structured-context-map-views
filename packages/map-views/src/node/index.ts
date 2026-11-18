@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { type Config, PLUGIN_PREFIX, resolveConfigPath, resolvePluginDir, resourceDir } from 'structured-context/api';
 import type { MapViewDefinition } from '../core/definition';
@@ -14,14 +14,8 @@ const DEFINITIONS_DIR = 'map-views';
 const CONFIG_PLUGINS_DIR = 'plugins';
 
 /**
- * Every map view definition available with `config`, from:
- * - this package's embedded definitions (`sctx-map-view://core/<name>`);
- * - each plugin found from a config folder or named by a space (`sctx-map-view://<plugin>/<name>`): the
- *   folder named by `"sctx": { "map-views": "…" }` in its package.json, else its `map-views/` folder;
- * - the `map-views` resources folder of each config root (`sctx-map-view://<name>`).
- *
- * Each definition's `$id` must be in the namespace of where it was found, and ids must be unique.
- * Throws on the first invalid definition.
+ * Every map view definition available with `config`, found as docs/definitions.md describes.
+ * Throws on the first invalid definition, including one outside its namespace or with a duplicate `$id`.
  *
  * `configDir` is the root of the main config file; it defaults to where structured-context finds it.
  */

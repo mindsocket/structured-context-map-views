@@ -10,11 +10,13 @@ function occurrences(roots: TreeOccurrence[]): TreeOccurrence[] {
 }
 
 describe('sample tree', () => {
-  const tree = buildTree(fixtureGraph(sample), 'main');
+  const graph = fixtureGraph(sample);
+  const tree = buildTree(graph, 'main');
   const all = occurrences([...tree.roots, ...tree.orphans]);
 
   test('roots are the Phases', () => {
-    expect(tree.roots.map((o) => o.node.resolvedType)).toEqual(['Phases', 'Phases', 'Phases', 'Phases']);
+    const phases = [...graph.nodes.values()].filter((n) => n.resolvedType === 'Phases');
+    expect(tree.roots.map((o) => o.node.id)).toEqual(phases.map((n) => n.id));
   });
 
   test('occurrence keys are unique even though nodes repeat', () => {
@@ -49,7 +51,7 @@ describe('sample tree', () => {
   });
 
   test('cross-edge mode replaces repeats with cross-edge connectors to the primary occurrence', () => {
-    const cross = buildTree(fixtureGraph(sample), 'main', 'cross-edge');
+    const cross = buildTree(graph, 'main', 'cross-edge');
     const crossAll = occurrences([...cross.roots, ...cross.orphans]);
     const repeats = all.filter((o) => o.repeatOf !== undefined);
     expect(crossAll.some((o) => o.repeatOf !== undefined)).toBe(false);

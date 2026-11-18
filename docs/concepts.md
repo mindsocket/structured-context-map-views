@@ -12,7 +12,7 @@ The JSON5 file that declares a map view: the schema it applies to, its parameter
 
 ## Region
 
-A part of a map view with its own node selection, layout, node style and edge setting. A definition holds a list of regions; only the first is rendered for now.
+A part of a map view with its own node selection, layout, node style and edge setting. A definition holds a list of regions; only the first is rendered.
 
 ## Layout
 

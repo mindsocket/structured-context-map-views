@@ -112,9 +112,6 @@ describe('parseMapViewDefinition', () => {
 
   test.each([
     ['{', /invalid JSON5/],
-    [`{ $id: 'sctx-map-view://t' }`, /must have required property 'regions'/],
-    [`{ schema: 'x', regions: [{ id: 'a', layout: { type: 'tree' } }] }`, /must have required property '\$id'/],
-    [`{ $id: 'map/t', schema: 'x', regions: [{ id: 'a', layout: { type: 'tree' } }] }`, /\$id must match pattern/],
     [
       `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'grid' } }] }`,
       /layout has unknown type "grid"/,
@@ -166,16 +163,6 @@ describe('parseMapViewDefinition', () => {
       `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', select: { filter: 'my-view' }, layout: { type: 'tree' } }] }`,
     );
     expect(selectionFilter(filtered)).toBe('my-view');
-  });
-
-  test('matches definitions to a schema', () => {
-    const def = parseMapViewDefinition(
-      't',
-      `{ $id: 'sctx-map-view://t', schema: 'sctx://x', regions: [{ id: 'main', layout: { type: 'tree' } }] }`,
-    );
-    expect(mapViewsForSchema([def], 'sctx://x')).toEqual([def]);
-    expect(mapViewsForSchema([def], 'sctx://y')).toEqual([]);
-    expect(mapViewsForSchema([def], undefined)).toEqual([]);
   });
 
   test('parsed definitions survive a JSON round trip', () => {

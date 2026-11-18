@@ -5,6 +5,7 @@ import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
 
 const graph = fixtureGraph(sample);
+const count = (type: string) => [...graph.nodes.values()].filter((n) => n.resolvedType === type).length;
 /** A plain landscape: its containers are the one cell of its one strip. */
 function plainLandscape(...args: Parameters<typeof buildLandscape>) {
   const { dimension, strips } = buildLandscape(...args);
@@ -28,16 +29,16 @@ describe('sample landscape', () => {
   const byPhase = plainLandscape(graph, 'main', layout([level('Phases'), level('Activities'), level('Capabilities')]));
 
   test('top-level containers are the Phases, holding their Activities', () => {
-    expect(byPhase.groups.map(title)).toHaveLength(4);
+    expect(byPhase.groups).toHaveLength(count('Phases'));
     const activities = byPhase.groups.flatMap((g) => g.children);
     expect(activities.every((o) => o.item.kind === 'node' && o.item.node.resolvedType === 'Activities')).toBe(true);
-    expect(activities).toHaveLength(12);
+    expect(activities).toHaveLength(count('Activities'));
   });
 
   test('field levels split the next node level by value', () => {
     const byStatus = plainLandscape(graph, 'main', layout([{ field: 'status' }, level('Applications')]));
     expect(byStatus.groups.map(title).sort()).toEqual(['identified', 'stub']);
-    expect(byStatus.groups.flatMap((g) => g.children)).toHaveLength(8);
+    expect(byStatus.groups.flatMap((g) => g.children)).toHaveLength(count('Applications'));
   });
 
   test('via chains join through the skipped type and record the skipped nodes', () => {
@@ -56,7 +57,7 @@ describe('sample landscape', () => {
     // Without the chain, Activities and Applications share no edge.
     const direct = plainLandscape(graph, 'main', layout([level('Activities'), level('Applications')]));
     expect(direct.groups.flatMap((g) => g.children)).toEqual([]);
-    expect(direct.ungrouped).toHaveLength(8);
+    expect(direct.ungrouped).toHaveLength(count('Applications'));
   });
 
   test('edge.field restricts which edges join two levels', () => {
@@ -71,7 +72,7 @@ describe('sample landscape', () => {
       'main',
       layout([level('Phases'), { ...level('Activities'), edge: { field: 'phase' } }]),
     );
-    expect(phase.groups.flatMap((g) => g.children)).toHaveLength(12);
+    expect(phase.groups.flatMap((g) => g.children)).toHaveLength(count('Activities'));
   });
 
   test('field-group keys cannot collide with node titles', () => {

@@ -19,7 +19,7 @@ import 'structured-context-map-views/styles.css';
 <MapView definition={definition} graph={graph} values={values} onNodeSelect={(node) => open(node)} />
 ```
 
-`graph` is a structured-context `SpaceGraph` (see [Data](#data)); `values` and the controls' `onChange` belong to the host. Pass `annotations` to show validation results (see [Validation results](#validation-results)). `focus` and `onFocusChange` set and follow the node that layouts centring on one node show.
+`graph` is a structured-context `SpaceGraph` (see [Data](#data)); `values` and the controls' `onChange` belong to the host. Pass `annotations` to show validation results (see [Validation results](#validation-results)). `focus` and `onFocusChange` set and follow the [focus](concepts.md#focus), for layouts arranged around one node.
 
 A host that lays out the controls itself builds them from `useParameterControls` and `ParameterInput`.
 
