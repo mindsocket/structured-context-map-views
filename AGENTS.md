@@ -12,8 +12,6 @@ bun run test:package      # packs the library and the plugin, installs each in a
 bun run build             # the library, then the navigator
 ```
 
-The Stop hook and pre-push block while the branch adds docs, code comments or tests that the `doc-review` or `test-review` skill has not seen. Both come from structured-context's [contributor plugin](https://github.com/mindsocket/structured-context/blob/main/docs/architecture.md#contributor-plugin), which `.claude/settings.json` enables.
-
 ## Principles
 
 - **Simple, not sloppy.** Prefer the smallest design that does the job. Don't add structures, grammars, limits or presets until a concrete need forces them.
