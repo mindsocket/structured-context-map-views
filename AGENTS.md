@@ -57,7 +57,7 @@ Review and update with any change:
 | Module structure, rendering, styling | `docs/architecture.md` |
 | Anything user-visible | `README.md` (kept short; detail goes in `docs/`) |
 
-Docs describe what the code does now. Decision history and plans don't go in docs.
+Docs describe what the code does now. Decision history, plans and how things used to work don't go in docs: git history records changes, and release notes record the breaking ones.
 
 ## Running and verifying in a browser
 
