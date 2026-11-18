@@ -28,7 +28,7 @@ One rendered appearance of a space node. A node can occur more than once, for ex
 
 ## Node component
 
-What every layout draws for an occurrence: a clickable node in the region's node style (a card with its title and fields, or a compact shape), with its validation badge. "Card" alone means the `card` style, not the component.
+What a layout draws for an occurrence, in the region's node style. "Card" is a node style, not the component.
 
 ## Connector
 
