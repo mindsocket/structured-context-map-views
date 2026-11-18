@@ -52,10 +52,11 @@ export function assignLanes(connectors: Connector[]) {
 }
 
 /**
- * One step of an occurrence path: a node title, a `[field, value]` group, or `null` for the
- * ungrouped area. Encoded distinctly, so a field group can't collide with a node of the same name.
+ * One step of an occurrence path: a node title, a `[field, value]` group, `null` for the ungrouped
+ * area, or a number for a part of the layout picked by position. Each kind encodes differently in
+ * JSON, so none can collide with another.
  */
-export type PathSegment = string | readonly [field: string, value: string | null] | null;
+export type PathSegment = string | readonly [field: string, value: string | null] | null | number;
 
 /**
  * Path-based key for one occurrence of a node: region, then the steps from the outermost

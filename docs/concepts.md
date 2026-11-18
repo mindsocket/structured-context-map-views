@@ -16,7 +16,7 @@ A part of a map view with its own node selection, layout, node style and edge se
 
 ## Layout
 
-The arrangement a region uses, chosen from a fixed catalogue. Each layout carries its own opinions (spacing, card sizes, colours). Definitions choose and configure a layout; they don't compose one. [Layouts](layouts.md) describes each one, with the terms that belong to it alone.
+The arrangement a region uses, chosen from a fixed catalogue. Each layout carries its own opinions (spacing, card sizes, colours). Definitions choose and configure a layout; they don't compose one. [Layouts](layouts.md) describes each one.
 
 ## Projection
 

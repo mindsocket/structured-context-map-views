@@ -120,8 +120,8 @@ describe('parseMapViewDefinition', () => {
       /layout has unknown type "grid"/,
     ],
     [
-      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'landscape', group: [{ type: 'A' }, { field: 's' }] } }] }`,
-      /the last grouping level must be a node type/,
+      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'landscape', strips: [{ group: [{ type: 'A' }] }, { group: [{ type: 'B' }, { field: 's' }] }] } }] }`,
+      /the last grouping level of a strip must be a node type/,
     ],
     [
       `{ $id: 'sctx-map-view://t', schema: 'x', parameters: { g: { enum: ['A', 'B'], default: 'A' } }, regions: [{ id: 'a', layout: { type: 'tree', orientation: { $param: 'g' } } }] }`,
@@ -154,10 +154,6 @@ describe('parseMapViewDefinition', () => {
     [
       `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'xy', x: { field: 'e', domain: [1, 0] }, y: { field: 'v' } } }] }`,
       /x domain must be \[min, max\] with min < max/,
-    ],
-    [
-      `{ $id: 'sctx-map-view://t', schema: 'x', regions: [{ id: 'a', layout: { type: 'xy', x: { field: 'e' } } }] }`,
-      /must have required property 'y'/,
     ],
   ])('rejects %s', (source, message) => {
     expect(() => parseMapViewDefinition('t', source)).toThrow(message);

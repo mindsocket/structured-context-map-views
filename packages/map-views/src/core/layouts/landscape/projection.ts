@@ -6,9 +6,9 @@ import { childEdges, occurrenceKey, type PathSegment, parentEdges } from '../hel
 export type LandscapeOccurrence = {
   /** Path-based key, unique within the map view (see {@link occurrenceKey}). */
   key: string;
-  /** Index of the grouping level this occurrence belongs to. */
+  /** Index of the grouping level this occurrence belongs to, within its strip. */
   level: number;
-  /** A node, or a field value shared by the nodes inside (`null`: the field is empty). */
+  /** A node, or a field value common to the nodes inside (`null`: the field is empty). */
   item: { kind: 'node'; node: SpaceNode } | { kind: 'value'; field: string; value: string | null };
   /** Nodes on the `via` chain that joined this node to the node level above, one entry per skipped type. */
   via: ViaStep[];
@@ -19,61 +19,104 @@ export type LandscapeOccurrence = {
 
 type ViaStep = { type: string; nodes: SpaceNode[] };
 
-export type Landscape = {
-  groups: LandscapeOccurrence[];
+/** A group of a dimension: a node of the dimension's type, or a value of its field. It holds nothing itself. */
+export type LandscapeGroup = Pick<LandscapeOccurrence, 'key' | 'item'>;
+
+type LandscapeStrip = {
+  /** The strip's own dimension, dividing it further. */
+  dimension?: LandscapeGroup[];
   /**
-   * Nodes of a grouped level that no container above reaches (e.g. an Activity with no
-   * Outcome when grouping by Outcomes), each with its own contents.
+   * A cell for every group of the layout's dimension paired with every group of the strip's own, the
+   * layout's varying slowest. A strip with no dimension has one cell.
+   */
+  cells: LandscapeCell[];
+  /**
+   * Nodes of the strip's levels that no cell or container reached (e.g. an Activity with no
+   * Outcome when grouping by Outcomes), each with its own contents. Empty when the strip hides them.
    */
   ungrouped: LandscapeOccurrence[];
 };
 
-type Candidate = { node: SpaceNode; via: ViaStep[] };
-type FieldFilter = { field: string; value: string | null };
+/** What the strip's grouping levels place among the nodes that belong to one group of each dimension. */
+type LandscapeCell = {
+  /** Path-based key of the strip and its group or pair of groups. */
+  key: string;
+  /** Indexes of its groups in the layout's dimension and in the strip's own; 0 where there is none. */
+  at: [layout: number, strip: number];
+  children: LandscapeOccurrence[];
+};
 
 /**
- * Lay a space out as nested containers following the layout's grouping levels.
+ * The layout as strips divided into cells. A dimension's groups are worked out once, so every cell
+ * exists, empty or not. Which axis a dimension runs along is the component's choice. A plain
+ * landscape is one strip with one cell and no dimension: the cell holds its top-level containers.
+ */
+export type Landscape = {
+  /** The layout's dimension: its groups divide every strip alike, so the strips line up. */
+  dimension?: LandscapeGroup[];
+  /** The strips, in order. */
+  strips: LandscapeStrip[];
+};
+
+type Candidate = { node: SpaceNode; via: ViaStep[] };
+type ValueFilter = { field: string; value: string | null };
+type NodeFilter = { node: SpaceNode; edge?: string };
+/** Keeps the nodes with a field value, or the nodes joined to a node (across edges from `edge`, if set). */
+type Filter = ValueFilter | NodeFilter;
+
+/**
+ * Lay a space out as strips of nested containers following each strip's grouping levels.
  *
  * Adjacent node levels are joined by any edge between their types, in either direction, or only
  * edges from `edge.field`. A `via` chain joins them through the skipped types. A field level
  * splits the next node level by that field's values. A node reached from several containers
  * appears in each, in full: the levels are finite, so repeating contents can't recurse.
+ *
+ * A dimension divides a strip into cells. A strip's first level is joined to a dimension's node the
+ * way a level is joined to the node level above, so `via` applies there too.
  */
 export function buildLandscape(graph: SpaceGraph, regionId: string, layout: LayoutConfig<'landscape'>): Landscape {
-  const levels = layout.group;
   const order = new Map([...graph.nodes.keys()].map((title, i) => [title, i]));
+  // The first occurrence of each node, across strips, for marking repeats.
   const first = new Map<string, string>();
 
-  const occurrenceFor = (candidate: Candidate, levelIdx: number, path: readonly PathSegment[]): LandscapeOccurrence => {
+  const occurrenceFor = (
+    strip: StripContext,
+    candidate: Candidate,
+    levelIdx: number,
+    path: readonly PathSegment[],
+  ): LandscapeOccurrence => {
     const { node } = candidate;
     const nodePath = [...path, node.id];
     const key = occurrenceKey(regionId, nodePath);
     const repeatOf = first.get(node.id);
     if (repeatOf === undefined) first.set(node.id, key);
+    strip.placed.add(node.id);
     return {
       key,
       level: levelIdx,
       item: { kind: 'node', node },
       via: candidate.via,
       ...(repeatOf !== undefined && { repeatOf }),
-      children: place(levelIdx + 1, node, [], nodePath),
+      children: place(strip, levelIdx + 1, node, [], nodePath),
     };
   };
 
-  /** Occurrences for level `levelIdx` inside `anchor`, the nearest enclosing node. */
+  /** Occurrences for level `levelIdx` of a strip inside `anchor`, the nearest enclosing node. */
   const place = (
+    strip: StripContext,
     levelIdx: number,
     anchor: SpaceNode | undefined,
-    filters: readonly FieldFilter[],
+    filters: readonly Filter[],
     path: readonly PathSegment[],
   ): LandscapeOccurrence[] => {
-    const level = levels[levelIdx];
+    const level = strip.levels[levelIdx];
     if (level === undefined) return [];
     if (isTypeLevel(level)) {
-      return candidates(level, anchor, filters).map((c) => occurrenceFor(c, levelIdx, path));
+      return candidates(level, anchor, filters).map((c) => occurrenceFor(strip, c, levelIdx, path));
     }
 
-    const nodeLevel = levels.slice(levelIdx).find(isTypeLevel)!;
+    const nodeLevel = strip.levels.slice(levelIdx).find(isTypeLevel)!;
     const values = distinctValues(
       candidates(nodeLevel, anchor, filters).map((c) => c.node),
       level.field,
@@ -85,22 +128,32 @@ export function buildLandscape(graph: SpaceGraph, regionId: string, layout: Layo
         level: levelIdx,
         item: { kind: 'value', field: level.field, value },
         via: [],
-        children: place(levelIdx + 1, anchor, [...filters, { field: level.field, value }], valuePath),
+        children: place(strip, levelIdx + 1, anchor, [...filters, { field: level.field, value }], valuePath),
       };
     });
   };
 
-  /** Nodes of a type level joined to `anchor` (all of the type at the top) and matching the filters. */
-  const candidates = (
-    level: TypeLevel,
-    anchor: SpaceNode | undefined,
-    filters: readonly FieldFilter[],
-  ): Candidate[] => {
-    const reached: Candidate[] =
-      anchor === undefined
-        ? ofType(level.type).map((node) => ({ node, via: [] }))
-        : walkChain(anchor, level.via ?? [], level.type, level.edge?.field);
-    return reached.filter(({ node }) => filters.every((f) => hasValue(node, f)));
+  /**
+   * Nodes of a type level joined to `anchor` and matching the filters. With no anchor they are all
+   * of the type at the top, or, under dimension nodes, those joined to every one of them.
+   */
+  const candidates = (level: TypeLevel, anchor: SpaceNode | undefined, filters: readonly Filter[]): Candidate[] => {
+    const nodeFilters = filters.filter((f): f is NodeFilter => 'node' in f);
+    let reached: Candidate[];
+    if (anchor !== undefined) {
+      reached = walkChain(anchor, level.via ?? [], level.type, level.edge?.field);
+    } else if (nodeFilters.length === 0) {
+      reached = ofType(level.type).map((node) => ({ node, via: [] }));
+    } else {
+      // PROTOTYPE: a dimension's `edge` applies to the last hop of a `via` chain, like a level's own,
+      // and the skipped nodes shown for `intermediate: breadcrumb` come from the layout dimension only.
+      const [head, ...rest] = nodeFilters.map((f) =>
+        walkChain(f.node, level.via ?? [], level.type, f.edge ?? level.edge?.field),
+      );
+      reached = head!.filter((c) => rest.every((others) => others.some((o) => o.node.id === c.node.id)));
+    }
+    const values = filters.filter((f): f is ValueFilter => 'field' in f);
+    return reached.filter(({ node }) => values.every((f) => valuesOf(node, f.field).includes(f.value)));
   };
 
   const ofType = (type: string) => [...graph.nodes.values()].filter((node) => node.resolvedType === type);
@@ -146,22 +199,98 @@ export function buildLandscape(graph: SpaceGraph, regionId: string, layout: Layo
     return [...byTitle.values()].sort((a, b) => order.get(a.node.id)! - order.get(b.node.id)!);
   };
 
-  const groups = place(0, undefined, [], []);
-
-  // Nodes of an inner level that no container reached get their own contents, like tree orphans.
-  const ungrouped: LandscapeOccurrence[] = [];
-  levels.forEach((level, levelIdx) => {
-    if (levelIdx === 0 || !isTypeLevel(level)) return;
-    for (const node of ofType(level.type)) {
-      if (!first.has(node.id)) ungrouped.push(occurrenceFor({ node, via: [] }, levelIdx, [null]));
+  /**
+   * A dimension's groups, worked out once. A type dimension lists every node of its type, so it can
+   * show a group that holds nothing. A field dimension takes the values the nodes of `drawn` (the
+   * types of the first node level of each strip it divides) have, so a value no node has is not a group.
+   * A node with no value, or joined to no node of the dimension, is in none of its groups; it
+   * is shown as ungrouped, the same for both kinds.
+   * PROTOTYPE: groups come in space order. A field's declared domain, or an `order` field, would give
+   * the order authors expect and let a field dimension show empty groups too.
+   */
+  const dimensionGroups = (
+    dimension: Dimension,
+    drawn: readonly string[],
+    prefix: readonly PathSegment[],
+  ): { group: LandscapeGroup; filter: Filter; segment: PathSegment }[] => {
+    if ('type' in dimension) {
+      return ofType(dimension.type).map((node) => ({
+        group: { key: occurrenceKey(regionId, [...prefix, node.id]), item: { kind: 'node', node } },
+        filter: { node, edge: dimension.edge?.field },
+        segment: node.id,
+      }));
     }
+    const { field } = dimension;
+    const nodes = drawn.flatMap(ofType);
+    return distinctValues(nodes, field)
+      .filter((v) => v !== null)
+      .map((value) => ({
+        group: { key: occurrenceKey(regionId, [...prefix, [field, value]]), item: { kind: 'value', field, value } },
+        filter: { field, value },
+        segment: [field, value],
+      }));
+  };
+
+  const firstNodeType = (strip: Strip) => strip.group.find(isTypeLevel)!.type;
+
+  /** Nodes of the strip's levels that no container or cell reached get their own contents, like tree orphans. */
+  const orphans = (strip: StripContext, hasDimension: boolean, path: readonly PathSegment[]) => {
+    const ungrouped: LandscapeOccurrence[] = [];
+    strip.levels.forEach((level, levelIdx) => {
+      // The first level has no container above it unless a dimension divides the strip.
+      if ((levelIdx === 0 && !hasDimension) || !isTypeLevel(level)) return;
+      for (const node of ofType(level.type)) {
+        if (!strip.placed.has(node.id)) {
+          ungrouped.push(occurrenceFor(strip, { node, via: [] }, levelIdx, [...path, null]));
+        }
+      }
+    });
+    return ungrouped;
+  };
+
+  const layoutGroups = layout.dimension
+    ? dimensionGroups(layout.dimension, [...new Set(layout.strips.map(firstNodeType))], [])
+    : undefined;
+  const strips = layout.strips.map((strip, s): LandscapeStrip => {
+    const context: StripContext = { levels: strip.group, placed: new Set() };
+    // Keys name the strip only where several could share a path; a lone strip keeps the shorter key.
+    const stripPath: PathSegment[] = layout.strips.length > 1 ? [s] : [];
+    const own = strip.dimension ? dimensionGroups(strip.dimension, [firstNodeType(strip)], stripPath) : undefined;
+    const cells = (layoutGroups ?? [undefined]).flatMap((a, i) =>
+      (own ?? [undefined]).map((b, j): LandscapeCell => {
+        const along = [a, b].filter((d) => d !== undefined);
+        const path = [...stripPath, ...along.map((d) => d.segment)];
+        return {
+          key: occurrenceKey(regionId, path),
+          at: [i, j],
+          children: place(
+            context,
+            0,
+            undefined,
+            along.map((d) => d.filter),
+            path,
+          ),
+        };
+      }),
+    );
+    return {
+      ...(own && { dimension: own.map((d) => d.group) }),
+      cells,
+      ungrouped: strip.showUngrouped
+        ? orphans(context, layoutGroups !== undefined || own !== undefined, stripPath)
+        : [],
+    };
   });
 
-  return { groups, ungrouped };
+  return { ...(layoutGroups && { dimension: layoutGroups.map((d) => d.group) }), strips };
 }
 
-type GroupLevel = LayoutConfig<'landscape'>['group'][number];
+/** A strip being placed: its levels, and the nodes it has drawn so far. */
+type StripContext = { levels: readonly GroupLevel[]; placed: Set<string> };
+type Strip = LayoutConfig<'landscape'>['strips'][number];
+type GroupLevel = Strip['group'][number];
 type TypeLevel = Extract<GroupLevel, { type: string }>;
+type Dimension = NonNullable<LayoutConfig<'landscape'>['dimension']>;
 
 function isTypeLevel(level: GroupLevel): level is TypeLevel {
   return 'type' in level;
@@ -179,8 +308,4 @@ function distinctValues(nodes: SpaceNode[], field: string): (string | null)[] {
   const values = new Set(nodes.flatMap((node) => valuesOf(node, field)));
   const present = [...values].filter((v): v is string => v !== null);
   return values.has(null) ? [...present, null] : present;
-}
-
-function hasValue(node: SpaceNode, { field, value }: FieldFilter): boolean {
-  return valuesOf(node, field).includes(value);
 }

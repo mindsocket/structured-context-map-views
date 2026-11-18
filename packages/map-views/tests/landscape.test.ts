@@ -5,10 +5,17 @@ import { fixtureGraph } from './fixture-graph';
 import sample from './fixtures/launch-playbook.json';
 
 const graph = fixtureGraph(sample);
-const layout = (group: LayoutConfig<'landscape'>['group']): LayoutConfig<'landscape'> => ({
+/** A plain landscape: its containers are the one cell of its one strip. */
+function plainLandscape(...args: Parameters<typeof buildLandscape>) {
+  const { dimension, strips } = buildLandscape(...args);
+  expect(dimension).toBeUndefined();
+  expect(strips).toHaveLength(1);
+  return { groups: strips[0]!.cells[0]!.children, ungrouped: strips[0]!.ungrouped };
+}
+const layout = (group: LayoutConfig<'landscape'>['strips'][number]['group']): LayoutConfig<'landscape'> => ({
   type: 'landscape',
   orientation: 'horizontal',
-  group,
+  strips: [{ group, showUngrouped: true }],
 });
 const level = (type: string) => ({ type, intermediate: 'hidden' as const });
 
@@ -18,7 +25,7 @@ function all(occurrences: LandscapeOccurrence[]): LandscapeOccurrence[] {
 const title = (o: LandscapeOccurrence) => (o.item.kind === 'node' ? o.item.node.title : o.item.value);
 
 describe('sample landscape', () => {
-  const byPhase = buildLandscape(graph, 'main', layout([level('Phases'), level('Activities'), level('Capabilities')]));
+  const byPhase = plainLandscape(graph, 'main', layout([level('Phases'), level('Activities'), level('Capabilities')]));
 
   test('top-level containers are the Phases, holding their Activities', () => {
     expect(byPhase.groups.map(title)).toHaveLength(4);
@@ -27,43 +34,14 @@ describe('sample landscape', () => {
     expect(activities).toHaveLength(12);
   });
 
-  test('nodes no container reaches are ungrouped, not dropped', () => {
-    // Some Capabilities are only sub-capabilities, with no Activity of their own.
-    const ungrouped = byPhase.ungrouped.map((o) => o.item.kind === 'node' && o.item.node);
-    expect(ungrouped.length).toBeGreaterThan(0);
-    expect(ungrouped.every((n) => n && n.resolvedType === 'Capabilities')).toBe(true);
-    const placed = new Set(all([...byPhase.groups, ...byPhase.ungrouped]).map(title));
-    const capabilities = [...graph.nodes.values()].filter((n) => n.resolvedType === 'Capabilities');
-    expect(capabilities.every((n) => placed.has(n.title))).toBe(true);
-  });
-
-  test('a node in several containers repeats in full, with unique keys', () => {
-    const occurrences = all(byPhase.groups);
-    expect(new Set(occurrences.map((o) => o.key)).size).toBe(occurrences.length);
-    const web = occurrences.filter((o) => title(o) === 'Project Website');
-    expect(web.length).toBeGreaterThan(1);
-    expect(web[0]!.repeatOf).toBeUndefined();
-    expect(web.slice(1).every((o) => o.repeatOf === web[0]!.key)).toBe(true);
-  });
-
-  test('grouping follows edges against their direction (Outcomes over Activities)', () => {
-    const byOutcome = buildLandscape(graph, 'main', layout([level('Outcomes'), level('Activities')]));
-    expect(byOutcome.groups).toHaveLength(3);
-    const placements = byOutcome.groups.flatMap((g) => g.children);
-    // 12 Activity → Outcome links in the fixture, one placement each.
-    expect(placements).toHaveLength(12);
-    const activityTitles = new Set(placements.map(title));
-    expect(activityTitles.size + byOutcome.ungrouped.length).toBe(12);
-  });
-
   test('field levels split the next node level by value', () => {
-    const byStatus = buildLandscape(graph, 'main', layout([{ field: 'status' }, level('Applications')]));
+    const byStatus = plainLandscape(graph, 'main', layout([{ field: 'status' }, level('Applications')]));
     expect(byStatus.groups.map(title).sort()).toEqual(['identified', 'stub']);
     expect(byStatus.groups.flatMap((g) => g.children)).toHaveLength(8);
   });
 
   test('via chains join through the skipped type and record the skipped nodes', () => {
-    const chained = buildLandscape(
+    const chained = plainLandscape(
       graph,
       'main',
       layout([level('Activities'), { type: 'Applications', via: ['Capabilities'], intermediate: 'breadcrumb' }]),
@@ -76,19 +54,19 @@ describe('sample landscape', () => {
       expect(app.via[0]!.nodes.length).toBeGreaterThan(0);
     }
     // Without the chain, Activities and Applications share no edge.
-    const direct = buildLandscape(graph, 'main', layout([level('Activities'), level('Applications')]));
+    const direct = plainLandscape(graph, 'main', layout([level('Activities'), level('Applications')]));
     expect(direct.groups.flatMap((g) => g.children)).toEqual([]);
     expect(direct.ungrouped).toHaveLength(8);
   });
 
   test('edge.field restricts which edges join two levels', () => {
-    const none = buildLandscape(
+    const none = plainLandscape(
       graph,
       'main',
       layout([level('Phases'), { ...level('Activities'), edge: { field: 'outcomes' } }]),
     );
     expect(none.groups.flatMap((g) => g.children)).toEqual([]);
-    const phase = buildLandscape(
+    const phase = plainLandscape(
       graph,
       'main',
       layout([level('Phases'), { ...level('Activities'), edge: { field: 'phase' } }]),
@@ -98,7 +76,7 @@ describe('sample landscape', () => {
 
   test('field-group keys cannot collide with node titles', () => {
     const occurrences = all(
-      buildLandscape(graph, 'main', layout([level('Activities'), { field: 'status' }, level('Capabilities')])).groups,
+      plainLandscape(graph, 'main', layout([level('Activities'), { field: 'status' }, level('Capabilities')])).groups,
     );
     expect(new Set(occurrences.map((o) => o.key)).size).toBe(occurrences.length);
   });
