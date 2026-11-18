@@ -19,7 +19,6 @@ pre-push:
   commands:
     pushed-tree:
       run: bash scripts/git-hooks/check-pushed-tree.sh
-    # The review check comes from the sctx-dev plugin in structured-context's marketplace.
     review-check:
       run: >-
         check="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/plugins/marketplaces/structured-context/dev-plugin/scripts/review-check.sh";
