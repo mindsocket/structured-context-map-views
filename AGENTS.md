@@ -15,9 +15,10 @@ bun run build             # the library, then the navigator
 ## Principles
 
 - **Simple, not sloppy.** Prefer the smallest design that does the job. Don't add structures, grammars, limits or presets until a concrete need forces them.
-- **One term per concept.** A thing has the same name in the definition format, the docs, comments and code. Add, rename or refine common terms (when they're unclear or new requirements go beyond existing definitions) in `docs/concepts.md`, and do the same in `docs/layouts.md` for a term only one layout uses. Don't rename another package's term: use structured-context's own word and type.
+- **One term per concept.** A thing has the same name in the definition format, the docs, comments and code. Add, rename or refine terms in `docs/concepts.md`, or in `docs/layouts.md` for a term only one layout uses. Don't rename another package's term: use structured-context's own word and type.
 - **One home per fact.** Decide which doc owns a fact, state it there once, and link from elsewhere. Docs don't list what the code already lists (layouts, exports, props, files, variables): a list like that goes stale with the next change.
 - **A setting's type says how many behaviours it has.** A boolean for on or off, when no third option is expected. An enum when there are two or more behaviours, each value naming one (`dag: 'repeat' | 'cross-edge'`).
+- **A setting lives at the narrowest scope where it can differ and still make sense.** Per region: how that region presents its nodes (`nodes.style`, `nodes.validation`). Never in a definition: data the host supplies (such as validation results), where a definition only chooses how to show it.
 - **Export only what another module imports.** A type used in one place is written inline. A type used in one file isn't exported. Derive types (from the schemas, `Parameters`, `ReturnType`, `Pick`) instead of restating a shape. When two modules need the same shape, they share one type.
 - **The public surface is `src/index.ts`, `src/node/index.ts` and `src/node/html.ts`.** Add an export there only when a host needs it, and say which host.
 - **Comments say what the code can't.** A reason, a constraint, a trap. Never the signature, the parameter list or the next line.
@@ -57,7 +58,6 @@ Review and update with any change:
 | Exports or component props | `docs/api.md` |
 | Module structure, rendering, styling | `docs/architecture.md` |
 | Anything user-visible | `README.md` (kept short; detail goes in `docs/`) |
-| New or changed tests | Each one proves a behaviour no other test proves; remove the ones a change makes redundant |
 
 Docs describe what the code does now. Decision history, plans and how things used to work don't go in docs: git history records changes, and release notes record the breaking ones.
 
@@ -71,4 +71,4 @@ Docs describe what the code does now. Decision history, plans and how things use
 
 ## Styling
 
-Utilities are Tailwind with the `mv` prefix and no preflight. They are deliberately unlayered, because host CSS outside a cascade layer beats anything inside one. Avoid native elements that hosts style globally (e.g. `<button>`; cards are `div role="button"`). Hosts theme through the `--mv-color-*` variables.
+Utilities are Tailwind with the `mv` prefix and no preflight, and deliberately unlayered. Avoid native elements that hosts style globally (e.g. `<button>`; cards are `div role="button"`). Hosts theme through the `--mv-color-*` variables.

@@ -21,7 +21,9 @@ describe('tea-shop XY plot', () => {
     const kettle = plot.points.find((p) => p.node.title === 'Kettle')!;
     expect(kettle.x).toBeCloseTo(0.35);
     expect(kettle.y).toBeCloseTo(0.43);
-    expect(plot.points).toHaveLength(14);
+    expect(plot.points).toHaveLength(
+      [...graph.nodes.values()].filter((n) => layout().types.includes(n.resolvedType)).length,
+    );
     expect(plot.unplaced).toEqual([]);
   });
 

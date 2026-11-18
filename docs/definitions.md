@@ -58,7 +58,7 @@ A region's `layout` is chosen by `type`. Each layout, with its settings, is in [
 
 Any setting the schemas mark parameterisable takes either a fixed value or `{ $param: '<name>' }`.
 
-Each parameter is a JSON Schema with a `default` and an optional `title`. It can `$ref` a shared setting from `settings.json` (`orientation`, `nodeStyle`, `fieldList`, `validationLevel`, `validationSources`) or a layout's own definitions (e.g. `layouts/tree.json#/$defs/dag`), and narrow it. Relative refs resolve against the format's `latest` folder; full URLs work too.
+Each parameter is a JSON Schema with a `default` and an optional `title`. It can `$ref` a shared setting from `settings.json` or a layout's own definitions (e.g. `layouts/tree.json#/$defs/dag`), and narrow it. Relative refs resolve against the format's `latest` folder; full URLs work too.
 
 ```json5
 parameters: {
@@ -73,10 +73,6 @@ parameters: {
 
 Writing a fixed value instead of a binding forces the setting and offers no control: `validation: 'warning'` always shows warnings and errors, `validation: 'off'` never shows results.
 
-### Where a setting belongs
-
-A setting lives at the narrowest scope where it can differ and still make sense. Per region: how that region presents its nodes (`nodes.style`, `nodes.validation`). Never in a definition: data the host supplies (such as validation results), where a definition only chooses how to show it.
-
 A definition is rejected when a parameter's default doesn't match its schema, when a binding names an undeclared parameter, or when a value the parameter allows isn't valid for a setting it's bound to.
 
 ## Where definitions are found
@@ -90,5 +86,3 @@ Definitions are found the way structured-context finds plugin schemas, and each 
 | The `.sctx/map-views/` folder of a structured-context config root, or `map-views/` beside the global config ([resources folder](https://github.com/mindsocket/structured-context/blob/main/docs/config.md#resources-folder)), including configs pulled in by `includeSpacesFrom` | `sctx-map-view://<name>` |
 
 Plugins are those in a config root's `.sctx/plugins/`, plus those a space or the config names (in `plugins`, or as the prefix of `schema`). Two definitions with the same `$id` are an error: to change a definition, write another with its own `$id`.
-
-A host lists the definitions whose `schema` matches the space's schema `$id` (`mapViewsForSchema`).

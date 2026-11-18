@@ -36,7 +36,7 @@ Pre-1.0. Docs:
 bun install
 bun run dev        # the navigator, reading spaces from your structured-context config
 bun test && bun run typecheck && bun run lint
-bun run test:package   # packs the library and checks it installs and typechecks in an empty project
+bun run test:package   # packs the library and the plugin, installs each in an empty project, typechecks a consumer and renders a page
 ```
 
 Licence: MIT.

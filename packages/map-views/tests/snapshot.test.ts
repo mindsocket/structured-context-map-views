@@ -17,11 +17,10 @@ describe('exportSnapshot', () => {
   });
 
   test('passes validation options to validateSpace', async () => {
+    // The sample has no rule issues to filter, so an invalid filter is what shows the option arrives.
     const config = loadConfig({ startDir: sample });
-    const all = await exportSnapshot('launch-playbook', config, sample);
-    const none = await exportSnapshot('launch-playbook', config, sample, { ruleFilter: ['id=no-such-rule'] });
-    const rules = (snapshot: typeof all) => snapshot.validation.issues.filter((issue) => issue.kind === 'rule');
-    expect(rules(none)).toEqual([]);
-    expect(rules(all).length).toBeGreaterThanOrEqual(rules(none).length);
+    await expect(exportSnapshot('launch-playbook', config, sample, { ruleFilter: ['nonsense'] })).rejects.toThrow(
+      /Invalid rule filter/,
+    );
   });
 });

@@ -9,7 +9,7 @@ export type LayoutProps<L extends LayoutConfig = LayoutConfig> = {
   /** Scopes occurrence keys when several map views render in one document. */
   instanceId: string;
   onNodeSelect?: (node: SpaceNode) => void;
-  /** The node a layout that centres on one node shows; the layout keeps its own once the reader picks another. */
+  /** The focus, for layouts arranged around one node; the layout keeps its own once the reader picks another. */
   focus?: SpaceNode['id'];
   onFocusChange?: (id: SpaceNode['id']) => void;
 };

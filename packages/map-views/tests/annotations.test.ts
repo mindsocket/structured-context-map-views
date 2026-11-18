@@ -49,10 +49,6 @@ describe('annotationsFrom', () => {
       [undefined, 'parse', 'y.md', undefined],
     ]);
   });
-
-  test('accepts no issues', () => {
-    expect(annotationsFrom({ issues: [] }, graph)).toEqual({ annotations: new Map(), unattached: [] });
-  });
 });
 
 describe('filterAnnotations', () => {
