@@ -10,7 +10,7 @@ import sample from './fixtures/launch-playbook.json';
 const graph = fixtureGraph(sample);
 const [definition] = loadMapViewDefinitions({ spaces: [] }, { configDir: '/nonexistent' });
 
-describe('node cards', () => {
+describe('node components', () => {
   test('every card carries the id of a node in the graph, repeats included', () => {
     const html = renderToStaticMarkup(createElement(MapView, { definition: definition!, graph, values: {} }));
     const ids = [...html.matchAll(/data-node-id="([^"]*)"/g)].map((m) => m[1]!.replaceAll('&amp;', '&'));

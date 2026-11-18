@@ -18,7 +18,7 @@ All but the last two rows are folders of `packages/map-views/src`.
 | Module | Holds | May import |
 |---|---|---|
 | `core` | Definitions and parameters, annotations, and each layout's settings schema and projection, if it has one (`core/layouts/<name>/`). Runs in a browser, Node or a worker | Types from structured-context. No React, DOM or Node |
-| `components` | `MapView` and what it draws with: a component per layout, node cards, the connector overlay, parameter controls | core, React |
+| `components` | `MapView` and what it draws with: a component per layout, node components, the connector overlay, parameter controls | core, React |
 | `viewer` | The page-filling UI that hosts share. What is specific to a host comes in as an option | core, components, React, `structured-context/browser` |
 | `node` | What needs a filesystem: finding definitions, snapshotting a space, filling the self-contained page | core, Node, structured-context |
 | `artifact`, `page` | The two hosts the library ships. Nothing imports them | Anything above |
@@ -35,7 +35,7 @@ Core is tested without a DOM, against fixtures captured from spaces (`tests/fixt
 
 Hosts pass the library structured-context's `SpaceGraph`: nodes keyed by id, the main hierarchy, and every hierarchy and relationship edge with its metadata, readable in both directions (`parentEdges`, `childEdges`). The Obsidian plugin assembles it in-process; the navigator's server sends the wire format (`exportSpaceGraph`) and its browser rebuilds the graph (`spaceGraphFrom`). The graph keeps edges to nodes outside it; the helpers in `core/layouts/helpers.ts` drop them, so a filtered space stays consistent.
 
-Hosts can also pass validation results as an `AnnotationIndex` (`core/annotations.ts`): results by node id, built by `annotationsFrom` from structured-context's validation issues. `MapView` narrows it by the region's `nodes.validation` and `nodes.validationSources` and provides the result to node cards through React context, so layouts don't thread it through. Every layout draws nodes with `NodeCard`, which draws the badge.
+Hosts can also pass validation results as an `AnnotationIndex` (`core/annotations.ts`): results by node id, built by `annotationsFrom` from structured-context's validation issues. `MapView` narrows it by the region's `nodes.validation` and `nodes.validationSources` and provides the result to node components through React context, so layouts don't thread it through. Every layout draws nodes with `NodeComponent`, which draws the badge.
 
 ## Projections
 

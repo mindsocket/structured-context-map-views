@@ -16,7 +16,7 @@ type Props = {
  * tooltip. Deliberately a `div` with button semantics rather than a `<button>`: hosts style
  * native form controls globally (Obsidian fixes button height and disables wrapping).
  */
-export function NodeCard({ node, repeat, nodes, onSelect }: Props) {
+export function NodeComponent({ node, repeat, nodes, onSelect }: Props) {
   const select = () => onSelect?.(node);
   const annotations = useAnnotations().get(node.id);
   const label = `${node.resolvedType}: ${node.title}${repeat ? ' (shown in full elsewhere)' : ''}${annotationsLabel(annotations)}`;

@@ -4,7 +4,7 @@ import type { LayoutConfig } from '../core/definition';
 import { buildNeighbourhood, type Neighbour } from '../core/layouts/neighbourhood/projection';
 import { ConnectorOverlay } from './ConnectorOverlay';
 import { type LayoutProps, useOccurrenceElements } from './layout';
-import { NodeCard } from './NodeCard';
+import { NodeComponent } from './NodeComponent';
 
 // The most nodes across in the zones above and below, and down in the zones at the sides.
 const ACROSS = 3;
@@ -46,7 +46,7 @@ export function NeighbourhoodLayout({
       className="mv:relative mv:z-10"
       data-occurrence={`${instanceId}${item.key}`}
     >
-      <NodeCard node={item.node} repeat={false} nodes={region.nodes} onSelect={select} />
+      <NodeComponent node={item.node} repeat={false} nodes={region.nodes} onSelect={select} />
     </div>
   );
   // A zone wraps into a few rows or columns, so a large one doesn't push the focus off screen.

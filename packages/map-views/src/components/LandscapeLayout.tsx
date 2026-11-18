@@ -3,7 +3,7 @@ import type { SpaceNode } from 'structured-context/api';
 import type { LayoutConfig, Orientation } from '../core/definition';
 import { buildLandscape, type LandscapeGroup, type LandscapeOccurrence } from '../core/layouts/landscape/projection';
 import type { LayoutProps } from './layout';
-import { NodeCard } from './NodeCard';
+import { NodeComponent } from './NodeComponent';
 
 type Level = LayoutConfig<'landscape'>['strips'][number]['group'][number];
 
@@ -58,7 +58,7 @@ export function LandscapeLayout({ graph, region, instanceId, onNodeSelect }: Lay
     if (occurrence.item.kind === 'node' && isLeaf(occurrence.level)) {
       return (
         <li key={occurrence.key} {...marker} className="mv:flex mv:flex-col mv:gap-0.5">
-          <NodeCard node={occurrence.item.node} repeat={repeat} nodes={region.nodes} onSelect={onNodeSelect} />
+          <NodeComponent node={occurrence.item.node} repeat={repeat} nodes={region.nodes} onSelect={onNodeSelect} />
           {breadcrumb(occurrence, levels)}
         </li>
       );

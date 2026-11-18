@@ -26,6 +26,10 @@ The step some layouts need to decide what is shown: it turns a space graph and t
 
 One rendered appearance of a space node. A node can occur more than once, for example under each of its parents in a tree; the later occurrences are repeats. Every occurrence has a key built from its path (region, then ancestors, then the node), so repeats stay distinct.
 
+## Node component
+
+What every layout draws for an occurrence: a clickable node in the region's node style (a card with its title and fields, or a compact shape), with its validation badge. "Card" alone means the `card` style, not the component.
+
 ## Connector
 
 The line drawn for an edge of the space graph, between two occurrences. "Edge" is the hierarchy or relationship reference in the data; "link" is left for structured-context's links between notes.

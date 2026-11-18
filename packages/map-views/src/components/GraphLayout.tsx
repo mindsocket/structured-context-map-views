@@ -5,7 +5,7 @@ import type { LayoutConfig } from '../core/definition';
 import { assignLanes, type Connector, edgesWithin, isHierarchyEdge, occurrenceKey } from '../core/layouts/helpers';
 import { ConnectorOverlay } from './ConnectorOverlay';
 import { type LayoutProps, useOccurrenceElements } from './layout';
-import { NodeCard } from './NodeCard';
+import { NodeComponent } from './NodeComponent';
 
 // Room each node needs. A card is a wide box; a shape is a marker with a label beside it.
 const CARD_ROOM = { width: 230, height: 110 };
@@ -54,7 +54,7 @@ export function GraphLayout({ graph, region, instanceId, onNodeSelect }: LayoutP
           style={{ left: x, top: y }}
         >
           <div ref={register(key)}>
-            <NodeCard node={node} repeat={false} nodes={region.nodes} onSelect={onNodeSelect} />
+            <NodeComponent node={node} repeat={false} nodes={region.nodes} onSelect={onNodeSelect} />
           </div>
           {shape && (
             <span className="mv:whitespace-nowrap mv:rounded mv:bg-surface/80 mv:px-0.5 mv:text-xs">{node.title}</span>
