@@ -16,7 +16,7 @@ A part of a map view with its own node selection, layout, node style and edge se
 
 ## Layout
 
-The arrangement a region uses, chosen from a fixed catalogue. Each layout carries its own opinions (spacing, card sizes, colours). Definitions choose and configure a layout; they don't compose one. [Layouts](layouts.md) describes each one.
+The arrangement a region uses, chosen from a fixed catalogue. Each layout carries its own opinions (spacing, sizes, colours). Definitions choose and configure a layout; they don't compose one. [Layouts](layouts.md) describes each one.
 
 ## Projection
 
@@ -24,7 +24,7 @@ The step some layouts need to decide what is shown: it turns a space graph and t
 
 ## Occurrence
 
-One rendered appearance of a space node. A node can occur more than once, for example under each of its parents in a tree; the later occurrences are repeats. Every occurrence has a key built from its path (region, then ancestors, then the node), so repeats stay distinct.
+One rendered appearance of a space node. A node can occur more than once, for example under each of its parents in a tree; the later occurrences are repeats. Every occurrence has a key built from its path, so repeats stay distinct.
 
 ## Node component
 
@@ -32,11 +32,11 @@ What a layout draws for an occurrence, in the region's node style.
 
 ## Connector
 
-The line drawn for an edge of the space graph, between two occurrences. "Edge" is the hierarchy or relationship reference in the data; "link" is left for structured-context's links between notes.
+What is drawn for an edge of the space graph, between two occurrences. "Edge" is the hierarchy or relationship reference in the data; "link" is left for structured-context's links between notes.
 
 ## Focus
 
-The node a layout centres on. Hosts can set it; otherwise the reader's picks move it.
+The node a layout is arranged around. Hosts can set it; otherwise the reader's picks move it.
 
 ## Parameter
 
@@ -44,7 +44,7 @@ A setting the reader can change. A definition declares each parameter once, as a
 
 ## Annotation
 
-A validation result attached to a node: a severity, a source (the kind of check, such as `schema`, `hierarchy` or `rule`) and a message. Hosts supply annotations; a region's `nodes.validation` and `nodes.validationSources` settings choose which are drawn.
+A validation result attached to a node: a severity, a source (the kind of check, such as `schema`, `hierarchy` or `rule`) and a message. Hosts supply annotations.
 
 ## Host
 
