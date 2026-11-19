@@ -14,8 +14,9 @@ Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `package
    (cd packages/map-views && bun pm version --no-git-tag-version $ARGUMENTS)
    v=$(jq -r .version packages/map-views/package.json)
    jq --arg v "$v" '.version = $v' packages/sctx-map-views/package.json >package.tmp && mv package.tmp packages/sctx-map-views/package.json
-   git add -A && git commit -m "v$v" && git tag -a "v$v" -m "v$v" && git push --follow-tags
+   git add -A && git commit -m "v$v" && git tag -a "v$v" -m "v$v" && git push --atomic origin main "v$v"
    ```
+   `--atomic` matters: `--follow-tags` pushes the tag even when the branch is rejected, and the tag starts the publish.
    `preversion` builds the library first (as CI does), because the plugin's tests import the built `structured-context-map-views/html`; without it, `bun test` fails on a missing module. If any check fails, stop and report the errors.
    Shell state doesn't persist between calls, so `v` must be re-derived (`v=$(jq -r .version packages/map-views/package.json)`) in each call that uses it, including steps 3 and 4.
 
