@@ -7,7 +7,7 @@ description: Cut an npm release of the structured-context-map-views library. Use
 
 Cut a **$ARGUMENTS** release (major, minor, or patch) of the library in `packages/map-views` and the plugin in `packages/sctx-map-views`, which always share one version. The navigator app is private and isn't released.
 
-1. Verify the branch is `main` and the working tree is clean. If not, stop and tell the user. `bun pm version` also refuses untracked files: if there are any, run `git stash push --include-untracked` before step 2 and `git stash pop` after it, whether step 2 passes or fails.
+1. Verify the branch is `main` and the working tree is clean. If not, stop and tell the user. Then `git pull --ff-only`, so the checks in step 2 run against what the tag will point at; if it can't fast-forward, stop and tell the user. `bun pm version` also refuses untracked files: if there are any, run `git stash push --include-untracked` before step 2 and `git stash pop` after it, whether step 2 passes or fails.
 
 2. Bump the version from `packages/map-views`. This runs the checks (generators, lint, tests and the packed-package test `test:package`) and freezes `schemas/generated/<version>/` if the definition format changed. `bun pm version` skips git when run from a subfolder, so commit, tag and push yourself:
    ```
