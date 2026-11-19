@@ -33,7 +33,7 @@
     "bundle": "bun run clean && bun scripts/build.ts && tsc -p tsconfig.build.json"
   },
   "devDependencies": {
-    "structured-context": "^0.24.0",
+    "structured-context": "^0.25.0",
     "structured-context-map-views": "workspace:*"
   }
 }
