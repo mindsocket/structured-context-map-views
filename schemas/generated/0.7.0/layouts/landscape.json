@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.7.0/layouts/landscape.json",
+  "title": "Landscape layout",
+  "description": "Strips, one after the other. Each strip nests its grouping levels, and its last level is drawn as nodes. A dimension divides a strip into cells: the layout's dimension divides every strip alike, so they line up, and a strip's own dimension divides that strip further.",
+  "type": "object",
+  "required": [
+    "type",
+    "strips"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "landscape"
+    },
+    "orientation": {
+      "description": "horizontal: top-level containers, or the layout dimension's groups, side by side, as columns, and strips stacked. vertical: the reverse.",
+      "default": "horizontal",
+      "anyOf": [
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.7.0/settings.json#/$defs/orientation"
+        },
+        {
+          "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.7.0/definition.json#/$defs/paramRef"
+        }
+      ]
+    },
+    "dimension": {
+      "type": "object",
+      "if": {
+        "type": "object",
+        "required": [
+          "field"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "description": "Groups labelled by the values of a field of the strip's first node level. A value no node has is not a group.",
+        "required": [
+          "field"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "else": {
+        "type": "object",
+        "description": "A group for every node of one type.",
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "description": "Node type of the groups.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.7.0/definition.json#/$defs/paramRef"
+              }
+            ]
+          },
+          "edge": {
+            "type": "object",
+            "description": "Which edges join a group's node to the strip's first node level, or to its last `via` type. By default, any edge between the two types, in either direction.",
+            "required": [
+              "field"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      },
+      "description": "Divides every strip. Its groups are worked out once, so every strip has the same groups in the same order, and a cell exists even when it is empty."
+    },
+    "strips": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The strips, in order along the axis the layout dimension does not run along.",
+      "items": {
+        "type": "object",
+        "required": [
+          "group"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "dimension": {
+            "type": "object",
+            "if": {
+              "type": "object",
+              "required": [
+                "field"
+              ]
+            },
+            "then": {
+              "type": "object",
+              "description": "Groups labelled by the values of a field of the strip's first node level. A value no node has is not a group.",
+              "required": [
+                "field"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "else": {
+              "type": "object",
+              "description": "A group for every node of one type.",
+              "required": [
+                "type"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "description": "Node type of the groups.",
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.7.0/definition.json#/$defs/paramRef"
+                    }
+                  ]
+                },
+                "edge": {
+                  "type": "object",
+                  "description": "Which edges join a group's node to the strip's first node level, or to its last `via` type. By default, any edge between the two types, in either direction.",
+                  "required": [
+                    "field"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "field": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Divides this strip further, along the strip's own axis. Without a layout dimension, a strip with its own dimension is a swimlane."
+          },
+          "showUngrouped": {
+            "description": "Whether to draw the nodes of the strip's levels that no cell or container reached.",
+            "default": true,
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.7.0/definition.json#/$defs/paramRef"
+              }
+            ]
+          },
+          "group": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Grouping levels, outermost first. The last level is drawn as nodes; the others as containers. Adjacent node levels are joined by any edge between their types, in either direction. In a strip with a dimension, the first level is joined to each dimension node the same way, so `edge` and `via` apply there.",
+            "items": {
+              "type": "object",
+              "if": {
+                "type": "object",
+                "required": [
+                  "field"
+                ]
+              },
+              "then": {
+                "type": "object",
+                "description": "Containers labelled by the values of a field of the next node level's nodes. A node with several values appears under each.",
+                "required": [
+                  "field"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "else": {
+                "type": "object",
+                "description": "A level of nodes of one type.",
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "description": "Node type at this level.",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      {
+                        "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.7.0/definition.json#/$defs/paramRef"
+                      }
+                    ]
+                  },
+                  "edge": {
+                    "type": "object",
+                    "description": "Which edges join this level to the node level above (or to the last `via` type). By default, any edge between the two types.",
+                    "required": [
+                      "field"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "via": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "Types skipped between the node level above (or the dimension's node) and this one, in order. Nodes are joined through a chain of edges across them. Ignored on the first level of a strip with no dimension.",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "intermediate": {
+                    "description": "How the skipped nodes of a `via` chain are shown.",
+                    "default": "hidden",
+                    "anyOf": [
+                      {
+                        "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.7.0/layouts/landscape.json#/$defs/intermediate"
+                      },
+                      {
+                        "$ref": "https://raw.githubusercontent.com/mindsocket/structured-context-map-views/main/schemas/generated/0.7.0/definition.json#/$defs/paramRef"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "intermediate": {
+      "title": "Skipped levels",
+      "description": "hidden: not shown. breadcrumb: listed on each node reached through them.",
+      "enum": [
+        "hidden",
+        "breadcrumb"
+      ]
+    }
+  }
+}
